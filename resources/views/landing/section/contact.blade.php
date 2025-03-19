@@ -14,8 +14,9 @@ $contact = Section::where('name', 'contact')->first();
       <div class="col-about-left col-md-6 text-left">
         <h2 class="text-uppercase font-700 wow fadeTop" data-wow-delay="0.1s">{{ $contact->title }}</h2>
         <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">{{ $contact->description }}</h4>
-        <form name="contact-form" id="contact-form" action="{{ route('contact.submit') }}" method="POST" class="mt-50">
-          @csrf
+        
+        <form name="contact-form" id="contact-form" action="{{ route('contact.submit') }}" method="POST">
+        @csrf
           <div class="messages"></div>
           <div class="form-group wow fadeTop" data-wow-delay="0.1s">
             <label class="sr-only" for="name">Name</label>

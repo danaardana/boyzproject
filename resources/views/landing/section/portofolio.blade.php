@@ -7,7 +7,7 @@ $portfolio_items = SectionContent::where('section_id', $portfolio->id ?? null)->
 @endphp
 
 @if($portfolio && $portfolio->is_active)
-<section class="pt-0 pb-0 white-bg" id="work">
+<section class="pt-0 pb-0 white-bg" id="portofolio">
   <div class="container-fluid">
     <div class="row">
       <div class="portfolio-container text-center">

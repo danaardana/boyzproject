@@ -4,7 +4,7 @@ $counters = \App\Models\SectionContent::where('section_id', $counter->id ?? null
 @endphp
 
 @if($counter && $counter->is_active)
-<section class="dark-bg pt-80 pb-80">
+<section class="dark-bg pt-80 pb-80" id="counter">
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 text-center">

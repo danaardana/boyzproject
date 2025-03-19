@@ -17,23 +17,26 @@ $members = SectionContent::where('section_id', $team->id ?? null)->get();
     </div>
     <div class="row mt-50">
       @foreach($members as $member)
+      @php
+          $extraData = json_decode($member->extra_data, true);
+      @endphp
       <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.{{ $loop->iteration }}s">
-        <div class="team-member-container gallery-image-hover"> 
-          <img src="{{ asset($member->extra_data['image'] ?? 'landing/images/team/default.jpg') }}" class="img-responsive" alt="team-member">
-          <div class="member-caption">
-            <div class="member-description text-center">
-              <div class="member-description-wrap">
-                <h4 class="member-title">{{ $member->content_key }}</h4>
-                <p class="member-subtitle">{{ $member->content_value }}</p>
-                <ul class="member-icons">
-                  @foreach(json_decode($member->extra_data['social_links'] ?? '[]', true) as $icon => $link)
-                  <li class="social-icon"><a href="{{ $link }}"><i class="{{ $icon }}"></i></a></li>
-                  @endforeach
-                </ul>
+          <div class="team-member-container gallery-image-hover"> 
+              <img src="{{ asset($extraData['image'] ?? 'landing/images/team/default.jpg') }}" class="img-responsive" alt="team-member">
+              <div class="member-caption">
+                  <div class="member-description text-center">
+                      <div class="member-description-wrap">
+                          <h4 class="member-title">{{ $member->content_key }}</h4>
+                          <p class="member-subtitle">{{ $member->content_value }}</p>
+                          <ul class="member-icons">
+                              @foreach(($extraData['social_links'] ?? []) as $icon => $link)
+                                  <li class="social-icon"><a href="{{ $link }}"><i class="{{ $icon }}"></i></a></li>
+                              @endforeach
+                          </ul>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
-        </div>
       </div>
       @endforeach
     </div>

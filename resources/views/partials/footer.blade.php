@@ -4,7 +4,7 @@
         <div class="row">
           <div class="col-sm-6 col-md-4">
             <div class="widget widget-text">
-              <div class="logo logo-footer"><a href="index.html"> <img class="logo logo-display" src="assets/images/logo-footer.png" alt=""></a> </div>
+              <div class="logo logo-footer"><a href="index.html"> <img class="logo logo-display" src="{{ asset('landing/images/logo-footer.png') }}" alt=""></a> </div>
               <p>We are a fully in-house digital agency focusing on branding, marketing, web design and development with clients ranging from start-ups, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed varius quam ut magna ultricies pellentesque.</p>
             </div>
           </div>
