@@ -67,24 +67,24 @@ resources/views/
 │── layouts/
 │   ├── landing.blade.php  # Layout utama landing page
 │   ├── admin.blade.php  # Layout admin
-│── sections/
-│   ├── home.blade.php
-│   ├── about.blade.php
-│   ├── contact.blade.php
-│   ├── counter.blade.php
-│   ├── portfolio.blade.php
-│   ├── services.blade.php
-│   ├── pricing.blade.php
-│   ├── testimonials.blade.php
-│   ├── team.blade.php
-│   ├── cta.blade.php
-│── admin/
-│   ├── dashboard.blade.php
-│   ├── manage-sections.blade.php  # Halaman pengelolaan landing page
 │── landing/
+│   ├── sections/
+│   │   ├── home.blade.php
+│   │   ├── about.blade.php
+│   │   ├── contact.blade.php
+│   │   ├── counter.blade.php
+│   │   ├── portfolio.blade.php
+│   │   ├── services.blade.php
+│   │   ├── pricing.blade.php
+│   │   ├── testimonials.blade.php
+│   │   ├── team.blade.php
+│   │   ├── cta.blade.php
 │   ├── error/
 │   │   ├── 404.blade.php  # Halaman error 404
 │   │   ├── comingsoon.blade.php  # Halaman coming soon
+│── admin/
+│   ├── dashboard.blade.php
+│   ├── manage-sections.blade.php  # Halaman pengelolaan landing page
 ```
 
 ## **4. Routing**
