@@ -1,84 +1,42 @@
+@php
+use App\Models\Section;
+use App\Models\SectionContent;
+
+$team = Section::where('name', 'team')->first();
+$members = SectionContent::where('section_id', $team->id ?? null)->get();
+@endphp
+
+@if($team && $team->is_active)
 <section class="white-bg" id="team">
   <div class="container">
     <div class="row">
       <div class="col-sm-8 section-heading">
-        <h2 class="text-uppercase wow fadeTop" data-wow-delay="0.1s">Meet Our Team</h2>
-        <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">- We Are Stronger -</h4>
+        <h2 class="text-uppercase wow fadeTop" data-wow-delay="0.1s">{{ $team->title }}</h2>
+        <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">{{ $team->description }}</h4>
       </div>
     </div>
     <div class="row mt-50">
-      <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.1s">
-        <div class="team-member-container gallery-image-hover"> <img src="assets/images/team/team-01.jpg" class="img-responsive" alt="team-01">
+      @foreach($members as $member)
+      <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.{{ $loop->iteration }}s">
+        <div class="team-member-container gallery-image-hover"> 
+          <img src="{{ asset($member->extra_data['image'] ?? 'landing/images/team/default.jpg') }}" class="img-responsive" alt="team-member">
           <div class="member-caption">
             <div class="member-description text-center">
               <div class="member-description-wrap">
-                <h4 class="member-title">Randy Bell</h4>
-                <p class="member-subtitle">UI/UX Designer</p>
+                <h4 class="member-title">{{ $member->content_key }}</h4>
+                <p class="member-subtitle">{{ $member->content_value }}</p>
                 <ul class="member-icons">
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-facebook"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-twitter"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="fa fa-youtube"></i></a></li>
+                  @foreach(json_decode($member->extra_data['social_links'] ?? '[]', true) as $icon => $link)
+                  <li class="social-icon"><a href="{{ $link }}"><i class="{{ $icon }}"></i></a></li>
+                  @endforeach
                 </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!--=== Member End ===-->
-      <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.2s">
-        <div class="team-member-container gallery-image-hover"> <img src="assets/images/team/team-02.jpg" class="img-responsive" alt="team-02">
-          <div class="member-caption">
-            <div class="member-description text-center">
-              <div class="member-description-wrap">
-                <h4 class="member-title">Alice Andrews</h4>
-                <p class="member-subtitle">Photographer</p>
-                <ul class="member-icons">
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-facebook"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-twitter"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="fa fa-youtube"></i></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--=== Member End ===-->
-      <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.3s">
-        <div class="team-member-container gallery-image-hover"> <img src="assets/images/team/team-03.jpg" class="img-responsive" alt="team-03">
-          <div class="member-caption">
-            <div class="member-description text-center">
-              <div class="member-description-wrap">
-                <h4 class="member-title">Nicholas Hart</h4>
-                <p class="member-subtitle">Web Developer</p>
-                <ul class="member-icons">
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-facebook"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-twitter"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="fa fa-youtube"></i></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--=== Member End ===-->
-      <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.4s">
-        <div class="team-member-container gallery-image-hover"> <img src="assets/images/team/team-04.jpg" class="img-responsive" alt="team-04">
-          <div class="member-caption">
-            <div class="member-description text-center">
-              <div class="member-description-wrap">
-                <h4 class="member-title">Grace Ross</h4>
-                <p class="member-subtitle">CEO/Founder</p>
-                <ul class="member-icons">
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-facebook"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="icofont icofont-twitter"></i></a></li>
-                  <li class="social-icon"><a href="#"><i class="fa fa-youtube"></i></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--=== Member End ===-->
+      @endforeach
     </div>
   </div>
 </section>
+@endif

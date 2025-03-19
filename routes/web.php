@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Route;
 
+// Landing Page
 Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
-Route::get('/admin/landing', [LandingPageController::class, 'edit'])->name('admin.manage-landing');
-Route::post('/admin/landing', [LandingPageController::class, 'update']);
 
-
+// Admin Management for Sections
+Route::get('/admin/sections', [AdminController::class, 'index'])->name('admin.sections');
+Route::post('/admin/sections/update', [AdminController::class, 'update'])->name('admin.sections.update');

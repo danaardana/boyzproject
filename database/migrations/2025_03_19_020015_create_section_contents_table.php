@@ -13,6 +13,9 @@ return new class extends Migration
             $table->foreignId('section_id')->constrained('sections')->onDelete('cascade');
             $table->string('content_key');
             $table->text('content_value')->nullable();
+            $table->string('type')->default('text');
+            $table->json('extra_data')->nullable(); 
+            $table->integer('show_order')->default(0);
             $table->timestamps();
         });
     }
