@@ -15,6 +15,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/icofont@1.0.0/main.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/icofont@1.0.0/dist/icofont.min.css" rel="stylesheet">
+    
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src * 'self' data: https://www.tiktok.com https://www.tiktokv.com; 
+    img-src * 'self' data: blob: https://www.tiktok.com https://www.tiktokv.com https://yourdomain.com;
+    style-src * 'self' 'unsafe-inline';
+    script-src * 'self' 'unsafe-inline' 'unsafe-eval' https://www.tiktok.com https://www.tiktokv.com;
+    frame-src * 'self' https://www.tiktok.com https://www.tiktokv.com;">
+
 
     @stack('styles') <!-- Untuk tambahan CSS di halaman tertentu -->
 
