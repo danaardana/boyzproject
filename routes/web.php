@@ -12,3 +12,7 @@ Route::post('/contact', [ContactController::class, 'submit'])->name('contact.sub
 // Admin Management for Sections
 Route::get('/admin/sections', [AdminController::class, 'index'])->name('admin.sections');
 Route::post('/admin/sections/update', [AdminController::class, 'update'])->name('admin.sections.update');
+
+Route::fallback(function () {
+    return response()->view('landing.errors.404', [], 404);
+});

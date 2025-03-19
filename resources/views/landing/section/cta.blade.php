@@ -10,7 +10,7 @@
     <div class="col-md-1"></div>
     <div class="col-md-6">
         <div class="cta-heading-right">
-        <p class="mt-30 pull-right"><a class="btn btn-circle btn-outline">Contact Us</a></p>
+        <p class="mt-30 pull-right"><a href="https://wa.me/08211990442"  class="btn btn-circle btn-outline">Contact Us</a></p>
         </div>
     </div>
     </div>

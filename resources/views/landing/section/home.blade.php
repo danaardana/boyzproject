@@ -16,7 +16,7 @@
             @if($slides->isEmpty())
                 <!-- Default Slide jika tidak ada data -->
                 <li>
-                    <div class="slide-img" style="background:url({{ asset('landing/images/slides/default.jpg') }}) center center / cover scroll no-repeat;"></div>
+                    <div class="slide-img" style="background:url({{ asset('landing/images/slides/home-bg-1.jpg') }}) center center / cover scroll no-repeat;"></div>
                     <div class="hero-text-wrap">
                         <div class="hero-text white-color">
                             <div class="container text-center">
@@ -39,7 +39,7 @@
                         $extraData = json_decode($slide->extra_data, true);
                     @endphp
                     <li>
-                        <div class="slide-img" style="background:url({{ asset($extraData['image'] ?? 'landing/images/slides/default.jpg') }}) center center / cover scroll no-repeat;"></div>
+                        <div class="slide-img" style="background:url({{ asset($extraData['image'] ?? 'landing/images/slides/home-bg-1.jpg') }}) center center / cover scroll no-repeat;"></div>
                         <div class="hero-text-wrap">
                             <div class="hero-text white-color">
                                 <div class="container text-center">
