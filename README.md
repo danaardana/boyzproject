@@ -2,8 +2,8 @@
 
 ## **1. Overview**
 Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
-1. **Landing Page** – Dapat dikustomisasi oleh admin sehingga setiap bagian bisa diatur dan diaktifkan/nonaktifkan.
-2. **Admin Dashboard** – Digunakan untuk mengelola tampilan landing page.
+1. **Landing Page** – Dapat dikustomisasi oleh admin sehingga setiap bagian bisa diatur, diaktifkan/nonaktifkan, dan diubah kontennya.
+2. **Admin Dashboard** – Digunakan untuk mengelola tampilan landing page dan isi kontennya secara dinamis.
 
 ## **2. Installation**
 ### **Prerequisites**
@@ -44,7 +44,7 @@ Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
    ```bash
    php artisan migrate
    ```
-6. **Seed Default Sections (Opsional)**
+6. **Seed Default Sections & Content (Opsional)**
    ```bash
    php artisan db:seed
    ```
@@ -58,43 +58,44 @@ Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
 ```
 app/
 │── Models/
-│   ├── LandingSection.php  # Model untuk landing page
+│   ├── Section.php  # Model utama untuk setiap section
+│   ├── SectionContent.php  # Model untuk konten dalam section
 │── Http/Controllers/
-│   ├── LandingPageController.php  # Controller utama
+│   ├── LandingPageController.php  # Controller utama untuk landing page
+│   ├── AdminController.php  # Controller untuk manajemen admin
 resources/views/
 │── layouts/
 │   ├── landing.blade.php  # Layout utama landing page
 │   ├── admin.blade.php  # Layout admin
-│── landing/
-│   ├── sections/  # Folder untuk bagian landing page
-│   │   ├── hero.blade.php
-│   │   ├── about.blade.php
-│   │   ├── services.blade.php
-│   ├── index.blade.php  # Halaman utama landing page
+│── sections/
+│   ├── about.blade.php
+│   ├── contact.blade.php
+│   ├── counter.blade.php
+│   ├── portfolio.blade.php
+│   ├── services.blade.php
 │── admin/
 │   ├── dashboard.blade.php
-│   ├── manage-landing.blade.php  # Halaman pengelolaan landing page
+│   ├── manage-sections.blade.php  # Halaman pengelolaan landing page
 ```
 
 ## **4. Routing**
 Tambahkan dalam `routes/web.php`:
 ```php
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
-Route::get('/admin/landing', [LandingPageController::class, 'edit'])->name('admin.manage-landing');
-Route::post('/admin/landing', [LandingPageController::class, 'update']);
+Route::get('/admin/sections', [AdminController::class, 'index'])->name('admin.sections');
+Route::post('/admin/sections', [AdminController::class, 'update']);
 ```
 
 ## **5. Customizing Landing Page**
-- **Admin bisa mengedit bagian-bagian landing page** melalui `admin/landing`
-- **Data tersimpan dalam database** (`landing_sections`)
+- **Admin bisa mengedit bagian-bagian landing page** melalui `/admin/sections`
+- **Data tersimpan dalam database** (`sections` & `section_contents`)
 - **Bagian yang tidak aktif tidak akan ditampilkan di landing page**
+- **Setiap section memiliki isi yang dapat diubah, termasuk teks, gambar, dan tombol**
 
 ## **6. Future Improvements**
-- Integrasi dengan API untuk manajemen dinamis
+- Integrasi dengan API untuk manajemen konten dinamis
 - Opsi multi-template untuk landing page
-
-
-
-
+- Drag & Drop editor untuk mengatur urutan section

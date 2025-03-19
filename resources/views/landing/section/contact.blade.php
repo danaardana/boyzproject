@@ -1,3 +1,10 @@
+@php
+use App\Models\Section;
+
+$contact = Section::where('name', 'contact')->first();
+@endphp
+
+@if($contact && $contact->is_active)
 <section class="contact-us white-bg" id="contact">
   <div class="container">
     <div class="clearfix">
@@ -5,9 +12,10 @@
         <div id="myMap"></div>
       </div>
       <div class="col-about-left col-md-6 text-left">
-        <h2 class="text-uppercase font-700 wow fadeTop" data-wow-delay="0.1s">Contact Us</h2>
-        <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">- Stay in Touch -</h4>
-        <form name="contact-form" id="contact-form" action="php/contact.php" method="POST" class="mt-50">
+        <h2 class="text-uppercase font-700 wow fadeTop" data-wow-delay="0.1s">{{ $contact->title }}</h2>
+        <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">{{ $contact->description }}</h4>
+        <form name="contact-form" id="contact-form" action="{{ route('contact.submit') }}" method="POST" class="mt-50">
+          @csrf
           <div class="messages"></div>
           <div class="form-group wow fadeTop" data-wow-delay="0.1s">
             <label class="sr-only" for="name">Name</label>
@@ -30,3 +38,4 @@
     </div>
   </div>
 </section>
+@endif
