@@ -68,14 +68,23 @@ resources/views/
 │   ├── landing.blade.php  # Layout utama landing page
 │   ├── admin.blade.php  # Layout admin
 │── sections/
+│   ├── home.blade.php
 │   ├── about.blade.php
 │   ├── contact.blade.php
 │   ├── counter.blade.php
 │   ├── portfolio.blade.php
 │   ├── services.blade.php
+│   ├── pricing.blade.php
+│   ├── testimonials.blade.php
+│   ├── team.blade.php
+│   ├── cta.blade.php
 │── admin/
 │   ├── dashboard.blade.php
 │   ├── manage-sections.blade.php  # Halaman pengelolaan landing page
+│── landing/
+│   ├── error/
+│   │   ├── 404.blade.php  # Halaman error 404
+│   │   ├── comingsoon.blade.php  # Halaman coming soon
 ```
 
 ## **4. Routing**
@@ -87,6 +96,8 @@ use App\Http\Controllers\AdminController;
 Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
 Route::get('/admin/sections', [AdminController::class, 'index'])->name('admin.sections');
 Route::post('/admin/sections', [AdminController::class, 'update']);
+Route::get('/admin/sections/{id}/edit', [AdminController::class, 'edit'])->name('admin.sections.edit');
+Route::post('/admin/sections/{id}', [AdminController::class, 'save']);
 ```
 
 ## **5. Customizing Landing Page**
@@ -94,8 +105,10 @@ Route::post('/admin/sections', [AdminController::class, 'update']);
 - **Data tersimpan dalam database** (`sections` & `section_contents`)
 - **Bagian yang tidak aktif tidak akan ditampilkan di landing page**
 - **Setiap section memiliki isi yang dapat diubah, termasuk teks, gambar, dan tombol**
+- **Admin dapat mengatur urutan section dengan `show_order`**
 
 ## **6. Future Improvements**
 - Integrasi dengan API untuk manajemen konten dinamis
 - Opsi multi-template untuk landing page
 - Drag & Drop editor untuk mengatur urutan section
+- Sistem preview sebelum perubahan diterapkan
