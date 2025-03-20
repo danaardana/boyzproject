@@ -64,27 +64,32 @@ app/
 │   ├── LandingPageController.php  # Controller utama untuk landing page
 │   ├── AdminController.php  # Controller untuk manajemen admin
 resources/views/
-│── layouts/
-│   ├── landing.blade.php  # Layout utama landing page
-│   ├── admin.blade.php  # Layout admin
-│── landing/
-│   ├── sections/
-│   │   ├── home.blade.php
-│   │   ├── about.blade.php
-│   │   ├── contact.blade.php
-│   │   ├── counter.blade.php
-│   │   ├── portfolio.blade.php
-│   │   ├── services.blade.php
-│   │   ├── pricing.blade.php
-│   │   ├── testimonials.blade.php
-│   │   ├── team.blade.php
-│   │   ├── cta.blade.php
-│   ├── error/
-│   │   ├── 404.blade.php  # Halaman error 404
-│   │   ├── comingsoon.blade.php  # Halaman coming soon
 │── admin/
 │   ├── dashboard.blade.php
 │   ├── manage-sections.blade.php  # Halaman pengelolaan landing page
+│── landing/
+│   ├── error/
+│   │   ├── 404.blade.php  # Halaman error 404
+│   │   ├── comingsoon.blade.php  # Halaman coming soon
+│   ├── sections/
+│   │   ├── about.blade.php
+│   │   ├── activities.blade.php
+│   │   ├── counter.blade.php
+│   │   ├── cta.blade.php
+│   │   ├── home.blade.php
+│   │   ├── instagram.blade.php
+│   │   ├── portofolio.blade.php
+│   │   ├── pricing.blade.php
+│   │   ├── services.blade.php
+│   │   ├── team.blade.php
+│   │   ├── testimonials.blade.php
+│   │   ├── tiktok.blade.php
+│── layouts/
+│   ├── landing.blade.php  # Layout utama landing page
+│   ├── admin.blade.php  # Layout admin
+│── partials/
+│   ├── footer.blade.php
+│   ├── navabr.blade.php  
 ```
 
 ## **4. Routing**
@@ -108,7 +113,6 @@ Route::post('/admin/sections/{id}', [AdminController::class, 'save']);
 - **Admin dapat mengatur urutan section dengan `show_order`**
 
 ## **6. Future Improvements**
-- Embed Instagram dan TikTok
 - Integrasi dengan API untuk manajemen konten dinamis
 - Opsi multi-template untuk landing page
 - Drag & Drop editor untuk mengatur urutan section
