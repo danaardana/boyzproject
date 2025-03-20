@@ -22,14 +22,32 @@ $sections = Section::where('is_active', true)->orderBy('show_order', 'asc')->get
       </div>
       <!--=== End Header Navigation ===-->
 
-      <!--=== Collect the nav links, forms, and other content for toggling ===-->
-      <div class="navbar-collapse collapse" id="navbar-menu" aria-expanded="false">
-        <ul class="nav navbar-nav navbar-right nav-scrollspy-onepage" data-in="fadeInLeft">
-          @foreach($sections as $section)
-            <li class="scroll"><a href="#{{ $section->name }}">{{ $section->name }}</a></li>
-          @endforeach
-        </ul>
-      </div>
-      <!--=== /.navbar-collapse ===-->
+        <!--=== Collect the nav links, forms, and other content for toggling ===-->
+        <div class="navbar-collapse collapse" id="navbar-menu" aria-expanded="false">
+          <ul class="nav navbar-nav navbar-right nav-scrollspy-onepage" data-in="fadeInLeft">
+              @php
+                  $maxVisibleItems = 6; // Jumlah maksimal menu sebelum masuk ke dropdown
+                  $visibleSections = $sections->take($maxVisibleItems); // Ambil 6 menu pertama
+                  $dropdownSections = $sections->slice($maxVisibleItems); // Sisanya masuk ke dropdown
+              @endphp
+
+              @foreach($visibleSections as $section)
+                  <li class="scroll"><a href="#{{ $section->name }}">{{ strtoupper($section->name) }}</a></li>
+              @endforeach
+
+              @if($dropdownSections->isNotEmpty())
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other</a>
+                  <ul class="dropdown-menu">
+                    @foreach($dropdownSections as $section)
+                      <li><a href="#{{ $section->name }}">{{ strtoupper($section->name) }}</a></li>
+                    @endforeach
+                  </ul>
+                </li>
+              @endif
+          </ul>
+        </div>
+        <!--=== /.navbar-collapse ===-->
+
     </div>
 </nav>

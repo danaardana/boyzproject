@@ -15,6 +15,5 @@
     @include('landing.section.cta')
     @include('landing.section.tiktok')
     @include('landing.section.instagram')
-    @include('landing.section.client')
 
 @endsection

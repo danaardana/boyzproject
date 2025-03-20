@@ -39,24 +39,44 @@
         @yield('content')
         
         @include('partials.footer')
-        <!--=== GO TO TOP  ===-->
-        <a href="#" id="back-to-top" title="Back to top">&uarr;</a>
-        <!--=== GO TO TOP End ===-->
         
     </div>
     <!--=== Wrapper End ======-->
 
-    <!-- JavaScript --><!-- Tambahkan ini di sebelum script Bootstrap -->
-
-    <script src="{{ asset('landing/js/jquery.min.js') }}"></script>
-    
+    <!-- JavaScript -->
+    <script src="{{ asset('landing/js/jquery.min.js') }}"></script>    
     <script src="{{ asset('landing/js/validator.js') }}"></script>
     <script src="{{ asset('landing/js/plugins.js') }}"></script>
     <script src="{{ asset('landing/js/master.js') }}"></script>
     <script src="{{ asset('landing/js/bootsnav.js') }}"></script>
 
+
     <!-- Load Slick dan Waypoints -->
     <script src="{{ asset('landing/js/slick.min.js') }}"></script>
+
+    <script>
+    $(document).ready(function() {
+        var $grid = $('#portfolio-grid').isotope({
+            itemSelector: '.portfolio-item',
+            layoutMode: 'fitRows'
+        });
+
+        $('#portfolio-filter li').on('click', function() {
+            $('#portfolio-filter li').removeClass('active');
+            $(this).addClass('active');
+
+            var filterValue = $(this).attr('data-group');
+            if (filterValue == 'all') {
+                $grid.isotope({ filter: '*' });
+            } else {
+                $grid.isotope({ filter: '[data-groups*="' + filterValue + '"]' });
+            }
+
+            console.log('Filter:', filterValue);
+        });
+    });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     
     @stack('scripts') <!-- Untuk tambahan script di halaman tertentu -->
 </body>
