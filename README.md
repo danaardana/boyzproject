@@ -2,7 +2,7 @@
 
 ## **1. Overview**
 Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
-1. **Landing Page** – Dapat dikustomisasi oleh admin sehingga setiap bagian bisa diatur, diaktifkan/nonaktifkan, dan diubah kontennya.
+1. **Landing Page** – Dapat dikustomisasi oleh admin sehingga setiap bagian bisa memilih template yang digunakan, diaktifkan/nonaktifkan, dan diubah kontennya.
 2. **Admin Dashboard** – Digunakan untuk mengelola tampilan landing page dan isi kontennya secara dinamis.
 
 ## **2. Installation**
@@ -57,22 +57,22 @@ Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
 ## **3. Folder Structure**
 ```
 app/
-│── Models/
-│   ├── Section.php  # Model utama untuk setiap section
-│   ├── SectionContent.php  # Model untuk konten dalam section
 │── Http/Controllers/
-│   ├── AdminController.php  # Controller utama untuk landing page
-│   ├── ContactController.php  # Controller utama untuk landing page
-│   ├── Controller.php  # Controller utama untuk landing page
-│   ├── LandingPageController.php  # Controller untuk manajemen admin
+│   ├── AdminController.php
+│   ├── ContactController.php
+│   ├── Controller.php
+│   ├── LandingPageController.php
+│── Models/
+│   ├── Section.php  
+│   ├── SectionContent.php
 resources/views/
 │── admin/
 │   ├── dashboard.blade.php
-│   ├── manage-sections.blade.php  # Halaman pengelolaan landing page
+│   ├── manage-sections.blade.php
 │── landing/
 │   ├── error/
-│   │   ├── 404.blade.php  # Halaman error 404
-│   │   ├── comingsoon.blade.php  # Halaman coming soon
+│   │   ├── 404.blade.php
+│   │   ├── comingsoon.blade.php
 │   ├── sections/
 │   │   ├── about.blade.php
 │   │   ├── activities.blade.php
@@ -87,11 +87,11 @@ resources/views/
 │   │   ├── testimonials.blade.php
 │   │   ├── tiktok.blade.php
 │── layouts/
-│   ├── landing.blade.php  # Layout utama landing page
-│   ├── admin.blade.php  # Layout admin
+│   ├── admin.blade.php
+│   ├── landing.blade.php
 │── partials/
 │   ├── footer.blade.php
-│   ├── navabr.blade.php  
+│   ├── navbar.blade.php  
 ```
 
 ## **4. Routing**
@@ -116,6 +116,6 @@ Route::post('/admin/sections/{id}', [AdminController::class, 'save']);
 
 ## **6. Future Improvements**
 - Dashboard Admin
+- Sistem preview sebelum perubahan diterapkan template
 - Integrasi dengan API untuk manajemen konten dinamis
-- Opsi multi-template untuk landing page
-- Sistem preview sebelum perubahan diterapkan
+- Integrasi ChatBot
