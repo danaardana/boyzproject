@@ -113,7 +113,7 @@ Route::post('/admin/sections/{id}', [AdminController::class, 'save']);
 - **Admin dapat mengatur urutan section dengan `show_order`**
 
 ## **6. Future Improvements**
+- Dashboard Admin
 - Integrasi dengan API untuk manajemen konten dinamis
 - Opsi multi-template untuk landing page
-- Drag & Drop editor untuk mengatur urutan section
 - Sistem preview sebelum perubahan diterapkan
