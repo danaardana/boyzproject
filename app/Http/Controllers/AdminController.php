@@ -21,7 +21,8 @@ class AdminController extends Controller
                 'title' => $data['title'] ?? null,
                 'description' => $data['description'] ?? null,
                 'show_order' => $data['show_order'] ?? 0,
-                'is_active' => isset($data['is_active']) ? 1 : 0
+                'is_active' => isset($data['is_active']) ? 1 : 0,
+                'layout' => $data['layout'] ?? 1
             ]);
         }
 

@@ -39,12 +39,11 @@
             <ul class="social-media">
               <li><a href="https://linktr.ee/boyprojects" class="icofont icofont-linkedin"></a></li>
               <li><a href="https://wa.me/08211990442" class="icofont icofont-whatsapp"></a></li>
-              <li><a href="https://www.tiktok.com/@boyprojects?_t=8holwJrP1zM&_r=1" class="icofont icofont-tiktok"></a></li>
               <li><a href="https://www.instagram.com/boyprojects?igsh=YjhyNXZmczY0MXF4" class="icofont icofont-instagram"></a></li>
             </ul>
           </div>
           <div class="col-md-6 col-xs-12">
-            <div class="copy-right text-right">© 2022 Boy Projects. All rights reserved</div>
+            <div class="copy-right text-right">© 2025 Boy Projects. All rights reserved</div>
           </div>
         </div>
       </div>

@@ -61,8 +61,10 @@ app/
 │   ├── Section.php  # Model utama untuk setiap section
 │   ├── SectionContent.php  # Model untuk konten dalam section
 │── Http/Controllers/
-│   ├── LandingPageController.php  # Controller utama untuk landing page
-│   ├── AdminController.php  # Controller untuk manajemen admin
+│   ├── AdminController.php  # Controller utama untuk landing page
+│   ├── ContactController.php  # Controller utama untuk landing page
+│   ├── Controller.php  # Controller utama untuk landing page
+│   ├── LandingPageController.php  # Controller untuk manajemen admin
 resources/views/
 │── admin/
 │   ├── dashboard.blade.php

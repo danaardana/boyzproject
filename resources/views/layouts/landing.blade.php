@@ -53,6 +53,8 @@
 
     <!-- Load Slick dan Waypoints -->
     <script src="{{ asset('landing/js/slick.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
+
 
     <script>
     $(document).ready(function() {
@@ -76,7 +78,6 @@
         });
     });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     
     @stack('scripts') <!-- Untuk tambahan script di halaman tertentu -->
 </body>
