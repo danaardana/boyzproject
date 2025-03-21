@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->integer('show_order')->default(0); 
+            $table->integer('show_order')->default(0);
             $table->timestamps();
         });
     }

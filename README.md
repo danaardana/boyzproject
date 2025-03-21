@@ -58,11 +58,13 @@ Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
 ```
 app/
 │── Http/Controllers/
+│   ├── AdminAuthController.php
 │   ├── AdminController.php
 │   ├── ContactController.php
 │   ├── Controller.php
 │   ├── LandingPageController.php
 │── Models/
+│   ├── admin.php
 │   ├── Section.php  
 │   ├── SectionContent.php
 resources/views/
@@ -86,6 +88,8 @@ resources/views/
 │   │   ├── team.blade.php
 │   │   ├── testimonials.blade.php
 │   │   ├── tiktok.blade.php
+│   ├── login.blade.php
+│   ├── index.blade.php
 │── layouts/
 │   ├── admin.blade.php
 │   ├── landing.blade.php

@@ -9,8 +9,8 @@ $sections = Section::where('is_active', true)->orderBy('show_order', 'asc')->get
       <div class="attr-nav">
         <ul class="social-media-dark social-top">
           <li><a href="https://wa.me/08211990442" class="icofont icofont-whatsapp"></a></li>
-          <li><a href="https://www.instagram.com/boyprojects?igsh=YjhyNXZmczY0MXF4" class="icofont icofont-instagram"></a></li>
           <li><a href="https://linktr.ee/boyprojects" class="icofont icofont-linkedin"></a></li>
+          <li><a href="login" class="icofont icofont-user"></a></li>
         </ul>
       </div>
       <!--=== End Atribute Navigation ===-->

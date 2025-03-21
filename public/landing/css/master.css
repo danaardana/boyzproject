@@ -6264,3 +6264,21 @@ background: -o-linear-gradient(45deg, rgba(201,75,75) 0%, rgba(75,19,79) 100%);
 background: -ms-linear-gradient(45deg, rgba(201,75,75) 0%, rgba(75,19,79) 100%);
 background: linear-gradient(45deg, rgba(201,75,75) 0%, rgba(75,19,79) 100%);
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e91e63', endColorstr='#ce1500', GradientType=1 );border-radius: 4px;color: #fff;text-transform: uppercase;z-index: 99;}
+
+.password-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+}

@@ -7,7 +7,7 @@ $about = Section::where('name', 'about')->first();
 @if($about && $about->is_active)
 <section class="white-bg" id="about">
   <div class="col-md-6 col-sm-4 bg-flex bg-flex-right">
-    <div class="bg-flex-holder bg-flex-cover" style="background-image: url('{{ asset('landing/images/startup-bg-right.jpg') }}')"></div>
+    <div class="bg-flex-holder bg-flex-cover" style="background-image: url('{{ asset( $about->image ) }}')"></div>
   </div>
   <div class="container">
     <div class="col-md-5 col-sm-7">

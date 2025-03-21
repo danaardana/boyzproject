@@ -26,7 +26,7 @@ $reviews = SectionContent::where('section_id', $testimonials->id ?? null)->get()
           <div class="testimonial-item text-center p-4 shadow-lg rounded bg-white">
               <!-- Avatar -->
               <img class="img-responsive mx-auto d-block rounded-circle"
-                   src="{{ asset($extraData['image'] ?? 'default.jpg') }}" 
+                   src="{{ asset($extraData['image'] ?? 'landing/images/team/avatar-1.jpg') }}" 
                    alt="testimonial-avatar" 
                    style="width: 80px; height: 80px; margin-bottom: 10px;"/>
               
