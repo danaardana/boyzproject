@@ -23,9 +23,9 @@
               <h5 class="widget-title">Contact Us</h5>
               <ul>
                 <li> <i class="icofont icofont-google-map"></i> <a href="#">Cimahi, Bandung</a> </li>
-                <li> <i class="icofont icofont-iphone"></i> <a href="#">+62 8211 9904 420</a> </li>
+                <li> <i class="icofont icofont-iphone"></i> <a href="https://wa.me/08211990442">+62 8211 9904 420</a> </li>
                 <li> <i class="icofont icofont-mail"></i> <a href="#">helloscoda@gmail.com</a> </li>
-                <li> <i class="icofont icofont-globe"></i> <a href="#">https://linktr.ee/boyprojects</a> </li>
+                <li> <i class="icofont icofont-globe"></i> <a href="https://linktr.ee/boyprojects"></a> Linktr </li>
               </ul>
             </div>
           </div>

@@ -4,9 +4,9 @@
 
     @include('landing.section.home-4')
     @include('landing.section.about-2')
-    @include('landing.section.activities-4')
+    @include('landing.section.activities-1')
     @include('landing.section.services-2')
-    @include('landing.section.team-2')
+    @include('landing.section.team-3')
     @include('landing.section.counter-1')
     @include('landing.section.portofolio-1')
     @include('landing.section.contact-1')

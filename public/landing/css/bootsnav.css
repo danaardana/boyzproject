@@ -20,7 +20,7 @@ nav.bootsnav .megamenu-content {
 nav.bootsnav .megamenu-content .title{
     margin-top: 0;
 	margin-bottom: 15px;
-	color:#d42e22;
+	color:#b70880;
 	font-size: 14px;
 	text-transform:uppercase;
 	font-weight: 500;
@@ -274,7 +274,7 @@ li.close-full-menu{
     width: 15px;
     height: 15px;
     padding-top: 2px;
-	background-color:#d42e22;
+	background-color:#b70880;
 }
 
 .attr-nav > ul > li > a.btn {
@@ -359,7 +359,7 @@ ul.cart-list > li.total > .btn {
 
 ul.cart-list > li.total > .btn:hover {
 	color:#fff!important;
-	background-color: #d42e22!important;
+	background-color: #b70880!important;
 }
 
 ul.cart-list > li .price{
@@ -602,7 +602,7 @@ body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
     nav.navbar.bootsnav li.dropdown ul.dropdown-menu > li a:hover,
     nav.navbar.bootsnav li.dropdown ul.dropdown-menu > li a:hover{
         background-color: transparent;
-		color:#d42e22;
+		color:#b70880;
     }
 
     nav.navbar.bootsnav li.dropdown ul.dropdown-menu > li > a{
@@ -687,7 +687,7 @@ body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
     }
 
 	nav.navbar.bootsnav ul.dropdown-menu.megamenu-content .content ul.menu-col li a:hover{
-        color: #d42e22;
+        color: #b70880;
     }
 
 
@@ -959,7 +959,7 @@ body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
     }
 
 	nav.bootsnav.navbar-sidebar ul.nav > li > a:hover{
-        color:#d42e22;
+        color:#b70880;
     }
 
     nav.bootsnav.navbar-sidebar ul.nav > li.dropdown > a:after{
@@ -1551,11 +1551,11 @@ body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
 }
 
 .nav-scrollspy-onepage a:hover {
-	color:#d42e22!important;
+	color:#b70880!important;
 }
 
 .nav-scrollspy-onepage .active a{
-	color:#d42e22!important;
+	color:#b70880!important;
 }
 
 .red-nav.nav-scrollspy-onepage {
@@ -1754,7 +1754,7 @@ body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
 
 
 .fullscreen-close:hover{
-	color:#d42e22!important;
+	color:#b70880!important;
 }
 
 #fullscreen-search-input:focus{

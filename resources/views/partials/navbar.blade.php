@@ -1,7 +1,15 @@
 @php
 use App\Models\Section;
-$sections = Section::where('is_active', true)->orderBy('show_order', 'asc')->get();
+
+$sections = Section::where('is_active', true)
+    ->orderBy('show_order', 'asc')
+    ->get()
+    ->map(function ($section, $index) {
+        $section->show_order = $index + 1;
+        return $section;
+    });
 @endphp
+
 
 <nav class="navbar-scrollspy navbar navbar-default navbar-fixed white bootsnav on no-full navbar-transparent" data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
     <div class="container">

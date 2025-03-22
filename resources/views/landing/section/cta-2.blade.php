@@ -6,7 +6,7 @@
 @endphp
 
 @if ($cta && $cta->is_active)    
-    <section class="parallax-bg-2 fixed-bg" data-stellar-background-ratio="0.2">
+    <section style="background: url({{ $cta->image ?? 'landing/images/background/parallax-bg.jpg' }}) center 0 no-repeat; background-size: cover;" class ="fixed-bg" data-stellar-background-ratio="0.2">
     <div class="overlay-bg-dark"></div>
     <div class="container">
       <div class="row">

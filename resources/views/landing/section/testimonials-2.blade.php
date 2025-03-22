@@ -38,7 +38,8 @@ $reviews = SectionContent::where('section_id', $testimonials->id ?? null)->get()
                     <div class="content">
                       <div class="text">
                         <i class="icofont icofont-quote-left font-20px default-color mt-20 mr-10"></i>
-                        <span>{{ $review->content_value }}</span>
+                        <span> {{ $review->content_value }} </span>
+                        <i class="icofont icofont-quote-right font-20px default-color mt-20 mr-10"></i>
                       </div>
                     </div>
                   </div>
