@@ -3,8 +3,11 @@
     use App\Models\SectionContent;
 
     $tiktokSection = Section::where('name', 'tiktok')->first();
-    $tiktokPosts = SectionContent::where('section_id', $tiktokSection->id ?? null)->get();
+    $tiktokPosts = SectionContent::where('section_id', $tiktokSection->id ?? null)
+    ->limit(3) // Alternatif lain untuk membatasi hasil query
+    ->get();
 @endphp
+
 
 @if($tiktokSection && $tiktokSection->is_active)
 <section id="tiktok">
@@ -17,40 +20,58 @@
             </div>
         </div>
         <div class="row mt-50">
-            <div class="col-md-12 remove-padding">
-                <div class="owl-carousel blog-slider">
-                    @foreach($tiktokPosts as $post)
-                        @php
-                            $extraData = json_decode($post->extra_data, true);
-                        @endphp
-                        <div class="post">
-                            <div class="post-img">
-                                <blockquote class="tiktok-embed"
-                                            cite="{{ $extraData['embed_url'] ?? '#' }}"
-                                            data-video-id="{{ $extraData['video_id'] ?? '' }}"
-                                            style="max-width: 100%; min-width: 325px;">
-                                    <section> <a href="{{ $extraData['embed_url'] ?? '#' }}">TikTok Post</a> </section>
-                                </blockquote>
-                                <script async src="https://www.tiktok.com/embed.js"></script>
-                            </div>
-                        </div>
-                    @endforeach
+            @php
+                $tiktokCount = count($tiktokPosts);
+                $defaultPost = [
+                    'embed_url' => '#',
+                    'image' => asset('landing/images/sns.png'),
+                    'username' => '@boyprojects',
+                    'profile_url' => 'https://www.tiktok.com/@boyprojects?_t=8holwJrP1zM&_r=1',
+                ];
+            @endphp
 
-                    <!-- TikTok Embed -->
+            @foreach($tiktokPosts as $post)
+                @php
+                    $extraData = json_decode($post->extra_data, true);
+                @endphp
+                <div class="col-md-4 col-sm-6 col-xs-12 wow fadeTo">
                     <div class="post">
                         <div class="post-img">
-                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@boyprojects/video/7482575523772779831" 
-                            data-video-id="7482575523772779831" style="max-width: 605px;min-width: 325px;">
-                            <section> <a target="_blank" href="https://www.tiktok.com/@boyprojects/video/7482575523772779831"> Watch on TikTok</a> </section>
-                        </blockquote>
-                        <script async src="https://www.tiktok.com/embed.js"></script>
-
+                            <blockquote class="tiktok-embed"
+                                        cite="{{ $extraData['embed_url'] ?? '#' }}"
+                                        data-video-id="{{ $extraData['video_id'] ?? '' }}"
+                                        style="max-width: 100%; min-width: 325px;">
+                                <section> <a href="{{ $extraData['embed_url'] ?? '#' }}">TikTok Post</a> </section>
+                            </blockquote>
                         </div>
                     </div>
-
                 </div>
-            </div>
+            @endforeach
+
+            @for($i = $tiktokCount; $i < 3; $i++)
+                <div class="col-md-4 col-sm-6 col-xs-12 wow fadeTo">
+                    <div class="post">
+                        <div class="post-img">
+                            <img class="img-responsive" src="{{ $defaultPost['image'] }}" alt=""/>
+                        </div>
+                        <div class="post-info">
+                            <h3><a href="{{ $defaultPost['profile_url'] }}">Watch More</a></h3>
+                            <h6>{{ $defaultPost['username'] }}</h6>
+                            <a class="readmore dark-color" href="{{ $defaultPost['profile_url'] }}">
+                                <span>Follow Me</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endfor
+
         </div>
     </div>
 </section>
 @endif
+
+
+@section('scripts')
+
+@endsection
+

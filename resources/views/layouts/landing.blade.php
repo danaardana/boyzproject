@@ -23,6 +23,7 @@
     script-src * 'self' 'unsafe-inline' 'unsafe-eval' https://www.tiktok.com https://www.tiktokv.com;
     frame-src * 'self' https://www.tiktok.com https://www.tiktokv.com;">
 
+    <script defer src="https://www.tiktok.com/embed.js"></script>
 
     @stack('styles') <!-- Untuk tambahan CSS di halaman tertentu -->
 
@@ -88,6 +89,17 @@
             passwordInput.type = "password";
         }
     }
+    </script>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.tiktokEmbed) {
+            window.tiktokEmbed();
+        }
+        if (window.instgrm) {
+            window.instgrm.Embeds.process();
+        }
+    });
     </script>
     
     @stack('scripts') <!-- Untuk tambahan script di halaman tertentu -->

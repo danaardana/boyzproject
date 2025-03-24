@@ -40,7 +40,9 @@ $sections = Section::where('is_active', true)
               @endphp
 
               @foreach($visibleSections as $section)
+                @if($section->name !== 'cta') 
                   <li class="scroll"><a href="#{{ $section->name }}">{{ strtoupper($section->name) }}</a></li>
+                  @endif
               @endforeach
 
               @if($dropdownSections->isNotEmpty())
@@ -48,7 +50,9 @@ $sections = Section::where('is_active', true)
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other</a>
                   <ul class="dropdown-menu">
                     @foreach($dropdownSections as $section)
+                    @if($section->name !== 'cta') 
                       <li><a href="#{{ $section->name }}">{{ strtoupper($section->name) }}</a></li>
+                      @endif
                     @endforeach
                   </ul>
                 </li>

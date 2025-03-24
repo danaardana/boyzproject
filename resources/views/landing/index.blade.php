@@ -2,18 +2,20 @@
 
 @section('content')
 
-    @include('landing.section.home-4')
-    @include('landing.section.about-2')
-    @include('landing.section.activities-1')
-    @include('landing.section.services-2')
-    @include('landing.section.team-3')
-    @include('landing.section.counter-1')
-    @include('landing.section.portofolio-1')
-    @include('landing.section.contact-1')
-    @include('landing.section.testimonials-2')
-    @include('landing.section.pricing-1')
-    @include('landing.section.cta-2')
-    @include('landing.section.tiktok-1')
-    @include('landing.section.instagram-1')
+    @php
+        $sections = \App\Models\Section::where('is_active', 1)
+            ->orderBy('show_order')
+            ->get();
+    @endphp
+
+    @foreach($sections as $section)
+        @php
+            $layout = $section->layout ?? 1;
+            $viewName = "landing.section.{$section->name}-{$layout}";
+        @endphp
+
+        @include($viewName, ['section' => $section])
+    @endforeach
+
 
 @endsection

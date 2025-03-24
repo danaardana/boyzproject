@@ -9,14 +9,16 @@
     $portfolioItems = SectionContent::where('section_id', $portfolio->id ?? null)->get();
 
     // Ambil daftar kategori unik dari semua item portofolio
-    $categories = collect();
-    foreach ($portfolioItems as $item) {
+    $categories = collect($portfolioItems)
+    ->map(function ($item) {
         $extraData = json_decode($item->extra_data, true);
-        if (!empty($extraData['categories'])) {
-            $categories = $categories->merge(explode(',', $extraData['categories']));
-        }
-    }
-    $categories = $categories->unique()->values();
+        return !empty($extraData['categories']) ? explode(',', $extraData['categories']) : [];
+    })
+    ->flatten() // Mengubah array dalam array menjadi satu dimensi
+    ->map(fn($category) => trim($category)) // Menghilangkan spasi ekstra
+    ->unique() // Menghapus kategori duplikat
+    ->values(); // Mengatur ulang indeks agar tetap rapi
+
 @endphp
 
 @if($portfolio && $portfolio->is_active)
