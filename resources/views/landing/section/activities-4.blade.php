@@ -7,12 +7,18 @@ $services = SectionContent::where('section_id', $activities->id ?? null)->get();
 @endphp
 
 @if($activities && $activities->is_active)
+@php
+    $title = $activities->description ?? '';
+    $mid = strlen($title) / 2;
+    $firstPart = substr($title, 0, strrpos(substr($title, 0, $mid), ' '));
+    $secondPart = trim(substr($title, strlen($firstPart)));
+@endphp
 <section id="activiyties" id="activities">
     <div class="container">
       <div class="row">
         <div class="col-sm-8 section-heading">
           <h2 class="text-uppercase wow fadeTop" data-wow-delay="0.1s">{{ $activities->title }}</h2>
-          <h4 class="text-uppercase text-uppercase wow fadeTop" data-wow-delay="0.2s">{{ $activities->description }}</h4>
+          <h4 class="text-uppercase text-uppercase wow fadeTop" data-wow-delay="0.2s"> {{ $firstPart }}<br>{{ $secondPart }}</h4>
         </div>
       </div>
       <div class="row mt-40">

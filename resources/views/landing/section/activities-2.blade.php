@@ -7,6 +7,12 @@ $services = SectionContent::where('section_id', $activities->id ?? null)->get();
 @endphp
 
 @if($activities && $activities->is_active)
+@php
+    $title = $activities->description ?? '';
+    $mid = strlen($title) / 2;
+    $firstPart = substr($title, 0, strrpos(substr($title, 0, $mid), ' '));
+    $secondPart = trim(substr($title, strlen($firstPart)));
+@endphp
 <section class="first-ico-box" id="activities">
   <div class="dn-bg-lines">
     <div></div>
@@ -27,7 +33,7 @@ $services = SectionContent::where('section_id', $activities->id ?? null)->get();
     <div class="row">
       <div class="col-sm-8 section-heading">
         <h2 class="wow fadeTop" data-wow-delay="0.1s">{{ $activities->title }}</h2>
-        <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">{{ $activities->description }}</h4>
+        <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s"> {{ $firstPart }}<br>{{ $secondPart }}</h4>
         <p class="mt-30 wow fadeTop" data-wow-delay="0.3s">{{ $activities->content }}</p>
       </div>
     </div>
@@ -36,7 +42,7 @@ $services = SectionContent::where('section_id', $activities->id ?? null)->get();
         @php
             $extraData = json_decode($service->extra_data, true);
         @endphp
-        <div class="col-md-4 feature-box text-center radius-icon wow fadeTop" data-wow-delay="0.1s"> <i class="icofont {{ $extraData['icon'] ?? 'icofont-gear' }} font-50px default-icon"></i>
+        <div class="col-md-3 feature-box text-center radius-icon wow fadeTop" data-wow-delay="0.1s"> <i class="icofont {{ $extraData['icon'] ?? 'icofont-gear' }} font-50px default-icon"></i>
           <h4 class="text-uppercase">{{ $service->content_key }}</h4>
           <p>{{ $service->content_value }}</p>
         </div>

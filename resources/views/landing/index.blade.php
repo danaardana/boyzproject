@@ -1,7 +1,6 @@
 @extends('layouts.landing')
 
 @section('content')
-
     @php
         $sections = \App\Models\Section::where('is_active', 1)
             ->orderBy('show_order')
@@ -16,6 +15,5 @@
 
         @include($viewName, ['section' => $section])
     @endforeach
-
 
 @endsection

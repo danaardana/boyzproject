@@ -20,5 +20,8 @@
   "homepage": "https://icofont.com",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@icon/icofont": "file:"
   }
 }

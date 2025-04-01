@@ -7,13 +7,19 @@ $services = SectionContent::where('section_id', $activities->id ?? null)->get();
 @endphp
 
 @if($activities && $activities->is_active)
+@php
+    $title = $activities->description ?? '';
+    $mid = strlen($title) / 2;
+    $firstPart = substr($title, 0, strrpos(substr($title, 0, $mid), ' '));
+    $secondPart = trim(substr($title, strlen($firstPart)));
+@endphp
 <section class="first-ico-box dark-bg" id="activities">
   <div class="container">
       <div class="row">
         <div class="col-sm-8">
           <div class="section-heading text-left">
             <h2 class="wow fadeTop gradient-color josefin-font" data-wow-delay="0.1s">{{ $activities->title }}</h2>
-            <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s">{{ $activities->description }}</h4>
+            <h4 class="text-uppercase wow fadeTop" data-wow-delay="0.2s"> {{ $firstPart }}<br>{{ $secondPart }}</h4>
             <p class="mt-30 wow fadeTop" data-wow-delay="0.3s">{{ $activities->content }}</p>
           </div>
         </div>
