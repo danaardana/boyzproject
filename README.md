@@ -108,13 +108,9 @@ resources/views/
 Tambahkan dalam `routes/web.php`:
 ```php
 use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\TableController;
 
-Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
-Route::get('/admin/sections', [AdminController::class, 'index'])->name('admin.sections');
-Route::post('/admin/sections', [AdminController::class, 'update']);
-Route::get('/admin/sections/{id}/edit', [AdminController::class, 'edit'])->name('admin.sections.edit');
-Route::post('/admin/sections/{id}', [AdminController::class, 'save']);
 ```
 
 ## **5. Customizing Landing Page**

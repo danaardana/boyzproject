@@ -18,19 +18,6 @@ Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post')
 
 // Rute admin dashboard
 Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin', function () {
-        $lang = 'en';
-        if (isset($_GET['lang'])) {
-            $lang = $_GET['lang'];
-            session(['lang' => $lang]);
-        } elseif (session()->has('lang')) {
-            $lang = session('lang');
-        }
-    
-        require_once base_path("resources/views/admin/lang/{$lang}.php");
-    
-        return view('admin.dashboard', ['language' => $language]);
-    });
     Route::get('/admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('admin.dashboard');});
 
     Route::get('/table/{tableName}', [AdminController::class, 'showTable'])->name('table.show');
