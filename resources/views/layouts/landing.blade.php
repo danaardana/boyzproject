@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="eng">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,11 +35,11 @@
     <!--=== Wrapper Start ======-->
     <div class="wrapper">
 
-        @include('partials.navbar')   
+        @include('landing.partials.navbar')   
         
         @yield('content')
         
-        @include('partials.footer')
+        @include('landing.partials.footer')
         
     </div>
     <!--=== Wrapper End ======-->

@@ -8,7 +8,7 @@
                 <div id="signup-content" class="tab-content">
                     <div id="login" class="tab-pane fade in active">
                         <!--=== Form ===-->
-                        <form method="POST" action="{{ route('login') }}" class="form login_type text-center">
+                        <form method="POST" action="{{ route('landing.login') }}" class="form login_type text-center">
                             @csrf
                             <!--=== Email ===-->
                             <input type="email" name="email" class="form-control mb-20" placeholder="Email" required>

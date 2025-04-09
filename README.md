@@ -69,12 +69,19 @@ app/
 │   ├── SectionContent.php
 resources/views/
 │── admin/
+│   ├── partials/
+│   │   ├── footer.blade.php
+│   │   ├── navbar.blade.php
+│   │   ├── sidebar.blade.php
 │   ├── dashboard.blade.php
-│   ├── manage-sections.blade.php
+│   ├── tables.blade.php
 │── landing/
 │   ├── error/
 │   │   ├── 404.blade.php
 │   │   ├── comingsoon.blade.php
+│   ├── partials/
+│   │   ├── footer.blade.php
+│   │   ├── navbar.blade.php
 │   ├── sections/
 │   │   ├── about.blade.php
 │   │   ├── activities.blade.php
@@ -93,9 +100,6 @@ resources/views/
 │── layouts/
 │   ├── admin.blade.php
 │   ├── landing.blade.php
-│── partials/
-│   ├── footer.blade.php
-│   ├── navbar.blade.php  
 ```
 
 ## **4. Routing**

@@ -1,0 +1,74 @@
+<?php
+$language['Menu'] = "Menu";
+$language['Dashboard'] = "Dashboard";
+$language['Summarize'] = "Summarize";
+$language['Products_&_Services'] = " Products & Services";
+$language['Products'] = "Products";
+$language['Services'] = "Services";
+$language['Orders_&_Queue'] = "Orders & Queue";
+$language['Incoming_Orders'] = "Incoming Orders";
+$language['Service_Queue'] = "Service Queue";
+$language['User_Management'] = "User Management";
+$language['User_List'] = "User List";
+$language['Roles_&_Permissions'] = "Roles & Permissions ";
+$language['Website_Content'] = "Website Content";
+$language['Landing_Page_Editor'] = "Landing Page Editor";
+$language['Testimonials'] = "Testimonials ";
+$language['Portfolio'] = "Portfolio ";
+$language['Social_Media_&_Promotions'] = " Social Media & Promotions";
+$language['Instagram_Feeds'] = "Instagram Feeds ";
+$language['TikTok_Feeds'] = "TikTok Feeds ";
+$language['Promotions_&_Discounts'] = "Promotions & Discounts";
+$language['Settings'] = "Settings";
+$language['Company_Profile'] = "Company Profile";
+$language['System_Configurations'] = "System Configurations";
+$language['Reports_&_Analytics'] = "Reports & Analytics";
+$language['Sales_Report'] = "Sales Report";
+$language['Add'] = "Add";
+$language['Preview'] = "Preview";
+$language['Manage'] = "Manage";
+
+$language["tables_desc"] = "";
+$language["Show_Order"] = "Show Order";
+$language["Tittle"] = "Tittle";
+$language["Btn_Text"] = "Btn Text";
+$language["Btn_URL"] = "Btn URL";
+$language["Active"] = "Active";
+$language["Description"] = "Description";
+$language["Image"] = "Image";
+$language["Categories"] = "Categories";
+$language["Name"] = "Name";
+$language["Content"] = "Content";
+$language["Video_ID"] = "Video ID";
+$language["Variations"] = "Variations";
+
+
+
+$language['Search'] = "Search...";
+$language['Notifications'] = "Notifications";
+$language['Unread'] = "Unread";
+$language['James_Lemire'] = "James Lemire";
+$language['It_will_seem_like_simplified_English'] = "It will seem like simplified English";
+$language['Your_order_is_placed'] = "Your order is placed";
+$language['3_min_ago'] = "3 min ago";
+$language['Your_item_is_shipped'] = "Your item is shipped";
+$language['If_several_languages_coalesce_the_grammar'] = "If several languages ​​coalesce the grammar";
+$language['Salena_Layfield'] = "Salena Layfield";
+$language['As_a_skeptical_Cambridge_friend_of_mine_occidental'] = "As a skeptical Cambridge friend of mine occidental";
+$language['1_hours_ago'] = "1 hours ago";
+$language['View_More'] = "View More";
+$language['Shawn_L'] = "Shawn L";
+$language['Profile'] = "Profile";
+$language['Billing'] = "Billing";
+$language['Settings'] = "Settings";
+$language['Lock_screen'] = "Lock screen";
+$language['Logout'] = "Logout";
+$language['Extra_pages'] = "Extra pages";
+$language['Utility'] = "Utility";
+$language['New'] = "New";
+$language['Blog'] = "Blog";
+$language['Blog_Grid'] = "Blog Grid";
+$language['Blog_List'] = "Blog List";
+$language['Blog_Details'] = "Blog Details";
+$language['Utilities'] = "Utilities";
+?>

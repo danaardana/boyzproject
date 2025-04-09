@@ -13,4 +13,9 @@ class LandingPageController extends Controller
         return view('landing.index', compact('sections'));
         #return view('landing.sections.' . $section->layout, compact('section', 'contents'));
     }    
+    
+    public function showLoginForm()
+    {
+        return view('landing.login'); // Pastikan path ini sesuai dengan struktur folder Anda
+    }
 }

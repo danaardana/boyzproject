@@ -1,33 +1,70 @@
+
+<?php
+// include language configuration file based on selected language
+$lang = "en";
+if (isset($_GET['lang'])) {
+   $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang;
+}
+if( isset( $_SESSION['lang'] ) ) {
+    $lang = $_SESSION['lang'];
+}else {
+    $lang = "en";
+}
+require_once ("./admin/lang/" . $lang . ".php");
+
+?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="<?php echo $lang ?>">
+
 <head>
-    <meta charset="UTF-8">
+    
+    <title>Boy Projects | @yield('title')</title>
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard')</title>
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesbrand" name="author"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}"><!-- preloader css -->
+    <link rel="stylesheet" href="{{ asset('admin/css/preloader.min.css') }}" type="text/css" />
 
-    <!-- Bootstrap atau CSS Admin -->
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/admin.css') }}">
+    <!-- Bootstrap Css -->
+    <link href="{{ asset('admin/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{{ asset('admin/css/icons.min.css') }}" rel="stylesheet" type="text/css">
+    <!-- App Css-->
+    <link href="{{ asset('admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
-    @stack('styles')
+    @stack('styles') <!-- Untuk tambahan CSS di halaman tertentu -->
+
 </head>
+
 <body>
-    <div class="wrapper">
-        <!-- Sidebar -->
-        @include('admin.partials.sidebar')
+<!-- Begin page -->
+<div id="layout-wrapper">
 
-        <div class="main-content">
-            <!-- Navbar Admin -->
-            @include('admin.partials.navbar')
+    @include('admin.partials.navbar')   
 
-            <div class="container">
-                @yield('content')
-            </div>
-        </div>
-    </div>
+    @yield('content')
 
-    <!-- JavaScript -->
-    <script src="{{ asset('assets/admin/js/admin.js') }}"></script>
+</div>
+<!-- END layout-wrapper -->
 
-    @stack('scripts')
+<!-- JAVASCRIPT -->
+<script src="{{ asset('admin/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('admin/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('admin/libs/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('admin/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ asset('admin/libs/node-waves/waves.min.js') }}"></script>
+<script src="{{ asset('admin/libs/feather-icons/feather.min.js') }}"></script>
+
+<!-- pace js -->
+<script src="{{ asset('admin/libs/pace-js/pace.min.js') }}"></script>
+
+<script src="{{ asset('admin/js/app.js') }}"></script>
+
+@stack('scripts') <!-- Untuk tambahan script di halaman tertentu -->
+
 </body>
+
 </html>

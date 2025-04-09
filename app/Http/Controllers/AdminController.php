@@ -36,4 +36,19 @@ class AdminController extends Controller
 
         return redirect()->route('admin.sections')->with('success', 'Sections updated successfully.');
     }
+    
+    public function showTable($tableName)
+    {
+        // Validasi nama tabel jika diperlukan
+        $validTables = ['admin', 'section', 'subsection'];
+        if (!in_array($tableName, $validTables)) {
+            abort(404); // Tampilkan halaman 404 jika tabel tidak valid
+        }
+
+        // Ambil data dari tabel sesuai dengan nama yang diberikan
+        $data = DB::table($tableName)->get();
+
+        // Kembalikan view dengan data yang diambil
+        return view('tables.template', compact('data', 'tableName'));
+    }
 }

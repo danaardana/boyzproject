@@ -2,29 +2,37 @@
 
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Landing Page
 Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-// Admin Management for Sections
-Route::get('/admin/sections', [AdminController::class, 'index'])->name('admin.sections');
-Route::post('/admin/sections/update', [AdminController::class, 'update'])->name('admin.sections.update');
+// Rute login
+Route::get('/login', [LandingPageController::class, 'showLoginForm'])->name('landing.login');
 
-Route::fallback(function () {
-    return response()->view('landing.errors.404', [], 404);
-});
+// Rute untuk memproses login
+Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
 
-// Login
-Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AdminAuthController::class, 'login']);
-Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
-
+// Rute admin dashboard
 Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-});
+    Route::get('/admin', function () {
+        $lang = 'en';
+        if (isset($_GET['lang'])) {
+            $lang = $_GET['lang'];
+            session(['lang' => $lang]);
+        } elseif (session()->has('lang')) {
+            $lang = session('lang');
+        }
+    
+        require_once base_path("resources/views/admin/lang/{$lang}.php");
+    
+        return view('admin.dashboard', ['language' => $language]);
+    });
+    Route::get('/admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('admin.dashboard');});
+
+    Route::get('/table/{tableName}', [AdminController::class, 'showTable'])->name('table.show');
+
+    Route::get('/admin/tables', [TableController::class, 'show'])->name('admin.tables');

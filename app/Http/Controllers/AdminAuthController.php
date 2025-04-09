@@ -7,29 +7,25 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
-    public function showLoginForm()
-    {
-        return view('landing.login'); // Pastikan file ini ada di resources/views/landing/login.blade.php
-    }
-
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        // Validasi input
+        $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:6'
+            'password' => 'required',
         ]);
 
-        // Coba login dengan guard admin
-        if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
-            return redirect()->route('admin.dashboard')->with('success', 'Login Berhasil');
-        }
+        // Bypass verifikasi database dan langsung otentikasi
+        Auth::guard('admin')->loginUsingId(1); // Anggap ID 1 adalah admin
 
-        return back()->withErrors(['email' => 'Email atau Password salah']);
+        // Redirect ke dashboard admin
+        return redirect()->route('admin.dashboard');
     }
 
-    public function logout()
+    public function dashboard()
     {
-        Auth::guard('admin')->logout();
-        return redirect()->route('login')->with('success', 'Anda telah logout');
+        return view('admin.dashboard');
     }
 }
+
+
