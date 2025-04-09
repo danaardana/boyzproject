@@ -63,6 +63,7 @@ app/
 │   ├── ContactController.php
 │   ├── Controller.php
 │   ├── LandingPageController.php
+│   ├── TableController.php
 │── Models/
 │   ├── admin.php
 │   ├── Section.php  
@@ -71,6 +72,7 @@ resources/views/
 │── admin/
 │   ├── partials/
 │   │   ├── footer.blade.php
+│   │   ├── horizontal-menu.blade.php
 │   │   ├── navbar.blade.php
 │   │   ├── sidebar.blade.php
 │   ├── dashboard.blade.php
