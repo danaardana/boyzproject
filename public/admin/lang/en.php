@@ -1,7 +1,7 @@
 <?php
 $language['Menu'] = "Menu";
 $language['Dashboard'] = "Dashboard";
-$language['Summarize'] = "Summarize";
+$language['Landing_Page'] = "Landing Page";
 $language['Products_&_Services'] = " Products & Services";
 $language['Products'] = "Products";
 $language['Services'] = "Services";
@@ -12,7 +12,7 @@ $language['User_Management'] = "User Management";
 $language['User_List'] = "User List";
 $language['Roles_&_Permissions'] = "Roles & Permissions ";
 $language['Website_Content'] = "Website Content";
-$language['Landing_Page_Editor'] = "Landing Page Editor";
+$language['Landing_Page'] = "Landing Page";
 $language['Testimonials'] = "Testimonials ";
 $language['Portfolio'] = "Portfolio ";
 $language['Social_Media_&_Promotions'] = " Social Media & Promotions";
@@ -41,7 +41,8 @@ $language["Name"] = "Name";
 $language["Content"] = "Content";
 $language["Video_ID"] = "Video ID";
 $language["Variations"] = "Variations";
-
+$language["Edit"] = "Edit";
+$language["Choose_an_Avatar"] = "Choose an Avatar";
 
 
 $language['Search'] = "Search...";
@@ -57,7 +58,6 @@ $language['Salena_Layfield'] = "Salena Layfield";
 $language['As_a_skeptical_Cambridge_friend_of_mine_occidental'] = "As a skeptical Cambridge friend of mine occidental";
 $language['1_hours_ago'] = "1 hours ago";
 $language['View_More'] = "View More";
-$language['Shawn_L'] = "Shawn L";
 $language['Profile'] = "Profile";
 $language['Billing'] = "Billing";
 $language['Settings'] = "Settings";

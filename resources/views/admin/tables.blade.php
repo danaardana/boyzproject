@@ -29,12 +29,12 @@ require_once ("./admin/lang/" . $lang . ".php");
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">{{ $type }}</h4>
+                            <h4 class="mb-sm-0 font-size-18">{{ ucwords($type) }}</h4>
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                                    <li class="breadcrumb-item active">{{ $type }}</li>
+                                    <li class="breadcrumb-item active">{{ ucwords($type) }}</li>
                                 </ol>
                             </div>
 
@@ -47,12 +47,59 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">{{ $type }}</h4>
-                                <p class="card-title-desc">{{ $language["tables_desc"] }}
-                                </p>
+                                <div class="d-flex align-items-center">
+                                    <div class="col-2">
+                                        <h4 class="card-title">{{ ucwords($type) }}</h4>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-light waves-effect" data-bs-toggle="modal"
+                                    data-bs-target=".modal-add">{{ $language["Add"] }}</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body">
-                            @if ($type === 'portofolio')
+                            @if ($type === 'portofolio')                 
+                                <!--  Modal to add a new item -->
+                                <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Add"] }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">   
+                                                    <div class="mb-3">
+                                                        <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                        <input class="form-control" type="number" value="0" id="example-number-input">
+                                                    </div>                                                         
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Tittle"] }}</label>
+                                                        <input class="form-control" type="text" value=" " id="example-text-input">
+                                                    </div>                                                   
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
+                                                        <input class="form-control" type="text" value=" " id="example-text-input">
+                                                    </div>                                   
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Categories"] }}</label>
+                                                        <input class="form-control" type="text" value="{{ $language['Categories'] }},{{ $language['Categories'] }} " id="example-text-input">
+                                                    </div>                         
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">Hyperlink</label>
+                                                        <input class="form-control" type="text" value=" " id="example-text-input">
+                                                    </div>          
+                                                    <div class="mb-3">
+                                                        <label for="example-url-input" class="form-label">{{ $language["Image"] }}</label>
+                                                        <input class="form-control" type="url" value=" " id="example-url-input">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
                                 <table  id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
                                     <thead>
                                         <tr>
@@ -62,6 +109,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                             <th>{{ $language["Image"] }}</th>
                                             <th>{{ $language["Categories"] }}</th>
                                             <th>Hyperlink</th>
+                                            <th> </th>
                                         </tr>
                                     </thead>
                                         @foreach ($SectionContents as $subsection)
@@ -78,17 +126,109 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 </td>
                                                 <td>{{ $extraData->categories }}</td>
                                                 <td>{{ $extraData->link }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
+                                                    data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                </td>
                                             </tr>
+                                    
+                                            <!-- Modal for updating item -->
+                                            <div class="modal fade modal-{{ $subsection->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <form>
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">   
+                                                                <div class="card">
+                                                                    <div class="">
+                                                                            <img class="card-img-top img-fluid" alt="{{ $extraData->image }}" 
+                                                                            src="{{ asset($extraData->image) }}" data-holder-rendered="true">
+                                                                    </div>         
+                                                                    <div class="card-body">                       
+                                                                        <div class="mb-3">
+                                                                            <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                                            <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="example-number-input">
+                                                                        </div>                                                         
+                                                                        <div class="mb-3">
+                                                                            <label for="example-text-input" class="form-label">{{ $language["Tittle"] }}</label>
+                                                                            <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
+                                                                        </div>                                                   
+                                                                        <div class="mb-3">
+                                                                            <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
+                                                                            <input class="form-control" type="text" value="{{ $subsection->content_value }}" id="example-text-input">
+                                                                        </div>                                   
+                                                                        <div class="mb-3">
+                                                                            <label for="example-text-input" class="form-label">{{ $language["Categories"] }}</label>
+                                                                            <input class="form-control" type="text" value="{{ $extraData->categories }}" id="example-text-input">
+                                                                        </div>                                     
+                                                                        <div class="mb-3">
+                                                                            <label for="example-text-input" class="form-label">Hyperlink</label>
+                                                                            <input class="form-control" type="text" value="{{ $extraData->link }}" id="example-text-input">
+                                                                        </div>                                                                        
+                                                                        <div class="mb-3">     
+                                                                            <label for="example-url-input" class="form-label">{{ $language["Image"] }}</label>
+                                                                            <input class="form-control" type="url" value="{{ $extraData->image }}" id="example-url-input">                                                
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
                                         @endforeach
                                     </tbody>
                                 </table>
-                            @elseif ($type === 'instagram')
+
+                            @elseif ($type === 'instagram')                            
+                                <!--  Modal to add a new item -->
+                                <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">   
+                                                    <div class="mb-3">
+                                                        <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                        <input class="form-control" type="number" value="0" id="example-number-input">
+                                                    </div>                                                         
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
+                                                        <input class="form-control" type="text" value="	Instagram Post " id="example-text-input">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                        <input class="form-control" type="url" value="https://www.instagram.com/p/XXXXX" id="example-url-input">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </form>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
                                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>{{ $language["Show_Order"] }}</th>
                                             <th>{{ $language["Name"] }}</th>
                                             <th>{{ $language["Content"] }}</th>
+                                            <th>{{ $language["Edit"] }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -100,11 +240,86 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 <td>{{ $subsection->show_order }}</td>
                                                 <td>{{ $subsection->content_key }}</td>
                                                 <td>{{ $extraData->embed_url }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
+                                                    data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                </td>
                                             </tr>
+                                    
+                                            <!-- Modal for updating item -->
+                                            <div class="modal fade modal-{{ $subsection->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <form>
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">   
+                                                                <div class="mb-3">
+                                                                    <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                                    <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="example-number-input">
+                                                                </div>                                                         
+                                                                <div class="mb-3">
+                                                                    <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                                    <input class="form-control" type="url" value="{{ $extraData->embed_url }}" id="example-url-input">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
                                         @endforeach
                                     </tbody>
                                 </table>
+
                             @elseif ($type === 'tiktok')
+                                <!-- Modal to add a new item -->
+                                <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">   
+                                                    <div class="mb-3">
+                                                        <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                        <input class="form-control" type="number" value="0" id="example-number-input">
+                                                    </div>                                                         
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
+                                                        <input class="form-control" type="text" value="TikTok Video " id="example-text-input">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                        <input class="form-control" type="url" value="https://www.tiktok.com/@boyprojects/video/123456789" id="example-url-input">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="example-number-input" class="form-label">{{ $language["Video_ID"] }}</label>
+                                                        <input class="form-control" type="number" value="123456789" id="example-number-input">
+                                                    </div>     
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </form>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
                                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
                                     <thead>
                                         <tr>
@@ -112,6 +327,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                             <th>{{ $language["Name"] }}</th>
                                             <th>{{ $language["Content"] }}</th>
                                             <th>{{ $language["Video_ID"] }}</th>
+                                            <th> </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -124,11 +340,105 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 <td>{{ $subsection->content_key }}</td>
                                                 <td>{{ $extraData->embed_url }}</td>
                                                 <td>{{ $extraData->video_id }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
+                                                    data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                </td>
                                             </tr>
+                                    
+                                            <!-- Modal for updating item -->
+                                            <div class="modal fade modal-{{ $subsection->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <form>
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">   
+                                                                <div class="mb-3">
+                                                                    <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                                    <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="example-number-input">
+                                                                </div>                                                         
+                                                                <div class="mb-3">
+                                                                    <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                                    <input class="form-control" type="url" value="{{ $extraData->embed_url }}" id="example-url-input">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="example-number-input" class="form-label">{{ $language["Video_ID"] }}</label>
+                                                                    <input class="form-control" type="number" value="{{ $extraData->video_id }}" id="example-number-input">
+                                                                </div>     
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
                                         @endforeach
                                     </tbody>
                                 </table>
                             @elseif ($type === 'testimonials')
+                                <!-- Modal to add a new item -->                             
+                                <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">                                    
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
+                                                        <input class="form-control" type="text" value="Custumer Name/username" id="example-text-input">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                        <input class="form-control" type="url" value="Message" id="example-url-input">
+                                                    </div>                           
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Variations"] }}</label>
+                                                        <input class="form-control" type="text" value=" " id="example-text-input">
+                                                    </div>                                                        
+                                                    <div class="mb-3 row align-items-start" style="min-height: 6rem;">                      
+                                                        @for ($i = 1; $i <= 6; $i++)
+                                                            <div class="col-sm-4">
+                                                                <div class="grid-example">
+                                                                    <img class="rounded-circle avatar-md" alt="" 
+                                                                        src="{{ asset('landing/images/team/avatar-' . $i . '.jpg') }}" data-holder-rendered="true">
+                                                                    <code style="color:black">Avatar {{ $i }}</code>
+                                                                </div>
+                                                            </div>
+                                                        @endfor
+                                                    </div>            
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">Avatar</label>
+                                                        <select required class="form-control form-select">
+                                                        <option value="">{{ $language["Choose_an_Avatar"] }}</option>    
+                                                            @for ($i = 1; $i <= 6; $i++)
+                                                               <option value="{{ 'avatar-' . $i . '.jpg' }}">Avatar {{ $i }}</option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </form>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
                                 <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
                                     <thead>
                                         <tr>
@@ -136,6 +446,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                             <th>{{ $language["Content"] }}</th>
                                             <th>Avatar</th>
                                             <th>{{ $language["Variations"] }}</th>
+                                            <th> </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -151,7 +462,75 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                     src="{{ asset($extraData->image) }}" data-holder-rendered="true">
                                                 </td>
                                                 <td>{{ $extraData->variation }}</td>
-                                            </tr>
+                                                <td>
+                                                    <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
+                                                    data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                </td>
+                                            </tr>                                            
+                                    
+                                            <!-- Modal for updating item -->
+                                            <div class="modal fade modal-{{ $subsection->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <form>
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">                                    
+                                                                <div class="mb-3">
+                                                                    <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                                    <input class="form-control" type="url" value="{{ $subsection->content_value}}" id="example-url-input">
+                                                                </div>                           
+                                                                <div class="mb-3">
+                                                                    <label for="example-text-input" class="form-label">{{ $language["Variations"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $extraData->variation }}" id="example-text-input">
+                                                                </div>                                                        
+                                                                <div class="mb-3 row align-items-start" style="min-height: 6rem;">                      
+                                                                    @for ($i = 1; $i <= 6; $i++)
+                                                                        <div class="col-sm-4">
+                                                                            <div class="grid-example">
+                                                                                <img class="rounded-circle avatar-md" alt="" 
+                                                                                    src="{{ asset('landing/images/team/avatar-' . $i . '.jpg') }}" data-holder-rendered="true">
+
+                                                                                @if ($extraData->image === 'landing/images/team/avatar-' . $i . '.jpg')
+                                                                                    <code><b>Avatar {{ $i }} (Selected)</b></code>
+                                                                                @else
+                                                                                    <code style="color:black">Avatar {{ $i }}</code>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+                                                                    @endfor
+                                                                </div>            
+                                                                <div class="mb-3">
+                                                                    <label for="example-text-input" class="form-label">Avatar</label>
+                                                                    <select required class="form-control form-select">
+                                                                    <option value="">Pilih Avatar</option>    
+                                                                        @for ($i = 1; $i <= 6; $i++)
+                                                                            @php
+                                                                                $avatarPath = "landing/images/team/avatar-$i.jpg";
+                                                                            @endphp
+                                                                            <option value="{{ $avatarPath }}" 
+                                                                                @if (isset($extraData->image) && $extraData->image === $avatarPath) selected @endif>
+                                                                                Avatar {{ $i }}
+                                                                            </option>
+                                                                        @endfor
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
                                         @endforeach
                                     </tbody>
                                 </table>

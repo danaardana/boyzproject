@@ -1,7 +1,7 @@
 <?php
 $language['Menu'] = "Menu";
 $language['Dashboard'] = "Dasbor";
-$language['Summarize'] = "Ringkasan";
+$language['Landing_Page'] = "Landing Page";
 $language['Products_&_Services'] = "Produk & Layanan";
 $language['Products'] = "Produk";
 $language['Services'] = "Layanan";
@@ -12,7 +12,7 @@ $language['User_Management'] = "Manajemen Pengguna";
 $language['User_List'] = "Daftar Pengguna";
 $language['Roles_&_Permissions'] = "Peran & Izin";
 $language['Website_Content'] = "Konten Website";
-$language['Landing_Page_Editor'] = "Editor Halaman Utama";
+$language['Landing_Page'] = "Halaman Utama";
 $language['Testimonials'] = "Testimoni";
 $language['Portfolio'] = "Portofolio";
 $language['Social_Media_&_Promotions'] = "Media Sosial & Promosi";
@@ -41,6 +41,8 @@ $language["Name"] = "Nama";
 $language["Content"] = "Konten";
 $language["Video_ID"] = "ID Video";
 $language["Variations"] = "Variasi";
+$language["Edit"] = "Edit";
+$language["Choose_an_Avatar"] = "Pilih Avatar";
 
 $language['Search'] = "Cari...";
 $language['Notifications'] = "Notifikasi";
@@ -55,7 +57,6 @@ $language['Salena_Layfield'] = "Salena Layfield";
 $language['As_a_skeptical_Cambridge_friend_of_mine_occidental'] = "Sebagai teman Cambridge saya yang skeptis tentang dunia Barat...";
 $language['1_hours_ago'] = "1 jam yang lalu";
 $language['View_More'] = "Lihat Lebih Banyak";
-$language['Shawn_L'] = "Shawn L";
 $language['Profile'] = "Profil";
 $language['Billing'] = "Penagihan";
 $language['Settings'] = "Pengaturan";

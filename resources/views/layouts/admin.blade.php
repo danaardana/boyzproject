@@ -25,7 +25,8 @@ require_once ("./admin/lang/" . $lang . ".php");
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
     <meta content="Themesbrand" name="author"/>
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}"><!-- preloader css -->
+    <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}">
+    <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('admin/css/preloader.min.css') }}" type="text/css" />
 
     <!-- Bootstrap Css -->

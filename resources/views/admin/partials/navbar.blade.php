@@ -58,7 +58,7 @@
             </div>
 
             <div class="dropdown d-none d-sm-inline-block">
-            <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true"
+                <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
                     <?php if ($lang == 'en') { ?>
                         <img class="me-2" src="{{ asset('admin/images/flags/us.jpg') }}" alt="English" height="16"> 
@@ -83,15 +83,15 @@
 
             <div class="dropdown d-none d-sm-inline-block">
                 <button type="button" class="btn header-item" id="mode-setting-btn">
-                    <i data-feather="moon" class="icon-lg layout-mode-dark"></i>
-                    <i data-feather="sun" class="icon-lg layout-mode-light"></i>
+                    <i data-feather="moon" class="bx bx-moon layout-mode-dark"></i>
+                    <i data-feather="sun" class="bx bx-sun layout-mode-light"></i>
                 </button>
             </div>
 
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon position-relative" id="page-header-notifications-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i data-feather="bell" class="icon-lg"></i>
+                    <i data-feather="bell" class="icon-lg  bx bx-bell"></i>
                     <span class="badge bg-danger rounded-pill">5</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
@@ -178,23 +178,17 @@
             </div>
 
             <div class="dropdown d-inline-block">
-                <button type="button" class="btn header-item right-bar-toggle me-2">
-                    <i data-feather="settings" class="icon-lg"></i>
-                </button>
-            </div>
-
-            <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img class="rounded-circle header-profile-user" src="{{ asset('admin/images/users/avatar-1.jpg') }}"
                         alt="Header Avatar">
-                    <span class="d-none d-xl-inline-block ms-1 fw-medium"><?php echo $language["Shawn_L"]; ?>.</span>
+                    <span class="d-none d-xl-inline-block ms-1 fw-medium">Admin</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
-                    <a class="dropdown-item" href="apps-contacts-profile.php"><i class="mdi mdi mdi-face-man font-size-16 align-middle me-1"></i> <?php echo $language["Profile"]; ?></a>
-                    <a class="dropdown-item" href="auth-lock-screen.php"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> <?php echo $language["Lock_screen"]; ?> </a>
+                    <a class="dropdown-item" href="#"><i class="mdi mdi mdi-face-man font-size-16 align-middle me-1"></i> <?php echo $language["Profile"]; ?></a>
+                    <a class="dropdown-item" href="#"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> <?php echo $language["Lock_screen"]; ?> </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="logout.php"><i class="mdi mdi-logout font-size-16 align-middle me-1"></i> <?php echo $language["Logout"]; ?></a>
                 </div>
@@ -224,9 +218,9 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{{ route('landing-page') }}">
                         <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Summarize"]; ?></span>
+                        <span data-key="t-dashboard"><?php echo $language["Landing_Page"]; ?></span>
                     </a>
                 </li>
 
@@ -282,16 +276,11 @@
                 <li class="menu-title" data-key="t-menu"><?php echo $language["Website_Content"]; ?></li>
 
                 <li>
-                    <a href="javascript: void(0);">
+                    <a href="{{ route('admin.landingPageTables') }}">
                         <i data-feather="box"></i>
                         <span class="badge rounded-pill badge-soft-danger  text-danger float-end">7</span>
-                        <span data-key="t-forms"><?php echo $language["Landing_Page_Editor"]; ?></span>
+                        <span data-key="t-forms"><?php echo $language["Landing_Page"]; ?></span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="#" data-key=""><?php echo $language["Add"]; ?></a></li>
-                        <li><a href="#" data-key=""><?php echo $language["Manage"]; ?></a></li>
-                        <li><a href="#" data-key=""><?php echo $language["Preview"]; ?></a></li>
-                    </ul>
                 </li>
 
                 <li>

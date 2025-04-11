@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,10 @@ Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post')
 // Rute admin dashboard
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('admin.dashboard');});
+
+    Route::get('/', [AdminController::class, 'landingPage'])->name('landing-page');
+    
+    Route::get('/admin/landingpage-tables', [AdminController::class, 'landingPageTables'])->name('admin.landingPageTables');
 
     Route::get('/table/{tableName}', [AdminController::class, 'showTable'])->name('table.show');
 
