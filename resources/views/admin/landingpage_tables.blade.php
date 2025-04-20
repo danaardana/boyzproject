@@ -31,8 +31,6 @@ use Illuminate\Support\Str;
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">Landing Page</h4>
-
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
@@ -77,11 +75,11 @@ use Illuminate\Support\Str;
                                                         <option value="">{{ $language["Choose_a_Category"] }}</option>    
                                                             @foreach ($sections as $section)
                                                                <option value="{{ $section->name }}">{{ $section->name }}</option>
-                                                            @endfor
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="example-url-input" class="form-label">{{ $language["Tittle"] }}</label>
+                                                        <label for="example-url-input" class="form-label">{{ $language["Title"] }}</label>
                                                         <input class="form-control" type="url" value="" id="example-url-input">
                                                     </div>                           
                                                     <div class="mb-3">
@@ -103,6 +101,10 @@ use Illuminate\Support\Str;
                                                     <div class="mb-3">
                                                         <label for="example-text-input" class="form-label">{{ $language["Active"] }}</label>
                                                         <input class="form-control" type="text" value="0" id="example-text-input">
+                                                    </div>          
+                                                    <div class="mb-3">
+                                                        <label for="example-text-input" class="form-label">{{ $language["Layout"] }}</label>
+                                                        <input class="form-control" type="text" value="1" id="example-text-input">
                                                     </div>                
                                                     <div class="mb-3">
                                                         <label for="example-text-input" class="form-label">{{ $language["Show_Order"] }}</label>
@@ -123,12 +125,13 @@ use Illuminate\Support\Str;
                                         <tr>
                                             <th>ID</th>
                                             <th>{{ $language["Name"] }}</th>
-                                            <th>{{ $language["Tittle"] }}</th>
+                                            <th>{{ $language["Title"] }}</th>
                                             <th>{{ $language["Description"] }}</th>
                                             <th>{{ $language["Content"] }}</th>
                                             <th>{{ $language["Btn_Text"] }}</th>
                                             <th>{{ $language["Btn_URL"] }}</th>
                                             <th>{{ $language["Active"] }}</th>
+                                            <th>{{ $language["Layout"] }} </th>
                                             <th>{{ $language["Show_Order"] }}</th>
                                             <th> </th>
                                         </tr>
@@ -137,13 +140,14 @@ use Illuminate\Support\Str;
                                         @foreach ($sections as $section)
                                             <tr>
                                                 <td>{{ $section->id }}</td>
-                                                <td>{{ $section->name }}</td>
+                                                <td><a href="{{ route('admin.subsection_tables', ['id' => $section->id]) }}">{{ $section->name }}</a></td>
                                                 <td>{{ $section->title }}</td>
                                                 <td>{{ Str::limit($section->description, 10)  }}</td>
                                                 <td>{{ Str::limit($section->content, 10)  }}</td>
                                                 <td>{{ $section->butten_text ?? 'Not Set'  }}</td>
                                                 <td>{{ $section->butten_link ?? 'Not Set'  }}</td>
                                                 <td>{{ $section->is_active ? 'Active' : 'Non Active' }}</td>
+                                                <td>{{ $section->layout }}</td>
                                                 <td>{{ $section->show_order }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
@@ -167,7 +171,7 @@ use Illuminate\Support\Str;
                                                                     <input class="form-control" type="text" value="{{ $section->name }}" id="example-text-input">
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="example-url-input" class="form-label">{{ $language["Tittle"] }}</label>
+                                                                    <label for="example-url-input" class="form-label">{{ $language["Title"] }}</label>
                                                                     <input class="form-control" type="url" value="{{ $section->tittle }}" id="example-url-input">
                                                                 </div>                           
                                                                 <div class="mb-3">

@@ -25,6 +25,12 @@ Route::middleware(['auth:admin'])->group(function () {
     
     Route::get('/admin/landingpage-tables', [AdminController::class, 'landingPageTables'])->name('admin.landingPageTables');
 
+    Route::get('/admin/subsection-tables', [AdminController::class, 'subsectionTables'])->name('admin.subsectionTables');
+
+    Route::get('/admin/subsections/{id}', [AdminController::class, 'subsectionTables'])->name('admin.subsection_tables');
+
     Route::get('/table/{tableName}', [AdminController::class, 'showTable'])->name('table.show');
 
     Route::get('/admin/tables', [TableController::class, 'show'])->name('admin.tables');
+    
+    Route::put('/admin/section-content/{id}', [AdminController::class, 'update'])->name('section_content.update');

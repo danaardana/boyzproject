@@ -30,7 +30,8 @@ $language['Manage'] = "Manage";
 
 $language["tables_desc"] = "";
 $language["Show_Order"] = "Show Order";
-$language["Tittle"] = "Tittle";
+$language["Title"] = "Title";
+$language["Subtitle"] = "Subtitle";
 $language["Btn_Text"] = "Btn Text";
 $language["Btn_URL"] = "Btn URL";
 $language["Active"] = "Active";
@@ -43,7 +44,15 @@ $language["Video_ID"] = "Video ID";
 $language["Variations"] = "Variations";
 $language["Edit"] = "Edit";
 $language["Choose_an_Avatar"] = "Choose an Avatar";
-
+$language["Choose_a_Category"] = "Choose a Category";
+$language["Choose_a_Template"] = "Choose a Template";
+$language["Section_Content"] = "Section Content";
+$language['Landing_Page_Editor'] = "Landing Page Editor";
+$language['Layout'] = "Layout";
+$language["Type"] = "Type";
+$language["Category"] = "Category";
+$language["Create"] = "Create";
+$language["Update"] = "Update";
 
 $language['Search'] = "Search...";
 $language['Notifications'] = "Notifications";

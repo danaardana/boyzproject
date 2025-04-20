@@ -29,7 +29,6 @@ require_once ("./admin/lang/" . $lang . ".php");
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">{{ ucwords($type) }}</h4>
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
@@ -202,20 +201,20 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 <div class="modal-body">   
                                                     <div class="mb-3">
                                                         <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                        <input class="form-control" type="number" value="0" id="example-number-input">
+                                                        <input class="form-control" type="number" value="0" id="Show_Order">
                                                     </div>                                                         
                                                     <div class="mb-3">
                                                         <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                        <input class="form-control" type="text" value="	Instagram Post " id="example-text-input">
+                                                        <input class="form-control" type="text" value="	Instagram Post " id="content_key">
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
-                                                        <input class="form-control" type="url" value="https://www.instagram.com/p/XXXXX" id="example-url-input">
+                                                        <input class="form-control" type="url" value="https://www.instagram.com/p/XXXXX/" id="embed_url">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
                                                 </div>
                                             </form>
                                         </div><!-- /.modal-content -->
@@ -251,7 +250,13 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
-                                                        <form>
+                                                        <form action="{{ route('section_content.update', ['id' => $subsection->id, 'type' => request()->query('type')]) }}" method="POST">
+                                                            @csrf
+                                                            
+                                                            @if(isset($subsection))
+                                                                @method("PUT")
+                                                            @endif
+                                                            
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -259,20 +264,20 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                             <div class="modal-body">   
                                                                 <div class="mb-3">
                                                                     <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                                    <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="example-number-input">
+                                                                    <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="Show_Order">
                                                                 </div>                                                         
                                                                 <div class="mb-3">
                                                                     <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
+                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="content_key">
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
-                                                                    <input class="form-control" type="url" value="{{ $extraData->embed_url }}" id="example-url-input">
+                                                                    <input class="form-control" type="url" value="{{ $extraData->embed_url }}" id="embed_url">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                                <button type="submit" class="btn btn-primary">Save changes</button>
                                                             </div>
                                                         </form>
                                                     </div><!-- /.modal-content -->
@@ -296,19 +301,19 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 <div class="modal-body">   
                                                     <div class="mb-3">
                                                         <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                        <input class="form-control" type="number" value="0" id="example-number-input">
+                                                        <input class="form-control" type="number" value="0" id="show_order">
                                                     </div>                                                         
                                                     <div class="mb-3">
                                                         <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                        <input class="form-control" type="text" value="TikTok Video " id="example-text-input">
+                                                        <input class="form-control" type="text" value="TikTok Video " id="content_key">
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
-                                                        <input class="form-control" type="url" value="https://www.tiktok.com/@boyprojects/video/123456789" id="example-url-input">
+                                                        <input class="form-control" type="url" value="https://www.tiktok.com/@boyprojects/video/123456789" id="embed_url">
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="example-number-input" class="form-label">{{ $language["Video_ID"] }}</label>
-                                                        <input class="form-control" type="number" value="123456789" id="example-number-input">
+                                                        <input class="form-control" type="number" value="123456789" id="video_id">
                                                     </div>     
                                                 </div>
                                                 <div class="modal-footer">
@@ -351,7 +356,13 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
-                                                        <form>
+                                                        <form action="{{ route('section_content.update', $subsection->id) }}" method="POST">
+                                                            @csrf
+                                                            
+                                                            @if(isset($subsection))
+                                                                @method("PUT")
+                                                            @endif
+
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -359,19 +370,19 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                             <div class="modal-body">   
                                                                 <div class="mb-3">
                                                                     <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                                    <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="example-number-input">
+                                                                    <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="show_order">
                                                                 </div>                                                         
                                                                 <div class="mb-3">
                                                                     <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
+                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="content_value">
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
-                                                                    <input class="form-control" type="url" value="{{ $extraData->embed_url }}" id="example-url-input">
+                                                                    <input class="form-control" type="url" value="{{ $extraData->embed_url }}" id="embed_url">
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="example-number-input" class="form-label">{{ $language["Video_ID"] }}</label>
-                                                                    <input class="form-control" type="number" value="{{ $extraData->video_id }}" id="example-number-input">
+                                                                    <input class="form-control" type="number" value="{{ $extraData->video_id }}" id="video_id">
                                                                 </div>     
                                                             </div>
                                                             <div class="modal-footer">

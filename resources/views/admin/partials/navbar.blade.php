@@ -276,11 +276,15 @@
                 <li class="menu-title" data-key="t-menu"><?php echo $language["Website_Content"]; ?></li>
 
                 <li>
-                    <a href="{{ route('admin.landingPageTables') }}">
+                    <a href="javascript: void(0);">
                         <i data-feather="box"></i>
                         <span class="badge rounded-pill badge-soft-danger  text-danger float-end">7</span>
-                        <span data-key="t-forms"><?php echo $language["Landing_Page"]; ?></span>
+                        <span data-key="t-forms"><?php echo $language["Landing_Page_Editor"]; ?></span>
                     </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.landingPageTables') }}" data-key="t-blog-grid"><?php echo $language["Landing_Page"]; ?></a></li>
+                        <li><a href="{{ route('admin.subsectionTables') }}" data-key="t-blog-list"><?php echo $language["Section_Content"]; ?></a></li>
+                    </ul>
                 </li>
 
                 <li>
@@ -291,8 +295,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('admin.tables', ['type' => 'testimonials
-']) }}">
+                    <a href="{{ route('admin.tables', ['type' => 'testimonials']) }}">
                         <i data-feather="home"></i>
                         <span data-key="t-dashboard"><?php echo $language["Testimonials"]; ?></span>
                     </a>
