@@ -8,6 +8,23 @@ use App\Models\SectionContent;
 
 class AdminController extends Controller
 {
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        Auth::guard('admin')->loginUsingId(1); 
+
+        return redirect()->route('admin.dashboard');
+    }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
+    
     public function landingPage()
     {        
         $sections = Section::where('is_active', true)
@@ -100,7 +117,23 @@ class AdminController extends Controller
        return redirect()->route('admin.tables')->withErrors(['error_message'=>'Invalid Type']);
     }
     
-    
+    public function faqPage()
+    {        
+        return view('admin.faq');
+    }    
+        
+    public function adminPage()
+    {        
+        return view('admin.admin');
+    }
+
+    public function chatPage()
+    {        
+        return view('admin.chat');
+    }
+
+
+
 
     
 

@@ -15,7 +15,7 @@ $language['Website_Content'] = "Website Content";
 $language['Landing_Page'] = "Landing Page";
 $language['Testimonials'] = "Testimonials ";
 $language['Portfolio'] = "Portfolio ";
-$language['Social_Media_&_Promotions'] = " Social Media & Promotions";
+$language['Social_Media'] = " Social Media";
 $language['Instagram_Feeds'] = "Instagram Feeds ";
 $language['TikTok_Feeds'] = "TikTok Feeds ";
 $language['Promotions_&_Discounts'] = "Promotions & Discounts";
@@ -27,6 +27,8 @@ $language['Sales_Report'] = "Sales Report";
 $language['Add'] = "Add";
 $language['Preview'] = "Preview";
 $language['Manage'] = "Manage";
+$language['Support'] = "Support";
+$language['Documentation'] = "Documentation";
 
 $language["tables_desc"] = "";
 $language["Show_Order"] = "Show Order";
@@ -53,6 +55,8 @@ $language["Type"] = "Type";
 $language["Category"] = "Category";
 $language["Create"] = "Create";
 $language["Update"] = "Update";
+$language["Delete"] = "Delete";
+$language["Message"] = "Message";
 
 $language['Search'] = "Search...";
 $language['Notifications'] = "Notifications";

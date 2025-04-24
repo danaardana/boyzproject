@@ -60,7 +60,7 @@
             <div class="dropdown d-none d-sm-inline-block">
                 <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <?php if ($lang == 'en') { ?>
+                    <?php if ($lang == 'us') { ?>
                         <img class="me-2" src="{{ asset('admin/images/flags/us.jpg') }}" alt="English" height="16"> 
                     <?php } ?>
                     <?php if ($lang == 'id') { ?>
@@ -68,16 +68,17 @@
                     <?php } ?>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
-
-                    <!-- item-->
-                    <a href="?lang=en" class="dropdown-item notify-item language">
-                        <img src="{{ asset('admin/images/flags/us.jpg') }}" alt="English" class="me-1" height="12"> <span class="align-middle"> English </span>
-                    </a>
-                    
-                    <!-- item-->
-                    <a href="?lang=id" class="dropdown-item notify-item language">
-                        <img src="{{ asset('admin/images/flags/id.jpg') }}" alt="Bahasa" class="me-1" height="12"> <span class="align-middle"> Bahasa </span>
-                    </a>
+                    @foreach(['us' => 'English', 'id' => 'Indonesia'] as $code => $label)
+                        @php
+                            $query = request()->query();
+                            $query['lang'] = $code;
+                            $urlWithLang = url()->current() . '?' . http_build_query($query);
+                        @endphp
+                        <a href="{{ $urlWithLang }}" class="dropdown-item notify-item language">
+                            <img src="{{ asset('admin/images/flags/' . $code . '.jpg') }}" alt="{{ $label }}" class="me-1" height="12"> <span class="align-middle">
+                            {{ $label }}
+                        </a>
+                    @endforeach
                 </div>
             </div>
 
@@ -208,119 +209,125 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title" data-key="t-menu"><?php echo $language["Menu"]; ?></li>
 
-                <li>
-                    <a href="{{ route('admin.dashboard') }}">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Dashboard"]; ?></span>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle arrow-none" href="{{ route('admin.dashboard') }}" id="topnav-dashboard" role="button">
+                    <i class="bx bx-home-alt"></i>
+                    <span data-key="t-dashboards"><?php echo $language["Dashboard"]; ?></span>
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle arrow-none" href="{{ route('landing-page') }}" id="topnav-dashboard" role="button">
+                        <i class="bx bx-world"></i>
+                        <span data-key="landing-page"><?php echo $language["Landing_Page"]; ?></span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="{{ route('landing-page') }}">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Landing_Page"]; ?></span>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class=" far fa-question-circle"></i>
+                        <span data-key="support"><?php echo $language["Support"]; ?></span>
+                        
                     </a>
-                </li>
-
-                
-                <li class="menu-title" data-key="t-menu"><?php echo $language["Products_&_Services"]; ?></li>
-
-                <li>
-                    <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Products"]; ?></span>
-                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.faq') }}" data-key="faq">FAQ</a></li>
+                        <li><a href="#" data-key="documentation"><?php echo $language["Documentation"]; ?></a></li>
+                    </ul>
                 </li>
 
                 <li>
-                    <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Services"]; ?></span>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class="dripicons-message"></i>
+                        <span data-key="support"><?php echo $language["Message"]; ?></span>
+                        
                     </a>
-                </li>
-
-                <li class="menu-title" data-key="t-menu"><?php echo $language["Orders_&_Queue"]; ?></li>
-
-                <li>
-                    <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Incoming_Orders"]; ?></span>
-                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                    <li><a href="{{ route('admin.chat') }}" data-key="documentation"><?php echo $language["Message"]; ?></a></li>
+                    <li><a href="#" data-key="documentation">Chatbot</a></li>
+                    </ul>
                 </li>
 
                 <li>
-                    <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Service_Queue"]; ?></span>
+                   <a href="javascript: void(0);" class="has-arrow">
+                        <i class="dripicons-view-thumb"></i>
+                        <span data-key="products-services"><?php echo $language["Products_&_Services"]; ?></span>
+                        
                     </a>
-                </li>
-
-                <li class="menu-title" data-key="t-menu"><?php echo $language["User_Management"]; ?></li>
-
-                <li>
-                    <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["User_List"]; ?></span>
-                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="#" data-key="faq"><?php echo $language["Products"]; ?></a></li>
+                        <li><a href="#" data-key="documentation"><?php echo $language["Services"]; ?></a></li>
+                    </ul>
                 </li>
 
                 <li>
-                    <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Roles_&_Permissions"]; ?></span>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class=" dripicons-article"></i>
+                        <span data-key="orders-queue"><?php echo $language["Orders_&_Queue"]; ?></span>
+                        
                     </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="#" data-key="order"><?php echo $language["Incoming_Orders"]; ?></a></li>
+                        <li><a href="#" data-key="service"><?php echo $language["Service_Queue"]; ?></a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class="dripicons-user-group"></i>
+                        <span data-key="user-management"><?php echo $language["User_Management"]; ?></span>
+                        
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.admin') }}" data-key="user-list"><?php echo $language["User_List"]; ?></a></li>
+                        <li><a href="{{ route('admin.admin') }}" data-key="role"><?php echo $language["Roles_&_Permissions"]; ?></a></li>
+                    </ul>
                 </li>
 
                 <li class="menu-title" data-key="t-menu"><?php echo $language["Website_Content"]; ?></li>
 
                 <li>
-                    <a href="javascript: void(0);">
-                        <i data-feather="box"></i>
-                        <span class="badge rounded-pill badge-soft-danger  text-danger float-end">7</span>
-                        <span data-key="t-forms"><?php echo $language["Landing_Page_Editor"]; ?></span>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class="dripicons-browser"></i>
+                        <span data-key="landing-page-editor"><?php echo $language["Landing_Page_Editor"]; ?></span>
+                        
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.landingPageTables') }}" data-key="t-blog-grid"><?php echo $language["Landing_Page"]; ?></a></li>
-                        <li><a href="{{ route('admin.subsectionTables') }}" data-key="t-blog-list"><?php echo $language["Section_Content"]; ?></a></li>
+                        <li><a href="{{ route('admin.landingPageTables') }}" data-key="landing-page-edit"><?php echo $language["Landing_Page"]; ?></a></li>
+                        <li><a href="{{ route('admin.subsectionTables') }}" data-key="section-content"><?php echo $language["Section_Content"]; ?></a></li>
                     </ul>
                 </li>
 
                 <li>
                     <a href="{{ route('admin.tables', ['type' => 'portofolio']) }}">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Portfolio"]; ?></span>
+                        <i class=" bx bx-news"></i>
+                        <span data-key="portofolio"><?php echo $language["Portfolio"]; ?></span>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{ route('admin.tables', ['type' => 'testimonials']) }}">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Testimonials"]; ?></span>
+                        <i class="far fa-newspaper"></i>
+                        <span data-key="testimonials"><?php echo $language["Testimonials"]; ?></span>
                     </a>
-                </li>
-
-                <li class="menu-title" data-key="t-menu"><?php echo $language["Social_Media_&_Promotions"]; ?></li>
+                </li>                
 
                 <li>
-                    <a href="{{ route('admin.tables', ['type' => 'instagram']) }}">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Instagram_Feeds"]; ?></span>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class=" dripicons-conversation"></i>
+                        <span data-key="social=media"><?php echo $language["Social_Media"]; ?></span>
+                        
                     </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('admin.tables', ['type' => 'tiktok']) }}">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["TikTok_Feeds"]; ?></span>
-                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.tables', ['type' => 'instagram']) }}" data-key="instagram"><?php echo $language["Instagram_Feeds"]; ?></a></li>
+                        <li><a href="{{ route('admin.tables', ['type' => 'tiktok']) }}" data-key="tiktok"><?php echo $language["TikTok_Feeds"]; ?></a></li>
+                    </ul>
                 </li>
 
                 <li>
                     <a href="#">
-                        <i data-feather="home"></i>
-                        <span data-key="t-dashboard"><?php echo $language["Promotions_&_Discounts"]; ?></span>
+                        <i class="dripicons-tags"></i>
+                        <span data-key="promotions-discounts"><?php echo $language["Promotions_&_Discounts"]; ?></span>
                     </a>
                 </li>
 

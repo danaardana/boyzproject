@@ -9,7 +9,7 @@ class LandingPageController extends Controller
 {
     public function index()
     {
-        $sections = Section::where('is_active', true)->orderBy('show_order')->limit(10)->get();
+        $sections = Section::where('is_active', true)->orderBy('show_order')->get();
         return view('landing.index', compact('sections'));
     }    
     
@@ -17,4 +17,16 @@ class LandingPageController extends Controller
     {
         return view('landing.login'); 
     }
+
+    public function login(Request $request)
+    {
+    $credentials = $request->only('email', 'password');
+
+    //if (Auth::guard('admin')->attempt($credentials)) {
+        return redirect()->intended(route('admin.dashboard'));
+    //}
+
+    return back()->withErrors(['email' => 'Email atau password salah.']);
+    }
+
 }

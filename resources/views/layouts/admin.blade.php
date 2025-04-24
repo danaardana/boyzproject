@@ -9,7 +9,7 @@ if (isset($_GET['lang'])) {
 if( isset( $_SESSION['lang'] ) ) {
     $lang = $_SESSION['lang'];
 }else {
-    $lang = "en";
+    $lang = "us";
 }
 require_once ("./admin/lang/" . $lang . ".php");
 
@@ -19,13 +19,12 @@ require_once ("./admin/lang/" . $lang . ".php");
 
 <head>
     
-    <title>Boy Projects | @yield('title')</title>
+    <title>Dashboard | @yield('title')</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
     <meta content="Themesbrand" name="author"/>
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('landing/images/favicon.ico') }}">
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('admin/css/preloader.min.css') }}" type="text/css" />
 

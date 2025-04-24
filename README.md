@@ -58,54 +58,69 @@ Proyek ini adalah aplikasi berbasis Laravel yang memiliki dua bagian:
 ```
 app/
 │── Http/Controllers/
-│   ├── AdminAuthController.php
-│   ├── AdminController.php
-│   ├── ContactController.php
-│   ├── Controller.php
-│   ├── LandingPageController.php
-│   ├── TableController.php
+│   ├── Admin Controller
+│   ├── Contact Controller
+│   ├── Controller
+│   ├── Landing Page Controller
+│   ├── Table Controller
+│
 │── Models/
-│   ├── admin.php
-│   ├── Section.php  
-│   ├── SectionContent.php
+│   ├── admin
+│   ├── Section  
+│   ├── Section Content
+
+public/
+│   ├── admin
+│   │   ├── lang
+│   │   ├── CSS, fonts, images, js, libs
+│   ├── landing  
+│   │   ├── CSS, fonts, images, js, libs, php
+
 resources/views/
 │── admin/
 │   ├── partials/
-│   │   ├── footer.blade.php
-│   │   ├── horizontal-menu.blade.php
-│   │   ├── navbar.blade.php
-│   │   ├── sidebar.blade.php
-│   ├── dashboard.blade.php
-│   ├── tables.blade.php
+│   │   ├── footer
+│   │   ├── horizontal-menu
+│   │   ├── navbar
+│   │   ├── sidebar
+│   ├── dashboard
+│   ├── faq
+│   ├── landingpage tables
+│   ├── subsection tables
+│   ├── tables
+│
 │── landing/
 │   ├── error/
-│   │   ├── 404.blade.php
-│   │   ├── comingsoon.blade.php
+│   │   ├── 404
+│   │   ├── comingsoon
 │   ├── partials/
-│   │   ├── footer.blade.php
-│   │   ├── navbar.blade.php
+│   │   ├── footer
+│   │   ├── navbar
 │   ├── sections/
-│   │   ├── about.blade.php
-│   │   ├── activities.blade.php
-│   │   ├── counter.blade.php
-│   │   ├── cta.blade.php
-│   │   ├── home.blade.php
-│   │   ├── instagram.blade.php
-│   │   ├── portofolio.blade.php
-│   │   ├── pricing.blade.php
-│   │   ├── services.blade.php
-│   │   ├── team.blade.php
-│   │   ├── testimonials.blade.php
-│   │   ├── tiktok.blade.php
-│   ├── login.blade.php
-│   ├── index.blade.php
+│   │   ├── about
+│   │   ├── activities
+│   │   ├── categories
+│   │   ├── contact
+│   │   ├── counter
+│   │   ├── cta
+│   │   ├── home
+│   │   ├── instagram
+│   │   ├── portofolio
+│   │   ├── pricing
+│   │   ├── promotion
+│   │   ├── services
+│   │   ├── testimonials
+│   │   ├── tiktok
+│   ├── index
+│   ├── login
+│
 │── layouts/
-│   ├── admin.blade.php
-│   ├── landing.blade.php
+│   ├── admin
+│   ├── landing
 ```
 
 ## **4. Routing**
-Tambahkan dalam `routes/web.php`:
+Tambahkan dalam `routes/web`:
 ```php
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\AdminAuthController;
@@ -121,7 +136,6 @@ use App\Http\Controllers\TableController;
 - **Admin dapat mengatur urutan section dengan `show_order`**
 
 ## **6. Future Improvements**
-- Dashboard Admin
 - Sistem preview sebelum perubahan diterapkan template
-- Integrasi dengan API untuk manajemen konten dinamis
+- Integrasi dengan API untuk manajemen konten SHOPEE dinamis
 - Integrasi ChatBot

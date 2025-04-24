@@ -45,16 +45,36 @@ require_once ("./admin/lang/" . $lang . ".php");
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="d-flex align-items-center">
-                                    <div class="col-2">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div class="card-header">
                                         <h4 class="card-title">{{ ucwords($type) }}</h4>
                                     </div>
-                                    <div class="col-2">
-                                        <button type="button" class="btn btn-light waves-effect" data-bs-toggle="modal"
-                                    data-bs-target=".modal-add">{{ $language["Add"] }}</button>
-                                    </div>
                                 </div>
+
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+                                        <div>
+                                            <button type="button" class="btn btn-light waves-effect" data-bs-toggle="modal"
+                                        data-bs-target=".modal-add">{{ $language["Add"] }}</button>
+                                        </div>
+
+                                        <div class="dropdown">
+                                            <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bx bx-dots-horizontal-rounded"></i>
+                                            </a>
+
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="">
                             </div>
                             <div class="card-body">
                             @if ($type === 'portofolio')                 
@@ -74,7 +94,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                         <input class="form-control" type="number" value="0" id="example-number-input">
                                                     </div>                                                         
                                                     <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Tittle"] }}</label>
+                                                        <label for="example-text-input" class="form-label">{{ $language["Title"] }}</label>
                                                         <input class="form-control" type="text" value=" " id="example-text-input">
                                                     </div>                                                   
                                                     <div class="mb-3">
@@ -103,7 +123,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                     <thead>
                                         <tr>
                                             <th>{{ $language["Show_Order"] }}</th>
-                                            <th>{{ $language["Tittle"] }}</th>
+                                            <th>{{ $language["Title"] }}</th>
                                             <th>{{ $language["Description"] }}</th>
                                             <th>{{ $language["Image"] }}</th>
                                             <th>{{ $language["Categories"] }}</th>
@@ -153,7 +173,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                                             <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="example-number-input">
                                                                         </div>                                                         
                                                                         <div class="mb-3">
-                                                                            <label for="example-text-input" class="form-label">{{ $language["Tittle"] }}</label>
+                                                                            <label for="example-text-input" class="form-label">{{ $language["Title"] }}</label>
                                                                             <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
                                                                         </div>                                                   
                                                                         <div class="mb-3">

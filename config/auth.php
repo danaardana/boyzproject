@@ -2,29 +2,31 @@
 
 return [
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+    // ...
+  
+    "guards"=>[
+        "web"=>[
+            "driver"=>"session",
+            "provider"=>"users"
         ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
+  
+        "admin"=>[
+            "driver"=>"session",
+            "provider"=>"admins"
+        ]
     ],
-
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+  
+    "providers"=>[
+        "users"=>[
+            "driver"=>"eloquent",
+            "model"=>App\Models\User::class,
         ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
-        ],
-    ],
-
-
-];
+        
+        // Provider untuk admin dengan model Admin
+        "admins"=>[
+            "driver"=>"eloquent",
+            "model"=>App\Models\Admin::class,
+        ]
+    ]
+  
+  ];

@@ -15,5 +15,4 @@
 
         @include($viewName, ['section' => $section])
     @endforeach
-
 @endsection

@@ -7,8 +7,9 @@
             <div class="signup-box">
                 <div id="signup-content" class="tab-content">
                     <div id="login" class="tab-pane fade in active">
+                        Admin Only
                         <!--=== Form ===-->
-                        <form method="POST" action="{{ route('landing.login') }}" class="form login_type text-center">
+                        <form method="POST" action="{{ route('login') }}" class="form login_type text-center">
                             @csrf
                             <!--=== Email ===-->
                             <input type="email" name="email" class="form-control mb-20" placeholder="Email" required>
@@ -45,3 +46,15 @@
     </div>
 </section>
 @endsection
+
+@stack('scripts')
+<script>
+    function togglePassword() {
+        var passwordInput = document.getElementById("password");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+    }
+</script>

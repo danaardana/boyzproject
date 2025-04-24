@@ -80,16 +80,7 @@
     });
     </script>
     
-    <script>
-    function togglePassword() {
-        var passwordInput = document.getElementById("password");
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-        }
-    }
-    </script>
+
     
     <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -102,6 +93,6 @@
     });
     </script>
     
-    @stack('scripts') <!-- Untuk tambahan script di halaman tertentu -->
+    @stack('scripts')
 </body>
 </html>
