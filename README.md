@@ -61,6 +61,7 @@ app/
 │   ├── Admin Controller
 │   ├── Contact Controller
 │   ├── Controller
+│   ├── Email Verification Controller
 │   ├── Landing Page Controller
 │   ├── Table Controller
 │
