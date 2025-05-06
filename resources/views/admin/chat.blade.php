@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 
+@include('admin.partials.navbar')  
+
 @section('content')
 
 <div class="main-content">

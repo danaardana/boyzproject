@@ -1,7 +1,7 @@
 
 <?php
 // include language configuration file based on selected language
-$lang = "en";
+$lang = "us";
 if (isset($_GET['lang'])) {
    $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang;
@@ -9,7 +9,7 @@ if (isset($_GET['lang'])) {
 if( isset( $_SESSION['lang'] ) ) {
     $lang = $_SESSION['lang'];
 }else {
-    $lang = "en";
+    $lang = "us";
 }
 require_once ("./admin/lang/" . $lang . ".php");
 
@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 ?>
 
 @extends('layouts.admin')
+
+@include('admin.partials.navbar')  
 
 @section("title", "Data ")
 
@@ -58,7 +60,7 @@ use Illuminate\Support\Str;
                                 </div>
                             </div>
                             <div class="card-body">                                    
-                                <!-- Modal for updating item -->
+                                <!-- Modal for addding item -->
                                 <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
@@ -119,6 +121,7 @@ use Illuminate\Support\Str;
                                         </div><!-- /.modal-content -->
                                     </div><!-- /.modal-dialog -->
                                 </div><!-- /.modal -->
+
                                 <h2>All Sections</h2>
                                 <table  id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
                                     <thead>
@@ -143,9 +146,9 @@ use Illuminate\Support\Str;
                                                 <td><a href="{{ route('admin.subsection_tables', ['id' => $section->id]) }}">{{ $section->name }}</a></td>
                                                 <td>{{ $section->title }}</td>
                                                 <td>{{ Str::limit($section->description, 10)  }}</td>
-                                                <td>{{ Str::limit($section->content, 10)  }}</td>
-                                                <td>{{ $section->butten_text ?? 'Not Set'  }}</td>
-                                                <td>{{ $section->butten_link ?? 'Not Set'  }}</td>
+                                                <td>{{ Str::limit($section->content, 10) ?? '-' }}</td>
+                                                <td>{{ $section->butten_text ?? '-'  }}</td>
+                                                <td>{{ $section->butten_link ?? '-'  }}</td>
                                                 <td>{{ $section->is_active ? 'Active' : 'Non Active' }}</td>
                                                 <td>{{ $section->layout }}</td>
                                                 <td>{{ $section->show_order }}</td>
@@ -176,11 +179,11 @@ use Illuminate\Support\Str;
                                                                 </div>                           
                                                                 <div class="mb-3">
                                                                     <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->description }}" id="example-text-input">
+                                                                    <input class="form-control" type="text" value="{{ $section->description ?? 'Not Set'  }}" id="example-text-input">
                                                                 </div>                    
                                                                 <div class="mb-3">
                                                                     <label for="example-text-input" class="form-label">{{ $language["Content"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->content  }}" id="example-text-input">
+                                                                    <input class="form-control" type="text" value="{{ $section->content  ?? 'Not Set'  }}" id="example-text-input">
                                                                 </div>                    
                                                                 <div class="mb-3">
                                                                     <label for="example-text-input" class="form-label">{{ $language["Btn_Text"] }}</label>

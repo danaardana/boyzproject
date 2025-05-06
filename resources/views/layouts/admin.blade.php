@@ -1,7 +1,7 @@
 
 <?php
 // include language configuration file based on selected language
-$lang = "en";
+$lang = "us";
 if (isset($_GET['lang'])) {
    $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang;
@@ -41,9 +41,7 @@ require_once ("./admin/lang/" . $lang . ".php");
 
 <body>
 <!-- Begin page -->
-<div id="layout-wrapper">
-
-    @include('admin.partials.navbar')   
+<div id="layout-wrapper"> 
 
     @yield('content')
 

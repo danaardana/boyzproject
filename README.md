@@ -97,19 +97,19 @@ resources/views/
 │   │   ├── footer
 │   │   ├── navbar
 │   ├── sections/
-│   │   ├── about
-│   │   ├── activities
-│   │   ├── categories
+│   │   ├── about - 2 layouts
+│   │   ├── activities - 4 layouts
+│   │   ├── categories - 2 layouts
 │   │   ├── contact
 │   │   ├── counter
-│   │   ├── cta
-│   │   ├── home
+│   │   ├── cta - 3 layouts
+│   │   ├── home - 4 layouts
 │   │   ├── instagram
-│   │   ├── portofolio
+│   │   ├── portofolio - 3 layouts
 │   │   ├── pricing
-│   │   ├── promotion
-│   │   ├── services
-│   │   ├── testimonials
+│   │   ├── promotion - 3 layouts
+│   │   ├── services - 2 layouts
+│   │   ├── testimonials - 2 layouts
 │   │   ├── tiktok
 │   ├── index
 │   ├── login

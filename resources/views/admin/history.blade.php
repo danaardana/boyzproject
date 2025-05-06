@@ -13,6 +13,8 @@ if( isset( $_SESSION['lang'] ) ) {
 }
 require_once ("./admin/lang/" . $lang . ".php");
 
+use Illuminate\Support\Str;
+
 ?>
 
 @extends('layouts.admin')
@@ -30,12 +32,12 @@ require_once ("./admin/lang/" . $lang . ".php");
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18"><?php echo $language["User_List"]; ?></h4>
+                    <h4 class="mb-sm-0 font-size-18"><?php echo $language["User_history"]; ?></h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);"><?php echo $language["User_Management"]; ?></a></li>
-                            <li class="breadcrumb-item active"><?php echo $language["User_List"]; ?></li>
+                            <li class="breadcrumb-item active">{{$language["User_history"]}} </li>
                         </ol>
                     </div>
 
@@ -47,7 +49,7 @@ require_once ("./admin/lang/" . $lang . ".php");
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <h5 class="card-title">Admins List <span class="text-muted fw-normal ms-2">{{ $totalAdmins }}</span></h5>
+                    <h5 class="card-title">{{ $language["User_history"] }}<span class="text-muted fw-normal ms-2">({{ $totalSessions }})</span></h5>
                 </div>
             </div>
 
@@ -66,38 +68,27 @@ require_once ("./admin/lang/" . $lang . ".php");
             <table class="table align-middle datatable dt-responsive table-check nowrap" style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;">
                 <thead>
                     <tr>
-                        <th scope="col">{{ $language["Name"] }}</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">{{ $language["Verified"] }}</th>
-                        <th style="width: 80px; min-width: 80px;">{{ $language["Action"] }}</th>
+                        <th scope="col">IP Add</th>
+                        <th scope="col">User Agent</th>
+                        <th scope="col">Platform</th>
+                        <th scope="col">Browser</th>
+                        <th scope="col">Device</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Desktop</th>
+                        <th scope="col">Last Activity</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
-                    @foreach($admins as $admin)
+                    @foreach($sessions as $session)
                     <tr>
-                        <td>{{ $admin->name }}</td>
-                        <td>{{ $admin->email }}</td>
-                        <td>
-                            @if ($admin->email_verified_at)
-                                {{ $admin->email_verified_at }}
-                            @else
-                                <a href="{{ route('admin.email-verification', ['email' => $admin->email]) }}">
-                                    {{ $language["Send_Verification"] }}
-                                </a>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bx bx-dots-horizontal-rounded"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#">{{ $language["Edit"] }}</a></li>
-                                    <li><a class="dropdown-item" href="#">{{ $language["Delete"] }}</a></li>
-                                </ul>
-                            </div>
-                        </td>
+                        <td>{{ $session->ip_address }}</td>
+                        <td>{{ $session->user_id }}</td>
+                        <td>{{ $session->platform }}</td>
+                        <td>{{ $session->browser }}</td>
+                        <td>{{ $session->device }}</td>
+                        <td>{{ $session->is_mobile ? 'Yes' : 'No' }}</td>
+                        <td>{{ $session->is_desktop ? 'Yes' : 'No' }}</td>
+                        <td>{{ $session->last_activity }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -1,3 +1,17 @@
+<?php
+// include language configuration file based on selected language
+$lang = "us";
+if (isset($_GET['lang'])) {
+   $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang;
+}
+if( isset( $_SESSION['lang'] ) ) {
+    $lang = $_SESSION['lang'];
+}else {
+    $lang = "us";
+}
+require_once ("./admin/lang/" . $lang . ".php");
+?>
 <header id="page-topbar">
     <div class="navbar-header">
         <div class="d-flex">
@@ -181,8 +195,6 @@
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{ asset('admin/images/users/avatar-1.jpg') }}"
-                        alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1 fw-medium">Admin</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
@@ -279,8 +291,8 @@
                         
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.history') }}" data-key="user-list"><?php echo $language["User_history"]; ?></a></li>
                         <li><a href="{{ route('admin.admin') }}" data-key="user-list"><?php echo $language["User_List"]; ?></a></li>
-                        <li><a href="{{ route('admin.admin') }}" data-key="role"><?php echo $language["Roles_&_Permissions"]; ?></a></li>
                     </ul>
                 </li>
 

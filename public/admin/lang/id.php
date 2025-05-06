@@ -57,6 +57,16 @@ $language["Create"] = "Buat";
 $language["Update"] = "Perbarui";
 $language["Delete"] = "Hapus";
 $language["Message"] = "Pesan";
+$language["User_history"] = "Riwayat Pengguna";
+$language["Verified"] = "Verifikasi";
+$language["Action"] = "Aksi";
+$language["Send_Verification"] = "Kirim Email Verifikasi";
+$language['Verify_your_email'] = "Verifikasi email Anda";
+$language['Verify_text_1'] = "Kita telah mengirim email verifikasi";
+$language['Verify_text_2'] = ", Silahkan periksa pesan Anda.";
+$language['Verify_now'] = "Verifikasi Sekarang";
+$language['Didnt_receive'] = "Tidek menerima email ?";
+$language['Resend'] = "Kirim Ulang";;
 
 $language['Search'] = "Cari...";
 $language['Notifications'] = "Notifikasi";

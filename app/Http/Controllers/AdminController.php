@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Models\SectionContent;
+use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 
 class AdminController extends Controller
 {
-    public function login(Request $request)
-    {
+    public function login(Request $request){
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -20,13 +21,30 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard');
     }
 
-    public function dashboard()
-    {
-        return view('admin.dashboard');
+    public function dashboard(){
+        
+        $totalSections = DB::table('sections')->count();
+        $totalActiveSections = DB::table('sections')->where('is_active', 1)->count();
+        
+        $sessions = DB::table('sessions')->orderBy('last_activity', 'desc')->limit(50)->get();
+    
+        $sessions = $sessions->map(function($session) {
+            $agent = new Agent();
+            $agent->setUserAgent($session->user_agent);
+    
+            return (object) [
+                'id' => $session->id,
+                'platform' => $agent->platform(),
+                'browser' => $agent->browser(),
+                'device' => $agent->device(),
+                'last_activity' => date('d-m-Y, H:i:s', $session->last_activity),
+            ];
+        });
+
+        return view('admin.dashboard', compact('totalSections','totalActiveSections','sessions'));
     }
     
-    public function landingPage()
-    {        
+    public function landingPage(){        
         $sections = Section::where('is_active', true)
         ->orderBy('show_order')
         ->limit(10)
@@ -34,27 +52,28 @@ class AdminController extends Controller
         return view('landing.index', compact('sections'));
     }
 
-    public function showTable($tableName)
-    {
+    public function showTable($tableName){
         $validTables = ['admin', 'section', 'subsection'];
-        if (!in_array($tableName, $validTables)) {
-            abort(404);
-        }
 
+        $tableName = $request->query('type');
+    
+        if (!$tableName || !in_array($tableName, $validTables)) {
+            abort(404, 'Table not found or invalid.');
+        }
+    
         $data = DB::table($tableName)->get();
+    
         return view('tables.template', compact('data', 'tableName'));
     }
 
-    public function landingPageTables()
-    {
+    public function landingPageTables(){
         $sections = Section::where('is_active', true)
         ->orderBy('show_order')
         ->get();
         return view('admin.landingpage_tables', compact('sections'));
     }
        
-    public function subsectionTables($id = null)
-    {
+    public function subsectionTables($id = null){
         $sectionName = null;
         if ($id) {
             $section = Section::find($id);
@@ -72,69 +91,85 @@ class AdminController extends Controller
         
     }
     
-    public function createOrEditForm(Request $request)
-    {
-        $type = 'section'; // Ganti dengan nilai dinamis sesuai kebutuhan
-    
-        // Ambil ID dari section berdasarkan kolom name
-        $section = Section::where('name', $type)->first();
-        
-        if ($section) {
-            // Jika ada, ambil konten terkait (jika ada)
-            $subsection = SectionContent::where('section_id', $section->id)->first(); 
-            return view('admin.subsection_form', compact('subsection'));
-        }
-    
-        return view('admin.subsection_form'); // Jika tidak ditemukan, tampilkan form kosong
-    }
-
-    public function update(Request $request, $id)
-    {
-        // Ambil parameter query "type"
-        $type = $request->query('type');
-    
-        // Temukan section content berdasarkan ID
-        $sectionContent = SectionContent::findOrFail($id);
-        
-        if ($type == 'instagram') {
-            // Validasi inputan jika tipe adalah instagram
-            $request->validate([
-                'show_order' => 'required|integer',
-                'content_key' => 'required|string|max:255',
-                'embed_url' => 'nullable|url',
-            ]);
-    
-            // Update data section content berdasarkan ID
-            $sectionContent->update([
-                'show_order' => $request->input('show_order'),
-                'content_key' => $request->input('content_key'),
-               'embed_url'=> request()->get("embed_url"), 
-           ]);
-            
-           return redirect()->route('admin.tables', ['type'=>'instagram'])->with('success', "Data berhasil diperbarui!");
-       }
-    
-       return redirect()->route('admin.tables')->withErrors(['error_message'=>'Invalid Type']);
-    }
-    
-    public function faqPage()
-    {        
+    public function faqPage(){        
         return view('admin.faq');
     }    
         
-    public function adminPage()
-    {        
-        return view('admin.admin');
+    public function adminPage(){        
+        $totalAdmins = DB::table('admins')->count();
+        $admins = DB::table('admins')->get();
+        
+        $sessions = DB::table('sessions')->orderBy('last_activity', 'desc')->limit(50)->get();
+    
+        $sessions = $sessions->map(function($session) {
+            $agent = new Agent();
+            $agent->setUserAgent($session->user_agent);
+    
+            return (object) [
+                'id' => $session->id,
+                'user_agent' => $session->user_agent,
+                'ip_address' => $session->ip_address,
+                'user_id' => $session->user_id,
+                'platform' => $agent->platform(),
+                'browser' => $agent->browser(),
+                'device' => $agent->device(),
+                'is_mobile' => $agent->isMobile(),
+                'is_desktop' => $agent->isDesktop(),
+                'last_activity' => date('d-m-Y H:i:s', $session->last_activity),
+            ];
+        });
+
+        return view('admin.admin', compact('admins','totalAdmins','sessions'));
     }
 
-    public function chatPage()
-    {        
+    public function chatPage(){        
         return view('admin.chat');
     }
+    
+    public function historyPage(){
+        $totalSessions = DB::table('sessions')->count();
+        $sessions = DB::table('sessions')->orderBy('last_activity', 'desc')->limit(50)->get();
+    
+        $sessions = $sessions->map(function($session) {
+            $agent = new Agent();
+            $agent->setUserAgent($session->user_agent);
+    
+            return (object) [
+                'id' => $session->id,
+                'user_agent' => $session->user_agent,
+                'ip_address' => $session->ip_address,
+                'user_id' => $session->user_id,
+                'platform' => $agent->platform(),
+                'browser' => $agent->browser(),
+                'device' => $agent->device(),
+                'is_mobile' => $agent->isMobile(),
+                'is_desktop' => $agent->isDesktop(),
+                'last_activity' => date('d-m-Y H:i:s', $session->last_activity),
+            ];
+        });
+    
+        return view('admin.history', compact('sessions','totalSessions'));
+    }  
 
+    public function emailVerification($email = null){      
 
+        $admin = \App\Models\Admin::where('email', $email)->first();
+    
+        if (!$admin) {
+            return abort(404, 'Email tidak ditemukan');
+        }
+        $sections = Section::where('name', 'testimonials')->get();
+        $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
+        $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
+        return view('admin.email-verification', compact('SectionContents','totalSectionContents', 'admin'));
+    }
 
+    public function emailConfirmation(){
+        $sections = Section::where('name', 'testimonials')->get();
+        $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
+        $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
+        return view('admin.email-confirmation', compact('SectionContents','totalSectionContents'));
+    }
 
     
-
 }

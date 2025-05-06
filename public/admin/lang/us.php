@@ -57,6 +57,16 @@ $language["Create"] = "Create";
 $language["Update"] = "Update";
 $language["Delete"] = "Delete";
 $language["Message"] = "Message";
+$language["User_history"] = "User History";
+$language["Verified"] = "Verified";
+$language["Action"] = "Action";
+$language["Send_Verification"] = "Send Verification";
+$language['Verify_your_email'] = "Verify your email";
+$language['Verify_text_1'] = "We have sent you verification email";
+$language['Verify_text_2'] = ", Please check it";
+$language['Verify_now'] = "Verify Now";
+$language['Didnt_receive'] = "Didn't receive an email ?";
+$language['Resend'] = "Rresend";
 
 $language['Search'] = "Search...";
 $language['Notifications'] = "Notifications";

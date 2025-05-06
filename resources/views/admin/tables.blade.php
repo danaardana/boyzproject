@@ -1,7 +1,7 @@
 
 <?php
 // include language configuration file based on selected language
-$lang = "en";
+$lang = "us";
 if (isset($_GET['lang'])) {
    $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang;
@@ -9,13 +9,51 @@ if (isset($_GET['lang'])) {
 if( isset( $_SESSION['lang'] ) ) {
     $lang = $_SESSION['lang'];
 }else {
-    $lang = "en";
+    $lang = "us";
 }
 require_once ("./admin/lang/" . $lang . ".php");
+
+use Illuminate\Support\Facades\Http;
+
+function checkEmbedLinkActive($url)
+{
+    try {
+        $response = Http::timeout(10)->get($url);
+
+        if (!$response->successful()) {
+            return false; // HTTP error, link broken
+        }
+
+        $body = $response->body();
+
+        // Cek apakah body mengandung pesan broken Instagram/TikTok
+        $brokenIndicators = [
+            'the link to this photo or video has been broken',
+            'Sorry, this page isn\'t available',
+            'content is not available',
+            'Page Not Found',
+            'Video unavailable',
+        ];
+
+        foreach ($brokenIndicators as $indicator) {
+            if (stripos($body, $indicator) !== false) {
+                return false; // Ditemukan tanda broken
+            }
+        }
+
+        return true; // Tidak ditemukan tanda broken, link aktif
+
+    } catch (\Exception $e) {
+        return false; // Error koneksi, anggap broken
+    }
+}
 
 ?>
 
 @extends('layouts.admin')
+
+
+@include('admin.partials.navbar')  
 
 @section("title", "Data ")
 
@@ -57,18 +95,6 @@ require_once ("./admin/lang/" . $lang . ".php");
                                         <div>
                                             <button type="button" class="btn btn-light waves-effect" data-bs-toggle="modal"
                                         data-bs-target=".modal-add">{{ $language["Add"] }}</button>
-                                        </div>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bx bx-dots-horizontal-rounded"></i>
-                                            </a>
-
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                            </ul>
                                         </div>
                                     </div>
 
@@ -247,6 +273,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                             <th>{{ $language["Show_Order"] }}</th>
                                             <th>{{ $language["Name"] }}</th>
                                             <th>{{ $language["Content"] }}</th>
+                                            <th>Status</th>
                                             <th>{{ $language["Edit"] }}</th>
                                         </tr>
                                     </thead>
@@ -259,6 +286,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 <td>{{ $subsection->show_order }}</td>
                                                 <td>{{ $subsection->content_key }}</td>
                                                 <td>{{ $extraData->embed_url }}</td>
+                                                <td>{{ checkEmbedLinkActive($extraData->embed_url) }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
                                                     data-bs-target=".modal-{{ $subsection->id }}"></button>
@@ -441,11 +469,11 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                         <input class="form-control" type="text" value=" " id="example-text-input">
                                                     </div>                                                        
                                                     <div class="mb-3 row align-items-start" style="min-height: 6rem;">                      
-                                                        @for ($i = 1; $i <= 6; $i++)
+                                                        @for ($i = 1; $i <= 15; $i++)
                                                             <div class="col-sm-4">
                                                                 <div class="grid-example">
                                                                     <img class="rounded-circle avatar-md" alt="" 
-                                                                        src="{{ asset('landing/images/team/avatar-' . $i . '.jpg') }}" data-holder-rendered="true">
+                                                                        src="{{ asset('landing/images/team/team-' . $i . '.jpg') }}" data-holder-rendered="true">
                                                                     <code style="color:black">Avatar {{ $i }}</code>
                                                                 </div>
                                                             </div>
@@ -455,8 +483,8 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                         <label for="example-text-input" class="form-label">Avatar</label>
                                                         <select required class="form-control form-select">
                                                         <option value="">{{ $language["Choose_an_Avatar"] }}</option>    
-                                                            @for ($i = 1; $i <= 6; $i++)
-                                                               <option value="{{ 'avatar-' . $i . '.jpg' }}">Avatar {{ $i }}</option>
+                                                            @for ($i = 1; $i <= 15; $i++)
+                                                               <option value="{{ 'team-' . $i . '.jpg' }}">Avatar {{ $i }}</option>
                                                             @endfor
                                                         </select>
                                                     </div>
@@ -523,11 +551,11 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                                     <input class="form-control" type="text" value="{{ $extraData->variation }}" id="example-text-input">
                                                                 </div>                                                        
                                                                 <div class="mb-3 row align-items-start" style="min-height: 6rem;">                      
-                                                                    @for ($i = 1; $i <= 6; $i++)
+                                                                    @for ($i = 1; $i <= 15; $i++)
                                                                         <div class="col-sm-4">
                                                                             <div class="grid-example">
                                                                                 <img class="rounded-circle avatar-md" alt="" 
-                                                                                    src="{{ asset('landing/images/team/avatar-' . $i . '.jpg') }}" data-holder-rendered="true">
+                                                                                    src="{{ asset('landing/images/team/team-' . $i . '.jpg') }}" data-holder-rendered="true">
 
                                                                                 @if ($extraData->image === 'landing/images/team/avatar-' . $i . '.jpg')
                                                                                     <code><b>Avatar {{ $i }} (Selected)</b></code>
@@ -542,9 +570,9 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                                     <label for="example-text-input" class="form-label">Avatar</label>
                                                                     <select required class="form-control form-select">
                                                                     <option value="">Pilih Avatar</option>    
-                                                                        @for ($i = 1; $i <= 6; $i++)
+                                                                        @for ($i = 1; $i <= 15; $i++)
                                                                             @php
-                                                                                $avatarPath = "landing/images/team/avatar-$i.jpg";
+                                                                                $avatarPath = "landing/images/team/team-$i.jpg";
                                                                             @endphp
                                                                             <option value="{{ $avatarPath }}" 
                                                                                 @if (isset($extraData->image) && $extraData->image === $avatarPath) selected @endif>

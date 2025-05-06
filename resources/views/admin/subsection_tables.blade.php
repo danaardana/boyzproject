@@ -1,7 +1,7 @@
 
 <?php
 // include language configuration file based on selected language
-$lang = "en";
+$lang = "us";
 if (isset($_GET['lang'])) {
    $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang;
@@ -9,7 +9,7 @@ if (isset($_GET['lang'])) {
 if( isset( $_SESSION['lang'] ) ) {
     $lang = $_SESSION['lang'];
 }else {
-    $lang = "en";
+    $lang = "us";
 }
 require_once ("./admin/lang/" . $lang . ".php");
 
@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 ?>
 
 @extends('layouts.admin')
+
+@include('admin.partials.navbar')  
 
 @section("title", "Data ")
 
