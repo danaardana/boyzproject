@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 
 @include('admin.partials.navbar')  
 
+@section("title", "| User History")
+
 @section('content')
 
 <div class="main-content">
@@ -54,11 +56,6 @@ use Illuminate\Support\Str;
             </div>
 
             <div class="col-md-6">
-                <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                    <div>
-                        <a href="#" class="btn btn-light"><i class="bx bx-plus me-1"></i>{{ $language["Add"] }}</a>
-                    </div>
-                </div>
 
             </div>
         </div>

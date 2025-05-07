@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Section;
 use App\Models\SectionContent;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +21,48 @@ class AdminController extends Controller
         Auth::guard('admin')->loginUsingId(1); 
 
         return redirect()->route('admin.dashboard');
+    }    
+    
+    public function logout(Request $request){
+        auth()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+        return view('landing.login');
+    }
+
+    public function lockscreen(Request $request){
+        session(['lockscreen_user_id' => auth()->id()]);
+
+        auth()->logout();
+        session()->invalidate();
+        session()->regenerateToken();
+
+        $sections = Section::where('name', 'testimonials')->get();
+        $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
+        $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
+        return view('admin.lockscreen', compact('SectionContents','totalSectionContents'));
+    }
+
+    public function unlock(Request $request){
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+    
+        $admin = Auth::guard('admin')->loginUsingId(1); 
+    
+        if (!$admin) {
+            return redirect()->route('admin.login')->withErrors('Session expired, please login again.');
+        }
+    
+        // if (Hash::check($request->password, $admin->password)) {
+            return redirect()->route('admin.dashboard');
+        // } else {
+        //    return back()->withErrors(['password' => 'Password salah, coba lagi.']);
+        //}
+
+        //return back()->withErrors(['password' => 'Password salah']);
     }
 
     public function dashboard(){
@@ -50,20 +94,6 @@ class AdminController extends Controller
         ->limit(10)
         ->get();
         return view('landing.index', compact('sections'));
-    }
-
-    public function showTable($tableName){
-        $validTables = ['admin', 'section', 'subsection'];
-
-        $tableName = $request->query('type');
-    
-        if (!$tableName || !in_array($tableName, $validTables)) {
-            abort(404, 'Table not found or invalid.');
-        }
-    
-        $data = DB::table($tableName)->get();
-    
-        return view('tables.template', compact('data', 'tableName'));
     }
 
     public function landingPageTables(){
@@ -171,5 +201,5 @@ class AdminController extends Controller
         return view('admin.email-confirmation', compact('SectionContents','totalSectionContents'));
     }
 
-    
+
 }

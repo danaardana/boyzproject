@@ -16,7 +16,7 @@ require_once ("./admin/lang/" . $lang . ".php");
 
 @extends('layouts.admin')
 
-@section("title", "| Email Verification ")
+@section("title", "| Lockscreen ")
 
 @section('content')
 
@@ -34,26 +34,31 @@ require_once ("./admin/lang/" . $lang . ".php");
                             </div>
                             <div class="auth-content my-auto">
                                 <div class="text-center">
-                                    <div class="avatar-lg mx-auto">
+                                    <h5 class="mb-0">{{ $language['Lock_screen'] }}</h5>
+                                    <p class="text-muted mt-2">{{ $language['Lock_screen_text'] }}</p>
+                                </div>
+                                <div class="user-thumb text-center mb-4 mt-4 pt-2">
+                                     <div class="avatar-lg mx-auto">
                                         <div class="avatar-title rounded-circle bg-light">
-                                            <i class="bx bxs-envelope h2 mb-0 text-primary"></i>
+                                            <i class="bx bx-user h2 mb-0 text-primary"></i>
                                         </div>
                                     </div>
-                                    <div class="p-2 mt-4">
-                                        <h4>{{ $language['Verify_your_email'] }}</h4>
-                                        <p>{{ $language['Verify_text_1'] }} <span class="fw-bold">{{ $admin->email }}</span>{{ $language['Verify_text_2'] }} </p>
-                                        <form method="POST" action="{{ route('verify.email.submit') }}">
-                                            @csrf
-                                            <div class="mt-4">
-                                            <input type="hidden" name="email" value="{{ $admin->email }}">
-                                            <button type="submit" class="btn btn-primary w-10">{{ $language['Verify_now']  }}</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                    <h5 class="font-size-15 mt-3">Shawn</h5>
                                 </div>
+                                <form class="mt-4"  action="{{ route('admin.unlock') }}" method="POST">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label class="form-label" for="userpassword">{{ $language['Password'] }}</label>
+                                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" require>
+                                    </div>
+                                    <div class="mb-3 mt-4">
+                                        <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">{{ $language['Unlock'] }}</button>
+                                    </div>
+                                </form>
+
                                 <div class="mt-5 text-center">
-                                    <p class="text-muted mb-0">{{ $language['Didnt_receive'] }} <a href="#"
-                                            class="text-primary fw-semibold"> {{ $language['Resend']  }} </a> </p>
+                                    <p class="text-muted mb-0">{{ $language['not_you'] }} <a href="{{ route('login') }}"
+                                            class="text-primary fw-semibold"> {{ $language['login'] }}</a> </p>
                                 </div>
                             </div>
                         </div>
@@ -135,10 +140,3 @@ require_once ("./admin/lang/" . $lang . ".php");
 </div>
 
 @endsection
-
-@push("scripts")
-
-<!-- Required datatable js -->
-<script src="{{ asset('admin/layouts/vendor-scripts.php') }}"></script>
-
-@endpush

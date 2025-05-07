@@ -19,6 +19,8 @@ require_once ("./admin/lang/" . $lang . ".php");
 
 @include('admin.partials.navbar')  
 
+@section("title", "| user List ")
+
 @section('content')
 
 <div class="main-content">

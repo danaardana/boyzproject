@@ -16,6 +16,8 @@ require_once ("./admin/lang/" . $lang . ".php");
 
 @extends('layouts.admin')
 
+@section("title", "| Email Confirmation ")
+
 @section('content')
 
 <div class="auth-page">
@@ -27,7 +29,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                         <div class="d-flex flex-column h-100">
                             <div class="mb-4 mb-md-5 text-center">
                                 <a href="index.php" class="d-block auth-logo">
-                                    <img src="assets/images/logo-sm.svg" alt="" height="28"> <span class="logo-txt">Minia</span>
+                                    <img src="{{ asset('landing/images/logo-white.png') }}" alt="" height="28"> <span class="logo-txt">Boy Projects</span>
                                 </a>
                             </div>
                             <div class="auth-content my-auto">
@@ -38,18 +40,13 @@ require_once ("./admin/lang/" . $lang . ".php");
                                         </div>
                                     </div>
                                     <div class="p-2 mt-4">
-                                        <h4>Success !</h4>
-                                        <p class="text-muted">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et</p>
+                                        <h4>{{ $language['Success_ttl'] }}</h4>
+                                        <p class="text-muted">{{ $language['Success_text'] }}</p>
                                         <div class="mt-4">
                                             <a href="index.php" class="btn btn-primary w-100">Back to Home</a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="mt-4 mt-md-5 text-center">
-                                <p class="mb-0">© <script>
-                                        document.write(new Date().getFullYear())
-                                    </script> Minia . Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
                             </div>
                         </div>
                     </div>

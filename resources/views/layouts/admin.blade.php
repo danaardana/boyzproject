@@ -17,9 +17,8 @@ require_once ("./admin/lang/" . $lang . ".php");
 <!DOCTYPE html>
 <html lang="<?php echo $lang ?>">
 
-<head>
-    
-    <title>Dashboard | @yield('title')</title>
+<head>    
+    <title>Dashboard @yield('title')</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
@@ -35,7 +34,7 @@ require_once ("./admin/lang/" . $lang . ".php");
     <!-- App Css-->
     <link href="{{ asset('admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
-    @stack('styles') <!-- Untuk tambahan CSS di halaman tertentu -->
+    @stack('styles')
 
 </head>
 
@@ -61,7 +60,7 @@ require_once ("./admin/lang/" . $lang . ".php");
 
 <script src="{{ asset('admin/js/app.js') }}"></script>
 
-@stack('scripts') <!-- Untuk tambahan script di halaman tertentu -->
+@stack('scripts')
 
 </body>
 

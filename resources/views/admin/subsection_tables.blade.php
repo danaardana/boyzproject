@@ -49,16 +49,24 @@ use Illuminate\Support\Str;
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="d-flex align-items-center">
-                                    <div class="col-2">
-                                        <h4 class="card-title"><?php echo $language["Section_Content"]; ?></h4>
-                                    </div>
-                                    <div class="col-2">
-                                        <button type="button" class="btn btn-light waves-effect" data-bs-toggle="modal"
-                                    data-bs-target=".modal-add">{{ $language["Add"] }}</button>
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div class="card-header">
+                                        <h4 class="card-title">{{ $language["Section_Content"] }}</h4>
                                     </div>
                                 </div>
+
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+                                        <div>
+                                            <button type="button" class="btn btn-primary waves-effect" data-bs-toggle="modal"
+                                        data-bs-target=".modal-add">{{ $language["Add"] }}</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="">
                             </div>
                             <div class="card-body">
                                 <h2>{{ $sectionName ? "Section " . ucwords($sectionName) : "All Subsections" }}</h2>

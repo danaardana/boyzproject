@@ -1,8 +1,6 @@
 <?php
 
 return [
-
-    // ...
   
     "guards"=>[
         "web"=>[
@@ -22,7 +20,6 @@ return [
             "model"=>App\Models\User::class,
         ],
         
-        // Provider untuk admin dengan model Admin
         "admins"=>[
             "driver"=>"eloquent",
             "model"=>App\Models\Admin::class,

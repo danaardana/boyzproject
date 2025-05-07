@@ -22,17 +22,15 @@ $members = SectionContent::where('section_id', $promotion->id ?? null)->get();
       @endphp
       <div class="col-md-3 col-sm-6 col-xs-12 wow fadeTop" data-wow-delay="0.{{ $loop->iteration }}s">
           <div class="promotion-member-container gallery-image-hover"> 
-              <img src="{{ asset($extraData['image'] ?? 'landing/images/promotion/default.jpg') }}" class="img-responsive" alt="promotion-member">
+              <a href="{{ $extraData['links'] ?? '#' }}">
+                <img src="{{ asset($extraData['image'] ?? 'landing/images/promotion/default.jpg') }}" 
+                class="img-responsive" alt="promotion-member">
+              </a>
               <div class="member-caption">
                   <div class="member-description text-center">
                       <div class="member-description-wrap">
                           <h4 class="member-title">{{ $promo->content_key }}</h4>
                           <p class="member-subtitle">{{ $promo->content_value }}</p>
-                          <ul class="member-icons">
-                              @foreach(($extraData['social_links'] ?? []) as $icon => $link)
-                                  <li class="social-icon"><a href="{{ $link }}"><i class="{{ $icon }}"></i></a></li>
-                              @endforeach
-                          </ul>
                       </div>
                   </div>
               </div>

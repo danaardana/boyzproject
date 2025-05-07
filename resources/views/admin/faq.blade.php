@@ -4,6 +4,8 @@
 
 @section('content')
 
+@section("title", "| FaQ ")
+
 <div class="main-content">
 
 <div class="page-content">

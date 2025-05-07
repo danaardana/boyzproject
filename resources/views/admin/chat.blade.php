@@ -2,6 +2,8 @@
 
 @include('admin.partials.navbar')  
 
+@section("title", "| Chat ")
+
 @section('content')
 
 <div class="main-content">

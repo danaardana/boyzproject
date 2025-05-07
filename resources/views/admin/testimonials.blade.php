@@ -14,14 +14,14 @@ if( isset( $_SESSION['lang'] ) ) {
 require_once ("./admin/lang/" . $lang . ".php");
 
 use Illuminate\Support\Str;
-
 ?>
 
 @extends('layouts.admin')
 
+
 @include('admin.partials.navbar')  
 
-@section("title", "Data ")
+@section("title", "| $type table ")
 
 @section('content')
 
@@ -33,16 +33,17 @@ use Illuminate\Support\Str;
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                                    <li class="breadcrumb-item active">Landing Page</li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">{{ $language["Website_Content"] }}</a></li>
+                                    <li class="breadcrumb-item active">{{ ucwords($type) }}</li>
                                 </ol>
                             </div>
 
                         </div>
                     </div>
-                </div>      
+                </div>
                 <!-- end page title -->
                  
                 <div class="row">
@@ -51,7 +52,7 @@ use Illuminate\Support\Str;
                             <div class="row align-items-center">
                                 <div class="col-md-6">
                                     <div class="card-header">
-                                        <h4 class="card-title">{{ $language["Landing_Page"] }}</h4>
+                                        <h4 class="card-title">{{ ucwords($type) }}</h4>
                                     </div>
                                 </div>
 
@@ -67,8 +68,9 @@ use Illuminate\Support\Str;
                             </div>
                             <div class="">
                             </div>
-                            <div class="card-body">                                    
-                                <!-- Modal for addding item -->
+                            <div class="card-body">
+                            @if ($type === 'testimonials')
+                                <!-- Modal to add a new item -->                             
                                 <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
@@ -81,45 +83,36 @@ use Illuminate\Support\Str;
                                                 <div class="modal-body">                                    
                                                     <div class="mb-3">
                                                         <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                        <select required class="form-control form-select">
-                                                        <option value="">{{ $language["Choose_a_Category"] }}</option>    
-                                                            @foreach ($sections as $section)
-                                                               <option value="{{ $section->name }}">{{ $section->name }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                        <input class="form-control" type="text" value="Custumer Name/username" id="example-text-input">
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="example-url-input" class="form-label">{{ $language["Title"] }}</label>
-                                                        <input class="form-control" type="url" value="" id="example-url-input">
+                                                        <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                        <input class="form-control" type="url" value="Message" id="example-url-input">
                                                     </div>                           
                                                     <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                    
+                                                        <label for="example-text-input" class="form-label">{{ $language["Variations"] }}</label>
+                                                        <input class="form-control" type="text" value=" " id="example-text-input">
+                                                    </div>                                                        
+                                                    <div class="mb-3 row align-items-start" style="min-height: 6rem;">                      
+                                                        @for ($i = 1; $i <= 15; $i++)
+                                                            <div class="col-sm-4">
+                                                                <div class="grid-example">
+                                                                    <img class="rounded-circle avatar-md" alt="" 
+                                                                        src="{{ asset('landing/images/team/team-' . $i . '.jpg') }}" data-holder-rendered="true">
+                                                                    <code style="color:black">Avatar {{ $i }}</code>
+                                                                </div>
+                                                            </div>
+                                                        @endfor
+                                                    </div>            
                                                     <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Content"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                    
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Btn_Text"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                    
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Btn_URL"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Active"] }}</label>
-                                                        <input class="form-control" type="text" value="0" id="example-text-input">
-                                                    </div>          
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Layout"] }}</label>
-                                                        <input class="form-control" type="text" value="1" id="example-text-input">
-                                                    </div>                
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                        <input class="form-control" type="text" value="0" id="example-text-input">
-                                                    </div>           
+                                                        <label for="example-text-input" class="form-label">Avatar</label>
+                                                        <select required class="form-control form-select">
+                                                        <option value="">{{ $language["Choose_an_Avatar"] }}</option>    
+                                                            @for ($i = 1; $i <= 15; $i++)
+                                                               <option value="{{ 'team-' . $i . '.jpg' }}">Avatar {{ $i }}</option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -130,48 +123,42 @@ use Illuminate\Support\Str;
                                     </div><!-- /.modal-dialog -->
                                 </div><!-- /.modal -->
 
-                                <h2>All Sections</h2>
-                                <table  id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
+                                <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
                                             <th>{{ $language["Name"] }}</th>
-                                            <th>{{ $language["Title"] }}</th>
-                                            <th>{{ $language["Description"] }}</th>
                                             <th>{{ $language["Content"] }}</th>
-                                            <th>{{ $language["Btn_Text"] }}</th>
-                                            <th>{{ $language["Btn_URL"] }}</th>
-                                            <th>{{ $language["Active"] }}</th>
-                                            <th>{{ $language["Layout"] }} </th>
-                                            <th>{{ $language["Show_Order"] }}</th>
+                                            <th>Avatar</th>
+                                            <th>{{ $language["Variations"] }}</th>
                                             <th> </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($sections as $section)
+                                        @foreach ($SectionContents as $subsection)
+                                        @php
+                                            $extraData = json_decode($subsection->extra_data);
+                                        @endphp
                                             <tr>
-                                                <td>{{ $section->id }}</td>
-                                                <td><a href="{{ route('admin.subsection_tables', ['id' => $section->id]) }}">{{ $section->name }}</a></td>
-                                                <td>{{ $section->title }}</td>
-                                                <td>{{ Str::limit($section->description, 10)  }}</td>
-                                                <td>{{ Str::limit($section->content, 10) ?? '-' }}</td>
-                                                <td>{{ $section->butten_text ?? '-'  }}</td>
-                                                <td>{{ $section->butten_link ?? '-'  }}</td>
-                                                <td>{{ $section->is_active ? 'Active' : 'Non Active' }}</td>
-                                                <td>{{ $section->layout }}</td>
-                                                <td>{{ $section->show_order }}</td>
+                                                <td>{{ Str::limit($subsection->content_key, 10) }}</td>
+                                                <td>{{ Str::limit($subsection->content_value, 10)  }} </td>
+                                                <td>
+                                                    <img class="rounded-circle avatar-md" alt="{{ $extraData->image }}" 
+                                                    src="{{ asset($extraData->image) }}" data-holder-rendered="true">
+                                                </td>
+                                                <td>{{ $extraData->variation }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                    data-bs-target=".modal-{{ $section->id }}"></button>
+                                                    data-bs-target=".modal-{{ $subsection->id }}"></button>
                                                 </td>
                                             </tr>                                            
                                     
                                             <!-- Modal for updating item -->
-                                            <div class="modal fade modal-{{ $section->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                                            <div class="modal fade modal-{{ $subsection->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
                                                 aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
                                                         <form>
+                                                            
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -179,36 +166,47 @@ use Illuminate\Support\Str;
                                                             <div class="modal-body">                                    
                                                                 <div class="mb-3">
                                                                     <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->name }}" id="example-text-input">
+                                                                    <input class="form-control" type="text" value="{{ $subsection->content_key }}" id="example-text-input">
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="example-url-input" class="form-label">{{ $language["Title"] }}</label>
-                                                                    <input class="form-control" type="url" value="{{ $section->tittle }}" id="example-url-input">
+                                                                    <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
+                                                                    <input class="form-control" type="url" value="{{ $subsection->content_value}}" id="example-url-input">
                                                                 </div>                           
                                                                 <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->description ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                    
+                                                                    <label for="example-text-input" class="form-label">{{ $language["Variations"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $extraData->variation }}" id="example-text-input">
+                                                                </div>                                                        
+                                                                <div class="mb-3 row align-items-start" style="min-height: 6rem;">                      
+                                                                    @for ($i = 1; $i <= 15; $i++)
+                                                                        <div class="col-sm-4">
+                                                                            <div class="grid-example">
+                                                                                <img class="rounded-circle avatar-md" alt="" 
+                                                                                    src="{{ asset('landing/images/team/team-' . $i . '.jpg') }}" data-holder-rendered="true">
+
+                                                                                @if ($extraData->image === 'landing/images/team/avatar-' . $i . '.jpg')
+                                                                                    <code><b>Avatar {{ $i }} (Selected)</b></code>
+                                                                                @else
+                                                                                    <code style="color:black">Avatar {{ $i }}</code>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+                                                                    @endfor
+                                                                </div>            
                                                                 <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Content"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->content  ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                    
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Btn_Text"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->butten_text ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                    
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Btn_URL"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->butten_link ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Active"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->is_active ? 'Active' : 'Non Active' }}" id="example-text-input">
-                                                                </div>                
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->show_order }}" id="example-text-input">
-                                                                </div>           
+                                                                    <label for="example-text-input" class="form-label">Avatar</label>
+                                                                    <select required class="form-control form-select">
+                                                                    <option value="">Pilih Avatar</option>    
+                                                                        @for ($i = 1; $i <= 15; $i++)
+                                                                            @php
+                                                                                $avatarPath = "landing/images/team/team-$i.jpg";
+                                                                            @endphp
+                                                                            <option value="{{ $avatarPath }}" 
+                                                                                @if (isset($extraData->image) && $extraData->image === $avatarPath) selected @endif>
+                                                                                Avatar {{ $i }}
+                                                                            </option>
+                                                                        @endfor
+                                                                    </select>
+                                                                </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -221,7 +219,21 @@ use Illuminate\Support\Str;
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>                            
+                            @else
+                                <table  id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th> </th>
+                                        </tr>
+                                    </thead>
+                                            <tr>
+                                                <td>No Data</td>
+                                            </tr>                                    
+                                    </tbody>
+                                </table>                           
+                            @endif
+                            </div>
+                            
                         </div>
                         <!-- end cardaa -->
                     </div> <!-- end col -->

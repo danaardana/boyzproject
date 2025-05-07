@@ -31,7 +31,7 @@ $language['Support'] = "Dukungan";
 $language['Documentation'] = "Dokumentasi";
 
 $language["tables_desc"] = "";
-$language["Show_Order"] = "Tampilkan Pesanan";
+$language["Show_Order"] = "Urutan";
 $language["Title"] = "Judul";
 $language["Subtitle"] = "Subjudul";
 $language["Btn_Text"] = "Teks Tombol";
@@ -66,7 +66,15 @@ $language['Verify_text_1'] = "Kita telah mengirim email verifikasi";
 $language['Verify_text_2'] = ", Silahkan periksa pesan Anda.";
 $language['Verify_now'] = "Verifikasi Sekarang";
 $language['Didnt_receive'] = "Tidek menerima email ?";
-$language['Resend'] = "Kirim Ulang";;
+$language['Resend'] = "Kirim Ulang";
+$language['Success_ttl'] = "Verifikasi Selesai";
+$language['Success_text'] = "Verifikasi email Anda telah selesai.";
+$language['Lock_screen'] = "Lock Screen";
+$language['Lock_screen_text'] = "Masukan kata sandi untuk mengakses situs!";
+$language['Password'] = "Kata Sandi";
+$language['Unlock'] = "Buka";
+$language['not_you'] = "Bukan Anda ? kembali";
+$language['login'] = "Mausk";
 
 $language['Search'] = "Cari...";
 $language['Notifications'] = "Notifikasi";
