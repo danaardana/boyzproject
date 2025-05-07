@@ -9,17 +9,31 @@ use App\Models\SectionContent;
 
 class TableController extends Controller
 {
-    public function show($type = null){
-
+    public function show($type = null){ 
         $exists = DB::table('sections')->where('name', $type)->exists();
 
-        if ($exists || !$type)   {   
+        if ($exists || !$type) {   
             $sections = Section::where('name', $type)->get();
             $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
-            return view('admin.'.$type, compact('sections', 'SectionContents', 'type'));
+    
+            if ($type == 'portofolio') {
+                $allCategories =  [];
+                foreach ($SectionContents as $content) {
+                    $extraData = json_decode($content->extra_data);
+                    if ($extraData && property_exists($extraData, 'categories')) {
+                        $cats = is_string($extraData->categories) ? explode(',', $extraData->categories) : (array)$extraData->categories;
+                        $allCategories = array_merge($allCategories, array_map('trim', $cats));
+                    }
+                }
+                $allCategories = array_unique($allCategories);
+                return view('admin.data', compact('sections', 'SectionContents', 'type', 'allCategories'));
+            } else {
+                return view('admin.data', compact('sections', 'SectionContents', 'type'));
+            }
+            
         } else {    
-            $type = 'instagram';        
-            return view('admin.'.$type, compact('type'));
+            $type = 'Error';        
+            return view('admin.data', compact('type'));
         }
     }   
     

@@ -81,19 +81,20 @@ resources/views/
 │── admin/
 │   ├── partials/
 │   │   ├── footer
-│   │   ├── horizontal-menu
+│   │   ├── horizontal menu
 │   │   ├── navbar
 │   │   ├── sidebar
 │   ├── admin
 │   ├── chat
 │   ├── dashboard
+│   ├── data
 │   ├── email confirmation
 │   ├── email verification
 │   ├── faq
 │   ├── history
 │   ├── landing page tables
+│   ├── lockscreen
 │   ├── subsection tables
-│   ├── tables
 │
 │── landing/
 │   ├── error/
@@ -128,10 +129,8 @@ resources/views/
 ## **4. Routing**
 Tambahkan dalam `routes/web`:
 ```php
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TableController;
 
 ```

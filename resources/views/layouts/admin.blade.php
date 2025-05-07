@@ -33,6 +33,8 @@ require_once ("./admin/lang/" . $lang . ".php");
     <link href="{{ asset('admin/css/icons.min.css') }}" rel="stylesheet" type="text/css">
     <!-- App Css-->
     <link href="{{ asset('admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+    <!-- choices css -->
+    <link href="{{ asset('admin/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
 
     @stack('styles')
 
