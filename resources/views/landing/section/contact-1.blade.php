@@ -16,18 +16,30 @@ $contactDetails = SectionContent::where('section_id', $contact->id ?? null)->get
           <div class="messages"></div>
             <div class="form-group">
               <label class="sr-only" for="name">Name</label>
-              <input type="text" name="name" class="form-control" id="name-2" required="required" placeholder="Your Name" data-error="Your Name is Required">
+              <input type="text" name="name" class="form-control" id="name" required="required" placeholder="Masukan Nama" data-error="Your Name is Required">
               <div class="help-block with-errors mt-20"></div>
+            </div>
+            <div class="form-group">
+              <label class="sr-only" for="subject">Phone (Whatsapp)</label>
+              <input type="number" name="phone" class="form-control" id="phone" placeholder="Masukkan Nomor WhatsApp Aktif">
             </div>
             <div class="form-group">
               <label class="sr-only" for="email">Email</label>
-              <input type="email" name="email" class="form-control" id="email-2" placeholder="Your Email" required="required" data-error="Please Enter Valid Email">
+              <input type="email" name="email" class="form-control" id="email" placeholder="Masukan Email aktif" required="required" data-error="Please Enter Valid Email">
               <div class="help-block with-errors mt-20"></div>
             </div>
+            
             <div class="form-group">
-              <label class="sr-only" for="subject">Subject</label>
-              <input type="text" name="subject" class="form-control" id="subject-2" placeholder="Your Subject">
+              <label class="sr-only" for="subject">Subject</label>          
+              <select class="form-control" name="subject" id="subject">
+                <option value="" disabled selected>Pilih subject</option>
+                <option value="garansi">Garansi</option>
+                <option value="pemasangan">Pemasangan</option>
+                <option value="lain">Lainnya</option>
+              </select>
             </div>
+
+
             <div class="form-group">
               <label class="sr-only" for="message">Message</label>
               <textarea name="message" class="form-control" id="message-2" rows="7" placeholder="Your Message" required data-error="Please, Leave us a message"></textarea>
@@ -37,7 +49,7 @@ $contactDetails = SectionContent::where('section_id', $contact->id ?? null)->get
         </form>
       </div>
       <div class="col-md-4">
-        <h3 class="white-color">Location</h3>
+        <h3 class="white-color">Address</h3>
         <address>
           {{ $contactDetails['postal_address'] ?? 'No address available' }} <br>
           <abbr title="Phone">Phone:</abbr> {{ $contactDetails['phone'] ?? 'No phone available' }}<br>
