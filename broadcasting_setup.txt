@@ -1,0 +1,28 @@
+BROADCASTING SETUP FOR REAL-TIME NOTIFICATIONS
+==============================================
+
+Add these lines to .env file:
+
+BROADCAST_DRIVER=pusher
+
+PUSHER_APP_ID=2003476
+PUSHER_APP_KEY=826b21ec656c73be408d
+PUSHER_APP_SECRET=2c3e417407e10ea3cd24
+PUSHER_HOST=
+PUSHER_PORT=443
+PUSHER_SCHEME=https
+PUSHER_APP_CLUSTER=mt1
+
+STEPS TO GET PUSHER KEYS:
+1. Go to https://pusher.com/
+2. Sign up for a free account
+3. Create a new app
+4. Copy the App ID, Key, and Secret
+5. Add them to your .env file
+6. Set cluster to your region (e.g., mt1, eu, ap2)
+
+ALTERNATIVE - USE LOG DRIVER FOR TESTING:
+If you don't want to set up Pusher right now, you can use:
+BROADCAST_DRIVER=log
+
+This will log the events instead of broadcasting them (for testing purposes). 

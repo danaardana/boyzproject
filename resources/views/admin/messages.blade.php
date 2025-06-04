@@ -53,7 +53,7 @@ use Illuminate\Support\Str;
                 <!-- Left sidebar -->
                 <div class="email-leftbar card">
                     <div class="mail-list mt-4">
-                        <a href="#" class="active"><i class="mdi mdi-email-outline me-2"></i> Inbox <span class="ms-1 float-end">({{ $messages->count() }})</span></a>
+                        <a href="#" class="active"><i class="mdi mdi-email-outline me-2"></i> Inbox <span class="ms-1 float-end" id="inbox-unread-count">({{ $unreadMessagesCount }})</span></a>
                         <a href="#"><i class="mdi mdi-star-outline me-2"></i>Starred</a>
                         <a href="#"><i class="mdi mdi-diamond-stone me-2"></i>Important</a>
                         <a href="#"><i class="mdi mdi-file-outline me-2"></i>Draft</a>
@@ -172,8 +172,38 @@ use Illuminate\Support\Str;
     @endsection
 
 @push('scripts')
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script>
 $(document).ready(function() {
+    // Initialize Pusher for real-time updates
+    const pusherKey = '{{ config('broadcasting.connections.pusher.key') }}';
+    const pusherCluster = '{{ config('broadcasting.connections.pusher.options.cluster') }}';
+    
+    if (pusherKey && pusherKey !== '' && pusherKey !== 'your_app_key') {
+        const pusher = new Pusher(pusherKey, {
+            cluster: pusherCluster,
+            encrypted: true
+        });
+
+        const channel = pusher.subscribe('admin.notifications');
+
+        // Listen for ContactMessageEvent
+        channel.bind('ContactMessageEvent', function(data) {
+            console.log('📨 Messages page received notification:', data);
+            
+            // Update inbox unread count
+            const inboxCountElement = document.getElementById('inbox-unread-count');
+            if (inboxCountElement) {
+                inboxCountElement.textContent = `(${data.unreadCount})`;
+                console.log('✅ Updated inbox count to:', data.unreadCount);
+            }
+        });
+
+        pusher.connection.bind('connected', function() {
+            console.log('📡 Messages page connected to Pusher');
+        });
+    }
+
     // Mark as read handler
     $('.mark-read').on('click', function(e) {
         e.preventDefault();

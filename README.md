@@ -1,23 +1,25 @@
-# Boy Projects - Laravel Admin System with Email Management
+# Boy Projects - Laravel Admin System with Real-Time Notifications
 
 ## **🎯 Overview**
 A comprehensive Laravel-based application featuring:
 1. **Customizable Landing Page** – Dynamic content management with multiple template layouts
-2. **Advanced Admin Dashboard** – Complete admin management with email system integration
-3. **Email Management System** – Automated notifications, verification, and password reset
-4. **Enhanced Security** – Session management with back-button prevention and authentication checks
+2. **Advanced Admin Dashboard** – Complete admin management with real-time notifications
+3. **Real-Time Notification System** – Live updates using Pusher for instant notifications
+4. **Email Management System** – Automated notifications, verification, and contact management
+5. **Enhanced Security** – Session management with back-button prevention and authentication checks
 
 ---
 
 ## **📋 Table of Contents**
 - [Features](#features)
 - [Installation](#installation)
+- [Real-Time Configuration](#real-time-configuration)
 - [Email Configuration](#email-configuration)
 - [Admin System](#admin-system)
 - [Security Features](#security-features)
 - [File Structure](#file-structure)
 - [Usage Guide](#usage-guide)
-- [Testing](#testing)
+- [Technologies Used](#technologies-used)
 
 ---
 
@@ -30,33 +32,39 @@ A comprehensive Laravel-based application featuring:
 - Order management for sections
 - Responsive design with modern UI
 
+### **📡 Real-Time Notification System**
+- **Live Dashboard Updates**: Instant notification updates without page refresh
+- **Contact Form Alerts**: Real-time notifications when new contact messages arrive
+- **Pusher Integration**: WebSocket-based real-time communication
+- **Badge Counters**: Dynamic notification counters that update instantly
+- **Multi-Page Support**: Real-time updates work across all admin pages
+- **Browser Notifications**: Desktop notifications for new messages
+- **Unread Message Tracking**: Real-time unread message counts
+
 ### **👥 Admin Management System**
 - Secure admin authentication
 - Role-based access control
 - Admin account verification
-- Bulk email operations
-- Contact message management
+- Real-time notification preferences
+- Contact message management with live updates
 
-### **📧 Email System**
-- **Account Reactivation**: Email notifications with WhatsApp integration
-- **Security Codes**: Password reset with time-limited security codes
-- **Email Verification**: Secure token-based verification system
-- **Bulk Emails**: Send notifications to multiple admins
-- **Template System**: Blade-based email templates
+### **📧 Enhanced Contact System**
+- **Contact Form Submissions**: Secure CSRF-protected contact forms
+- **Real-Time Notifications**: Instant alerts when new messages arrive
+- **Message Status Tracking**: New, In Progress, Resolved, Closed statuses
+- **Admin Responses**: Reply to customer messages with status updates
+- **Assignment System**: Assign messages to specific admins
+- **Filtering & Search**: Filter by category, status, and read/unread
+- **Bulk Operations**: Mark all as read, delete multiple messages
 
 ### **🔒 Security Features**
 - Enhanced logout with session invalidation
 - Back-button prevention after logout
 - Real-time session validation
 - Cache control headers
-- CSRF protection
+- CSRF protection with token validation
 - Password visibility toggles
-
-### **💬 Contact System**
-- Contact form submissions
-- Admin response management
-- Message status tracking
-- Bulk operations
+- Database injection protection
 
 ---
 
@@ -66,7 +74,8 @@ A comprehensive Laravel-based application featuring:
 - PHP 8.1+
 - Composer
 - MySQL 8.0+
-- Node.js & NPM (for assets)
+- Node.js 14.17.3+ & NPM
+- Pusher account (for real-time features)
 
 ### **Setup Steps**
 
@@ -79,7 +88,7 @@ A comprehensive Laravel-based application featuring:
 2. **Install Dependencies**
    ```bash
    composer install
-   npm install && npm run dev
+   npm install
    ```
 
 3. **Environment Configuration**
@@ -102,7 +111,7 @@ A comprehensive Laravel-based application featuring:
    DB_USERNAME=your_username
    DB_PASSWORD=your_password
 
-   # Email Configuration (Required for admin features)
+   # Email Configuration
    MAIL_MAILER=smtp
    MAIL_HOST=smtp.gmail.com
    MAIL_PORT=587
@@ -111,6 +120,16 @@ A comprehensive Laravel-based application featuring:
    MAIL_ENCRYPTION=tls
    MAIL_FROM_ADDRESS=your-email@gmail.com
    MAIL_FROM_NAME="${APP_NAME}"
+
+   # Pusher Configuration (Required for real-time features)
+   BROADCAST_DRIVER=pusher
+   PUSHER_APP_ID=your_app_id
+   PUSHER_APP_KEY=your_app_key
+   PUSHER_APP_SECRET=your_app_secret
+   PUSHER_HOST=
+   PUSHER_PORT=443
+   PUSHER_SCHEME=https
+   PUSHER_APP_CLUSTER=ap1
    ```
 
 4. **Generate Application Key**
@@ -124,10 +143,48 @@ A comprehensive Laravel-based application featuring:
    php artisan db:seed
    ```
 
-6. **Start Development Server**
+6. **Compile Assets**
+   ```bash
+   npm run dev
+   # or for production
+   npm run build
+   ```
+
+7. **Start Development Server**
    ```bash
    php artisan serve
    ```
+
+---
+
+## **📡 Real-Time Configuration**
+
+### **Pusher Setup**
+1. **Create Pusher Account**
+   - Visit [pusher.com](https://pusher.com)
+   - Create a new app
+   - Get your app credentials
+
+2. **Configure Environment**
+   ```env
+   BROADCAST_DRIVER=pusher
+   PUSHER_APP_ID=2003476
+   PUSHER_APP_KEY=826b21ec656c73be408d
+   PUSHER_APP_SECRET=2c3e417407e10ea3cd24
+   PUSHER_APP_CLUSTER=ap1
+   ```
+
+3. **Broadcasting Routes**
+   - Channel: `admin.notifications`
+   - Event: `ContactMessageEvent`
+   - Authentication: Admin only
+
+### **Real-Time Features**
+- **Dashboard Notifications**: Live updates in admin navbar
+- **Message Counters**: Real-time unread message counts
+- **Instant Alerts**: New contact form submissions
+- **Cross-Page Updates**: Updates work on all admin pages
+- **WebSocket Connection**: Persistent connection for instant updates
 
 ---
 
@@ -151,215 +208,206 @@ Located in `resources/views/admin/email/`:
 
 ## **🎛️ Admin System**
 
-### **Default Admin Access**
+### **Admin Access**
 - URL: `/admin/login`
-- Default credentials are created during seeding
+- Real-time dashboard with live notifications
+- Contact message management with instant updates
 
 ### **Admin Features**
-- **Dashboard**: Overview with statistics
+- **Real-Time Dashboard**: Live notification updates and statistics
+- **Contact Management**: 
+  - View all messages with real-time updates
+  - Reply to customers with status tracking
+  - Assign messages to team members
+  - Filter by category, status, read/unread
+  - Bulk operations (mark all as read, delete)
 - **Content Management**: Edit landing page sections
 - **Email Operations**: Send verification, reactivation, security codes
 - **User Management**: Admin account management
-- **Contact Management**: Handle customer inquiries
-- **Security**: Password changes, session management
 
-### **Email Operations**
+### **Contact System Endpoints**
 ```php
-// Individual email sending
-POST /admin/emails/reactivation
-POST /admin/emails/security-code
-POST /admin/emails/verification
+// Contact form submission (public)
+POST /contact/submit
 
-// Bulk email operations
-POST /admin/emails/bulk
+// Admin message management
+GET /admin/messages              // List all messages
+GET /admin/messages/{id}         // View single message
+POST /admin/messages/{id}/read   // Mark as read
+POST /admin/messages/read-all    // Mark all as read
+POST /admin/messages/{id}/respond // Reply to message
+POST /admin/messages/{id}/assign  // Assign to admin
+DELETE /admin/messages/{id}      // Delete message
 ```
 
 ---
 
 ## **🛡️ Security Features**
 
+### **Enhanced Security**
+- **CSRF Protection**: All forms protected with CSRF tokens
+- **Database Security**: Prepared statements prevent SQL injection
+- **Input Validation**: Server-side validation for all inputs
+- **Session Security**: Secure session management
+- **Password Security**: Strong password requirements
+
+### **Contact Form Security**
+- CSRF token validation
+- Input sanitization
+- Rate limiting protection
+- Validation for all fields:
+  - Name: Required, max 255 characters
+  - Email: Required, valid email format
+  - Phone: Optional, max 20 characters
+  - Subject: Required, max 255 characters
+  - Message: Required content
+
 ### **Authentication Security**
 - Password requirements (8+ chars, mixed case, numbers, symbols)
 - Security code expiration (1 hour)
 - Session invalidation on logout
 - CSRF token validation
-
-### **Back-Button Prevention**
-- Cache control headers on all admin pages
-- JavaScript session validation
-- Real-time authentication checks
-- Automatic redirect to login when session expires
-
-### **Session Management**
-- Periodic session validation (every 5 minutes)
-- Page focus session checks
-- Complete session cleanup on logout
+- Back-button prevention after logout
 
 ---
 
 ## **📁 File Structure**
-
 ```
-app/
-├── Http/
-│   ├── Controllers/
-│   │   ├── Admin/
-│   │   │   ├── AuthController.php          # Admin authentication
-│   │   │   └── EmailController.php         # Email management
-│   │   ├── AdminController.php             # Admin dashboard
-│   │   ├── ContactController.php           # Contact management
-│   │   ├── LandingPageController.php       # Landing page
-│   │   └── TableController.php             # Data tables
-│   └── Middleware/
-│       └── PreventBackHistory.php          # Security middleware
-├── Mail/
-│   ├── AdminReactivationNotification.php  # Reactivation emails
-│   ├── AdminSecurityCode.php              # Security code emails
-│   └── AdminVerification.php              # Verification emails
-└── Models/
-    ├── Admin.php                           # Admin model with security methods
-    ├── Section.php                         # Landing page sections
-    └── SectionContent.php                  # Section content
-
-resources/views/
-├── admin/
-│   ├── auth/                               # Authentication pages
-│   │   ├── login.blade.php                # Login with password toggle
-│   │   ├── reset-password.blade.php       # Password reset
-│   │   └── change-password.blade.php      # Password change
-│   ├── email/                              # Email templates
-│   │   ├── reactivate.blade.php           # Reactivation email
-│   │   ├── security_code.blade.php        # Security code email
-│   │   └── verification.blade.php         # Verification email
-│   ├── layouts/
-│   │   ├── master.blade.php               # Main admin layout
-│   │   └── auth.blade.php                 # Auth layout
-│   └── admin.blade.php                    # Admin management page
-└── landing/                                # Landing page templates
-    ├── sections/                           # Template sections
-    └── index.blade.php                     # Main landing page
-
-routes/
-└── web.php                                 # All application routes
+boyzproject/
+├── app/
+│   ├── Events/
+│   │   └── ContactMessageEvent.php      # Real-time event broadcasting
+│   ├── Http/Controllers/
+│   │   ├── AdminController.php          # Admin dashboard with real-time data
+│   │   └── ContactController.php        # Contact management with broadcasting
+│   ├── Models/
+│   │   ├── ContactMessage.php           # Contact message model
+│   │   ├── Customer.php                 # Customer model
+│   │   └── MessageResponse.php          # Admin response model
+│   └── Providers/
+│       └── ViewComposerServiceProvider.php # Navbar notifications
+├── resources/
+│   ├── views/
+│   │   ├── admin/
+│   │   │   ├── messages.blade.php       # Message list with real-time updates
+│   │   │   ├── messages-single.blade.php # Single message view
+│   │   │   └── partials/
+│   │   │       └── navbar.blade.php     # Real-time notification navbar
+│   │   └── layouts/
+│   │       ├── admin.blade.php          # Admin layout
+│   │       └── landing.blade.php        # Landing page with contact form
+│   └── js/
+│       └── notifications.js             # Real-time notification handling
+├── routes/
+│   ├── web.php                          # Web routes
+│   └── channels.php                     # Broadcasting channels
+├── config/
+│   └── broadcasting.php                 # Broadcasting configuration
+├── database/
+│   └── migrations/                      # Database schema
+├── webpack.mix.js                       # Laravel Mix configuration
+└── package.json                         # NPM dependencies with Pusher
 ```
 
 ---
 
-## **📖 Usage Guide**
+## **🔧 Technologies Used**
 
-### **Landing Page Customization**
-1. Login to admin panel: `/admin/login`
-2. Navigate to "Landing Page Tables"
-3. Select section to edit
-4. Modify content, enable/disable sections
-5. Changes reflect immediately on landing page
+### **Backend**
+- **Laravel 10** - PHP framework
+- **MySQL** - Database
+- **Pusher** - Real-time WebSocket service
+- **Laravel Echo** - Broadcasting client
+- **Laravel Mix** - Asset compilation
 
-### **Email Management**
-1. Go to "Admin Management" page
-2. Use dropdown menu for individual emails:
-   - Send Verification
-   - Send Reactivation  
-   - Reset Password
-3. Use checkboxes + "Send Bulk Emails" for multiple recipients
+### **Frontend**
+- **Bootstrap 5** - UI framework
+- **jQuery** - JavaScript library
+- **Pusher JS** - Real-time client library
+- **Font Awesome** - Icons
 
-### **Password Reset Flow**
-1. User clicks "Forgot Password"
-2. Enters email address
-3. Receives security code via email
-4. Enters code + new password
-5. Password updated successfully
+### **Real-Time Stack**
+- **Pusher Channels** - WebSocket service
+- **Laravel Broadcasting** - Server-side broadcasting
+- **Laravel Echo** - Client-side listener
+- **pusher-js** - JavaScript WebSocket client
 
-### **Admin Verification**
-1. Send verification email from admin panel
-2. Admin receives email with secure link
-3. Click link to verify account
-4. Account marked as verified
+---
+
+## **📱 Usage Guide**
+
+### **Customer Experience**
+1. Fill out contact form on landing page
+2. Receive confirmation message
+3. Admin receives real-time notification
+
+### **Admin Experience**
+1. Log into admin dashboard
+2. See real-time notifications in navbar
+3. View all messages with live updates
+4. Respond to customers with status tracking
+5. Assign messages to team members
+6. Filter and manage messages efficiently
+
+### **Real-Time Features**
+- **Instant Notifications**: New messages appear immediately
+- **Live Counters**: Unread message counts update in real-time
+- **Cross-Page Updates**: Works on dashboard, message list, and single message pages
+- **Desktop Notifications**: Browser notifications for new messages
 
 ---
 
 ## **🧪 Testing**
 
-### **Email Testing**
-Test route available: `/test-email/{adminId}`
-```bash
-# Test email functionality
-curl http://localhost:8000/test-email/1
-```
+### **Test Real-Time Features**
+1. Open admin dashboard in one browser
+2. Submit contact form in another browser/tab
+3. Watch admin dashboard update instantly
+4. Verify notification counters update
+5. Check message appears in inbox immediately
 
-### **Security Testing**
-1. Login to admin panel
-2. Logout
-3. Try browser back button → Should redirect to login
-4. Try accessing admin URLs directly → Should redirect to login
-
-### **Feature Testing**
-- Contact form submissions
-- Admin email operations
-- Password reset flow
-- Session expiration handling
+### **Test Contact System**
+1. Submit contact form with various data
+2. Verify admin receives notification
+3. Test admin response functionality
+4. Check message status updates
+5. Test assignment features
 
 ---
 
-## **🔧 Configuration**
+## **📈 Performance Notes**
 
-### **WhatsApp Integration**
-Update phone number in reactivation email template:
-```blade
-<!-- resources/views/admin/email/reactivate.blade.php -->
-<a href="https://wa.me/082216649329?text=reactivate%20account%20{{ urlencode($admin->name) }}" 
-   style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">
-    Contact via WhatsApp
-</a>
-```
-
-### **Session Configuration**
-Adjust session timeout in `config/session.php`:
-```php
-'lifetime' => 120, // minutes
-```
-
-### **Email Rate Limiting**
-Configure in `config/mail.php` if needed for production.
-
----
-
-## **🚀 Deployment**
-
-### **Production Checklist**
-- [ ] Set `APP_ENV=production`
-- [ ] Set `APP_DEBUG=false`
-- [ ] Configure production database
-- [ ] Set up proper email credentials
-- [ ] Configure web server (Apache/Nginx)
-- [ ] Set proper file permissions
-- [ ] Enable HTTPS
-- [ ] Configure caching (`php artisan config:cache`)
+- **Real-time updates** use minimal bandwidth (WebSocket)
+- **Database queries** optimized with proper indexing
+- **Asset compilation** uses Laravel Mix for optimization
+- **Broadcasting** only to authenticated admin users
+- **Memory efficient** event handling
 
 ---
 
 ## **🤝 Contributing**
+
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+5. Open a Pull Request
 
 ---
 
-## **📝 License**
-This project is open source and available under the [MIT License](LICENSE).
+## **📄 License**
 
----
-
-## **👨‍💻 Author**
-**Boy Projects Team**
-- Email: your-email@gmail.com
-- WhatsApp: +62 822-1664-9329
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ---
 
 ## **📞 Support**
+
 For support and questions:
-- Create an issue on GitHub
-- Contact via WhatsApp: +62 822-1664-9329
-- Email: your-email@gmail.com
+- 📧 Email: support@boyprojects.com
+- 📱 WhatsApp: [Contact via WhatsApp](https://wa.me/your_number)
+- 🐛 Issues: [GitHub Issues](https://github.com/danaardana/boyzproject/issues)
+
+---
+
+**Made with ❤️ by the Boy Projects Team**

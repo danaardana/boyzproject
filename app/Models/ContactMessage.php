@@ -41,6 +41,14 @@ class ContactMessage extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected static function booted() {
+        static::creating(function ($model) {
+            if (empty($model->content_key)) {
+                $model->content_key = "default";
+            }
+        });
+    }
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);

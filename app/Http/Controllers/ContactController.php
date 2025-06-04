@@ -7,8 +7,10 @@ use App\Models\MessageResponse;
 use App\Models\Customer;
 use App\Models\PredefinedMessage;
 use App\Models\Admin;
+use App\Events\ContactMessageEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
@@ -49,37 +51,63 @@ class ContactController extends Controller
 
     public function submit(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-        ]);
+        try {
+            // Validate the incoming request (e.g. name, email, phone, subject, message) as needed.
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'nullable|string|max:20',
+                'subject' => 'required|string|max:255',
+                'message' => 'required|string',
+            ]);
 
-        // Create or find customer
-        $customer = Customer::firstOrCreate(
-            ['email' => $validated['email']],
-            [
-                'name' => $validated['name'],
-                'phone' => $validated['phone'] ?? null,
-            ]
-        );
+            // (Optional) Compute a "content_key" (for example, using the subject) so that the insert does not fail.
+            // (If "content_key" is intended to be the subject, then assign it accordingly.)
+            $contentKey = $validated['subject'];
 
-        // Create contact message
-        $message = ContactMessage::create([
-            'customer_id' => $customer->id,
-            'content' => $validated['message'],
-            'category' => $validated['subject'],
-            'status' => ContactMessage::STATUS_NEW,
-            'is_read' => false,
-            'last_update_time' => now(),
-        ]);
+            // Create or find customer
+            $customer = Customer::firstOrCreate(
+                ['email' => $validated['email']],
+                [
+                    'name' => $validated['name'],
+                    'phone' => $validated['phone'] ?? null,
+                ]
+            );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Message sent successfully!'
-        ]);
+            // Insert a new record into contact_messages (using the computed "content_key").
+            $contactMessage = ContactMessage::create([
+                'customer_id' => $customer->id,
+                'content_key' => $contentKey, // (using the subject as "content_key")
+                'content' => $validated['message'],
+                'category' => $validated['subject'],
+                'status' => ContactMessage::STATUS_NEW,
+                'is_read' => false,
+                'last_update_time' => now(),
+            ]);
+
+            // Log successful creation
+            \Log::info('Contact message created successfully', [
+                'contact_message_id' => $contactMessage->id,
+                'customer_id' => $customer->id,
+                'content_key' => $contentKey
+            ]);
+
+            // (Optional) broadcast an event (e.g. ContactMessageEvent) if you want real-time updates.
+            broadcast(new ContactMessageEvent())->toOthers();
+
+            // Redirect to homepage with success message instead of redirecting back
+            return redirect('/')->with('success', 'Your message has been sent.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed', ['errors' => $e->errors()]);
+            return redirect('/')->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            \Log::error('Error creating contact message', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect('/')->with('error', 'Something went wrong. Please try again.');
+        }
     }
 
     public function index()
@@ -93,8 +121,11 @@ class ContactController extends Controller
         
         // Get all admins for assignment
         $admins = Admin::all();
+        
+        // Get unread messages count
+        $unreadMessagesCount = ContactMessage::where('is_read', false)->count();
             
-        return view('admin.messages', compact('messages', 'stats', 'admins'));
+        return view('admin.messages', compact('messages', 'stats', 'admins', 'unreadMessagesCount'));
     }
 
     /**
@@ -132,18 +163,30 @@ class ContactController extends Controller
     public function markAsRead(ContactMessage $message)
     {
         $message->markAsRead();
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
         return back()->with('success', 'Message marked as read.');
     }
 
     public function markAllAsRead()
     {
         ContactMessage::where('is_read', false)->update(['is_read' => true]);
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
         return back()->with('success', 'All messages marked as read.');
     }
 
     public function destroy(ContactMessage $message)
     {
         $message->delete();
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
         return redirect()->route('admin.messages.index')
             ->with('success', 'Message deleted successfully.');
     }
@@ -167,6 +210,9 @@ class ContactController extends Controller
             'admin_id' => $message->admin_id ?? auth('admin')->id(), // Assign to current admin if not already assigned
             'last_update_time' => now()
         ]);
+
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
 
         if ($request->ajax()) {
             return response()->json([
@@ -198,7 +244,10 @@ class ContactController extends Controller
             'admin_id' => $adminId,
             'status' => ContactMessage::STATUS_IN_PROGRESS
         ]);
-
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
