@@ -44,8 +44,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('admin.password.update');
     });
 
-    // Protected routes
-    Route::middleware(['auth:admin', 'prevent.back'])->group(function () {
+    // Protected routes - Option 1: Full class name (current)
+    Route::middleware(['auth:admin', \App\Http\Middleware\PreventBackHistory::class])->group(function () {
         // Dashboard and main features
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
