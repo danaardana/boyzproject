@@ -2,62 +2,107 @@
 
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\EmailVerificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
-
+// Public routes
+Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-Route::get('/landing/login', [LandingPageController::class, 'showLoginForm'])->name('login');
-Route::post('/landing/login', [LandingPageController::class, 'login'])->name('login.submit');
+// Admin verification route (public for email verification)
+Route::get('/admin/verify/{id}/{token}', [EmailController::class, 'verifyAdmin'])->name('admin.verify');
 
-
-//Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+// Test route for email functionality (remove after testing)
+Route::get('/test-email/{adminId}', function($adminId) {
+    $admin = \App\Models\Admin::findOrFail($adminId);
+    $securityCode = $admin->generateSecurityCode();
     
-    Route::get('/admin/lockscreen', [AdminController::class, 'lockscreen'])->name('admin.lockscreen');
-    Route::post('/admin/unlock', [AdminController::class, 'unlock'])->name('admin.unlock');
-    
-    Route::get('/', [AdminController::class, 'landingPage'])->name('landing-page');
-    Route::get('/admin/landingpage-tables', [AdminController::class, 'landingPageTables'])->name('admin.landingPageTables');
-    Route::get('/admin/subsection-tables', [AdminController::class, 'subsectionTables'])->name('admin.subsectionTables');
-    Route::get('/admin/subsections/{id}', [AdminController::class, 'subsectionTables'])->name('admin.subsection_tables');
+    try {
+        \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\AdminSecurityCode($admin, $securityCode));
+        return "Security code email sent successfully to {$admin->email}! Code: {$securityCode}";
+    } catch (\Exception $e) {
+        return "Failed to send email: " . $e->getMessage();
+    }
+})->name('test.email');
 
-    Route::get('/admin/portofolio', function () {
-        return app()->call('App\Http\Controllers\TableController@show', ['type' => 'portofolio']);
-    })->name('admin.portofolio');
-
-    Route::get('/admin/instagram', function () {
-        return app()->call('App\Http\Controllers\TableController@show', ['type' => 'instagram']);
-    })->name('admin.instagram');
-
-    Route::get('/admin/tiktok', function () {
-        return app()->call('App\Http\Controllers\TableController@show', ['type' => 'tiktok']);
-    })->name('admin.tiktok');
-
-    Route::get('/admin/testimonials', function () {
-        return app()->call('App\Http\Controllers\TableController@show', ['type' => 'testimonials']);
-    })->name('admin.testimonials');
-
-    Route::get('/admin/promotion', function () {
-        return app()->call('App\Http\Controllers\TableController@show', ['type' => 'promotion']);
-    })->name('admin.promotion');
-
-    Route::get('/admin/categories', function () {
-        return app()->call('App\Http\Controllers\TableController@show', ['type' => 'categories']);
-    })->name('admin.categories');
+// Admin Auth Routes
+Route::prefix('admin')->group(function () {
+    // Guest routes
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
+        Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
         
-    Route::put('/admin/section-content/{id}', [AdminController::class, 'update'])->name('section_content.update');    
-    Route::get('/admin/faq', [AdminController::class, 'faqPage'])->name('admin.faq');;    
-    Route::get('/admin/chat', [AdminController::class, 'chatPage'])->name('admin.chat');;    
-    Route::get('/admin/admin', [AdminController::class, 'adminPage'])->name('admin.admin');;
-    Route::get('/admin/history', [AdminController::class, 'historyPage'])->name('admin.history');;
-    Route::get('/admin/email-verification/{email}', [AdminController::class, 'emailVerification'])->name('admin.email-verification');;
-    Route::get('/admin/email-confirmation', [AdminController::class, 'emailConfirmation'])->name('admin.email-confirmation');;
+        // Password Reset Routes
+        Route::get('/password/reset', [AuthController::class, 'showForgotForm'])->name('admin.password.request');
+        Route::post('/password/email', [AuthController::class, 'sendResetCode'])->name('admin.password.email');
+        Route::get('/password/reset/form', [AuthController::class, 'showResetForm'])->name('admin.password.reset');
+        Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('admin.password.update');
+    });
 
-    Route::post('/admin/verify-email', [EmailVerificationController::class, 'verify'])->name('verify.email.submit');
+    // Protected routes
+    Route::middleware(['auth:admin', 'prevent.back'])->group(function () {
+        // Dashboard and main features
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+        
+        // Session check route (for AJAX calls)
+        Route::get('/auth-check', function() {
+            return response()->json(['authenticated' => true]);
+        })->name('admin.auth.check');
+        
+        // Messages routes
+        Route::get('/messages', [ContactController::class, 'index'])->name('admin.messages.index');
+        Route::get('/messages/{message}', [ContactController::class, 'show'])->name('admin.messages.show');
+        Route::post('/messages/{message}/read', [ContactController::class, 'markAsRead'])->name('admin.messages.mark-read');
+        Route::post('/messages/{message}/assign', [ContactController::class, 'assign'])->name('admin.messages.assign');
+        Route::post('/messages/{message}/respond', [ContactController::class, 'respond'])->name('admin.messages.respond');
+        Route::delete('/messages/{message}', [ContactController::class, 'destroy'])->name('admin.messages.destroy');
+        Route::post('/messages/read-all', [ContactController::class, 'markAllAsRead'])->name('admin.messages.mark-all-read');
+        
+        // Email routes
+        Route::prefix('emails')->group(function () {
+            Route::post('/reactivation', [EmailController::class, 'sendReactivationNotification'])->name('admin.emails.reactivation');
+            Route::post('/security-code', [EmailController::class, 'sendSecurityCode'])->name('admin.emails.security-code');
+            Route::post('/verification', [EmailController::class, 'sendVerification'])->name('admin.emails.verification');
+            Route::post('/bulk', [EmailController::class, 'sendBulkEmails'])->name('admin.emails.bulk');
+        });
+        
+        // Lockscreen routes
+        Route::get('/lockscreen', [AuthController::class, 'lockscreen'])->name('admin.lockscreen');
+        Route::post('/unlock', [AuthController::class, 'unlock'])->name('admin.unlock');
+        
+        // Password change routes
+        Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('admin.password.change');
+        Route::post('/password/change', [AuthController::class, 'changePassword'])->name('admin.password.change.submit');
+        
+        // Content management routes
+        Route::get('/landingpage-tables', [AdminController::class, 'landingPageTables'])->name('admin.landingPageTables');
+        Route::get('/subsection-tables', [AdminController::class, 'subsectionTables'])->name('admin.subsectionTables');
+        Route::get('/subsections/{id}', [AdminController::class, 'subsectionTables'])->name('admin.subsection_tables');
 
-//});
+        // Table routes
+        Route::get('/portofolio', [TableController::class, 'show'])->defaults('type', 'portofolio')->name('admin.portofolio');
+        Route::get('/instagram', [TableController::class, 'show'])->defaults('type', 'instagram')->name('admin.instagram');
+        Route::get('/tiktok', [TableController::class, 'show'])->defaults('type', 'tiktok')->name('admin.tiktok');
+        Route::get('/testimonials', [TableController::class, 'show'])->defaults('type', 'testimonials')->name('admin.testimonials');
+        Route::get('/promotion', [TableController::class, 'show'])->defaults('type', 'promotion')->name('admin.promotion');
+        Route::get('/categories', [TableController::class, 'show'])->defaults('type', 'categories')->name('admin.categories');
+        
+        // Content update routes
+        Route::put('/section-content/{id}', [AdminController::class, 'update'])->name('section_content.update');
+        
+        // Other admin features
+        Route::get('/faq', [AdminController::class, 'faqPage'])->name('admin.faq');
+        Route::get('/chat', [ContactController::class, 'index'])->name('admin.chat');
+        Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
+        Route::get('/history', [AdminController::class, 'historyPage'])->name('admin.history');
+        Route::get('/email-verification/{email}', [AdminController::class, 'emailVerification'])->name('admin.email-verification');
+        Route::get('/email-confirmation', [AdminController::class, 'emailConfirmation'])->name('admin.email-confirmation');
+        Route::post('/verify-email', [EmailVerificationController::class, 'verify'])->name('verify.email.submit');
+    });
+});

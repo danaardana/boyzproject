@@ -9,64 +9,31 @@ use App\Models\Section;
 use App\Models\SectionContent;
 use Illuminate\Support\Facades\DB;
 use Jenssegers\Agent\Agent;
+use App\Models\ContactMessage;
+use Illuminate\Support\Facades\View;
+use App\Models\Admin;
 
 class AdminController extends Controller
 {
-    public function login(Request $request){
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        Auth::guard('admin')->loginUsingId(1); 
-
-        return redirect()->route('admin.dashboard');
-    }    
-    
-    public function logout(Request $request){
-        auth()->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-        return view('landing.login');
-    }
-
-    public function lockscreen(Request $request){
-        session(['lockscreen_user_id' => auth()->id()]);
-
-        auth()->logout();
-        session()->invalidate();
-        session()->regenerateToken();
-
-        $sections = Section::where('name', 'testimonials')->get();
-        $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
-        $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
-        return view('admin.lockscreen', compact('SectionContents','totalSectionContents'));
-    }
-
-    public function unlock(Request $request){
-        $request->validate([
-            'password' => 'required|string',
-        ]);
-    
-        $admin = Auth::guard('admin')->loginUsingId(1); 
-    
-        if (!$admin) {
-            return redirect()->route('admin.login')->withErrors('Session expired, please login again.');
-        }
-    
-        // if (Hash::check($request->password, $admin->password)) {
-            return redirect()->route('admin.dashboard');
-        // } else {
-        //    return back()->withErrors(['password' => 'Password salah, coba lagi.']);
-        //}
-
-        //return back()->withErrors(['password' => 'Password salah']);
-    }
-
-    public function dashboard(){
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
         
+        // Share unread messages count and recent messages with all admin views
+        View::composer('admin.*', function($view) {
+            $unreadMessages = ContactMessage::where('is_read', false)->count();
+            $recentMessages = ContactMessage::orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+            $view->with([
+                'unreadMessages' => $unreadMessages,
+                'recentMessages' => $recentMessages
+            ]);
+        });
+    }
+
+    public function dashboard()
+    {
         $totalSections = DB::table('sections')->count();
         $totalActiveSections = DB::table('sections')->where('is_active', 1)->count();
         
@@ -118,7 +85,6 @@ class AdminController extends Controller
             ->get();
     
         return view('admin.subsection_tables', compact('sections', 'sectionName'));
-        
     }
     
     public function faqPage(){        
@@ -126,8 +92,8 @@ class AdminController extends Controller
     }    
         
     public function adminPage(){        
-        $totalAdmins = DB::table('admins')->count();
-        $admins = DB::table('admins')->get();
+        $totalAdmins = Admin::count();
+        $admins = Admin::orderBy('created_at', 'desc')->get();
         
         $sessions = DB::table('sessions')->orderBy('last_activity', 'desc')->limit(50)->get();
     
@@ -153,7 +119,30 @@ class AdminController extends Controller
     }
 
     public function chatPage(){        
-        return view('admin.chat');
+        $messages = ContactMessage::with(['customer', 'assignedAdmin'])
+            ->latest()
+            ->get();
+            
+        $selectedMessage = $messages->first();
+        
+        // Get conversation if there's a selected message
+        $conversation = null;
+        if ($selectedMessage && $selectedMessage->customer_id) {
+            $conversation = ContactMessage::where('customer_id', $selectedMessage->customer_id)
+                ->latest()
+                ->get();
+                
+            // Mark message as read if unread
+            if (!$selectedMessage->is_read) {
+                $selectedMessage->markAsRead();
+            }
+        }
+        
+        return view('admin.chat', compact('messages', 'selectedMessage', 'conversation'));
+    }
+
+    public function chatbotPage(){
+        return view('admin.predefined-messages');
     }
     
     public function historyPage(){
@@ -182,7 +171,6 @@ class AdminController extends Controller
     }  
 
     public function emailVerification($email = null){      
-
         $admin = \App\Models\Admin::where('email', $email)->first();
     
         if (!$admin) {
@@ -200,6 +188,4 @@ class AdminController extends Controller
         $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
         return view('admin.email-confirmation', compact('SectionContents','totalSectionContents'));
     }
-
-
 }

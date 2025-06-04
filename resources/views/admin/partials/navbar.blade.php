@@ -192,6 +192,65 @@ require_once ("./admin/lang/" . $lang . ".php");
                 </div>
             </div>
 
+             <!-- Contact Messages Notification -->
+             <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item noti-icon position-relative" id="page-header-messages-dropdown"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i data-feather="message-square" class="icon-lg bx bx-message"></i>
+                    @if($unreadMessages > 0)
+                        <span class="badge bg-danger rounded-pill">{{ $unreadMessages }}</span>
+                    @endif
+                </button>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                    aria-labelledby="page-header-messages-dropdown">
+                    <div class="p-3">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0">{{ $language["Messages"] }}</h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="{{ route('admin.messages.index') }}" class="small text-reset text-decoration-underline">
+                                    {{ $language["Unread"] }} ({{ $unreadMessages }})
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-simplebar style="max-height: 230px;">
+                        @forelse($recentMessages as $message)
+                            <a href="{{ route('admin.messages.show', $message->id) }}" class="text-reset notification-item">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-sm me-3">
+                                        <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                            <i class="bx bx-user"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ $message->customer->name }}</h6>
+                                        <div class="font-size-13 text-muted">
+                                            <p class="mb-1">{{ Str::limit($message->content, 50) }}</p>
+                                            <p class="mb-0">
+                                                <i class="mdi mdi-clock-outline"></i>
+                                                <span>{{ $message->created_at->diffForHumans() }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="text-center p-3">
+                                <p class="text-muted mb-0">{{ $language["No_messages"] }}</p>
+                            </div>
+                        @endforelse
+                    </div>
+                    <div class="p-2 border-top d-grid">
+                        <a class="btn btn-sm btn-link font-size-14 text-center" href="{{ route('admin.messages.index') }}">
+                            <i class="mdi mdi-arrow-right-circle me-1"></i>
+                            <span>{{ $language["View_All"] }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -199,7 +258,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a class="dropdown-item" href="#"><i class="mdi mdi mdi-face-man font-size-16 align-middle me-1"></i> {{ $language["Profile"] }}</a>
+                    <a class="dropdown-item" href="{{ route('admin.password.change') }}"><i class="mdi mdi mdi-face-man font-size-16 align-middle me-1"></i> {{ $language["Reset_Password"] }}</a>
                     <a class="dropdown-item" href="{{ route('admin.lockscreen') }}"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> {{ $language["Lock_screen"] }} </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ route('admin.logout') }}"><i class="mdi mdi-logout font-size-16 align-middle me-1"></i> {{ $language["Logout"] }}</a>
@@ -254,7 +313,8 @@ require_once ("./admin/lang/" . $lang . ".php");
                         
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                    <li><a href="{{ route('admin.chat') }}" data-key="documentation">{{ $language["Message"] }}</a></li>
+                    <li><a href="{{ route('admin.messages.index') }}" data-key="documentation">{{ $language["Message"] }}</a></li>
+                    <li><a href="{{ route('admin.chat') }}" data-key="documentation">Chat</a></li>
                     <li><a href="#" data-key="documentation">Chatbot</a></li>
                     </ul>
                 </li>

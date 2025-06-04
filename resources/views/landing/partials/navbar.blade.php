@@ -18,7 +18,7 @@ $sections = Section::where('is_active', true)
         <ul class="social-media-dark social-top">
           <li><a href="https://wa.me/08211990442" class="icofont icofont-whatsapp"></a></li>
           <li><a href="https://linktr.ee/boyprojects" class="icofont icofont-linkedin"></a></li>
-          <li><a href="{{ route('login') }}" class="icofont icofont-user"></a></li>
+          <li><a href="{{ route('admin.login') }}" class="icofont icofont-user"></a></li>
         </ul>
       </div>
       <!--=== End Atribute Navigation ===-->
