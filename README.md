@@ -8,7 +8,8 @@ A comprehensive Laravel-based e-commerce admin dashboard specifically designed f
 - **Multi-Platform Integration** – Shopee, Tokopedia platform support with filtering
 - **Advanced Analytics** – Revenue tracking, top-selling categories, product performance
 - **Customer Reviews System** – Star ratings and platform-specific feedback management
-- **Real-Time Chat Support** – Smart auto-response system for customer inquiries
+- **Enhanced Chat Interface** – Filter/sort functionality with 19 realistic conversations
+- **Email Reply System** – Dynamic customer response with database integration
 - **Professional Email System** – Anti-spam measures with automated admin workflows
 
 ---
@@ -159,7 +160,7 @@ autoResponses: {
 
 1. **Clone & Install**
    ```bash
-   git clone https://github.com/danaardana/boyzproject.git
+   git clone <repository-url>
    cd boyzproject
    composer install
    npm install
@@ -339,7 +340,7 @@ Edit `public/landing/js/chat-bubble.js`:
 - ✅ **Sort Functions**: Newest First, Oldest First with time-based sorting
 - ✅ **Scrollable Design**: Enhanced sidebar with custom scrollbar styling
 
-### **Previous Features in 1.0 (05/07/2025)**
+### **Previous Features in 1.0 (July 2024)**
 - ✅ **E-Commerce Dashboard**: Complete transformation from crypto to motorcycle parts
 - ✅ **Enhanced Login**: Remember me functionality with 7-day sessions
 - ✅ **Email System Overhaul**: Anti-spam measures and professional templates
@@ -357,15 +358,6 @@ Edit `public/landing/js/chat-bubble.js`:
 
 ---
 
-## **📞 Support & Contact**
-
-- **Email**: info@boysproject.com
-- **Business Hours**: Monday-Friday 9AM-6PM (GMT+7)
-- **Technical Support**: Available via admin dashboard messaging system
-- **Documentation**: Complete inline documentation in codebase
-
----
-
 ## **📄 License**
 
 This project is proprietary software developed for Boy Projects. All rights reserved.
@@ -373,4 +365,4 @@ This project is proprietary software developed for Boy Projects. All rights rese
 ---
 
 *Last Updated: December 2024*
-*Version: 2.1.0 - Enhanced Communication & Chat Edition*
+*Version: 1.1.0 - Enhanced Communication & Chat Edition*
