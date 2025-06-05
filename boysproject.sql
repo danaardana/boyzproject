@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 05, 2025 at 09:32 AM
+-- Generation Time: Jun 05, 2025 at 09:31 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -47,7 +47,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `name`, `email`, `password`, `is_active`, `verified`, `last_login_at`, `remember_token`, `security_code`, `security_code_expires_at`, `created_at`, `updated_at`) VALUES
-(1, 'Rio A', 'rioardanaputra98@gmail.com', '$2y$12$w5EaJrzJ44WF8PLU27tm4O0IEIylUP/8o1KFh0HAlHffJPzvv.H1.', 1, 1, NULL, '20gpU3hkayo4K3207PStOQsUwTdTYVHw7TC9zCrb3JStKdzXcDtfHLXwxmrl', '2936AF44', '2025-06-04 01:59:29', '2025-06-02 23:58:12', '2025-06-04 00:59:29');
+(1, 'Rio A', 'rioardanaputra98@gmail.com', '$2y$12$w5EaJrzJ44WF8PLU27tm4O0IEIylUP/8o1KFh0HAlHffJPzvv.H1.', 1, 1, NULL, 'So4BgXM4PH5AbcgyNCx6WjYOdFBVEs3qYuwhHC2WU0vfrcsWpZFMwcdP1cNO', '2936AF44', '2025-06-04 01:59:29', '2025-06-02 23:58:12', '2025-06-04 00:59:29'),
+(2, 'Sang', 'sanghwakyung@gmail.com', '$2y$12$XqtYvR0U0OrH1wuImWEFBu/1.DeHiZzG0ED8d3f08oBFR14NFuiMG', 1, 1, NULL, NULL, NULL, NULL, '2025-06-04 21:22:16', '2025-06-04 23:15:17');
 
 -- --------------------------------------------------------
 
@@ -63,6 +64,9 @@ CREATE TABLE `contact_messages` (
   `content` text NOT NULL,
   `status` varchar(255) NOT NULL DEFAULT 'new',
   `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `is_important` tinyint(1) NOT NULL DEFAULT 0,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   `category` varchar(255) NOT NULL DEFAULT 'general',
   `last_update_time` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -73,16 +77,13 @@ CREATE TABLE `contact_messages` (
 -- Dumping data for table `contact_messages`
 --
 
-INSERT INTO `contact_messages` (`id`, `customer_id`, `admin_id`, `content_key`, `content`, `status`, `is_read`, `category`, `last_update_time`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'Product Inquiry', 'I would like to know more about your products.', 'new', 1, 'general', '2025-06-02 23:58:12', '2025-06-02 23:58:12', '2025-06-03 05:56:10'),
-(2, 2, 1, 'Technical Support', 'I need help with installation.', 'in_progress', 1, 'installation', '2025-06-02 23:58:12', '2025-06-02 23:58:12', '2025-06-03 22:57:16'),
-(3, 3, NULL, 'pemasangan', 'How??????????????????????', 'new', 1, 'pemasangan', '2025-06-04 07:49:23', '2025-06-04 07:49:23', '2025-06-04 08:00:49'),
-(4, 3, NULL, 'lain', 'lagi', 'new', 0, 'lain', '2025-06-04 07:54:12', '2025-06-04 07:54:12', '2025-06-04 07:54:12'),
-(5, 3, NULL, 'garansi', 'Di Boy Project, kami menghadirkan produk terbaik untuk meningkatkan performa dan estetika motor Anda. Setiap sparepart yang kami sediakan dipilih dengan cermat untuk memberikan kualitas, ketahanan, dan kenyamanan terbaik bagi para rider.', 'new', 0, 'garansi', '2025-06-04 07:59:27', '2025-06-04 07:59:27', '2025-06-04 07:59:27'),
-(6, 1, NULL, 'pemasangan', 'aaaaaaaaaaaaaaaaaaaaa asdasasdasd asdadassdasdas asdasda asdas d', 'new', 0, 'pemasangan', '2025-06-04 08:11:13', '2025-06-04 08:11:13', '2025-06-04 08:11:13'),
-(7, 1, NULL, 'garansi', 'Cimahi, Bandung\r\nPhone: 08211990442\r\nWhatsapp: 08211990442\r\ninfo@example.comCimahi, Bandung\r\nPhone: 08211990442\r\nWhatsapp: 08211990442\r\ninfo@example.com', 'new', 0, 'garansi', '2025-06-04 08:13:02', '2025-06-04 08:13:02', '2025-06-04 08:13:02'),
-(8, 3, NULL, 'pemasangan', 'aaaaaaaa', 'new', 0, 'pemasangan', '2025-06-04 09:30:30', '2025-06-04 09:30:30', '2025-06-04 09:30:30'),
-(9, 5, NULL, 'garansi', 'new new new new', 'new', 0, 'garansi', '2025-06-04 09:31:44', '2025-06-04 09:31:44', '2025-06-04 09:31:44');
+INSERT INTO `contact_messages` (`id`, `customer_id`, `admin_id`, `content_key`, `content`, `status`, `is_read`, `is_important`, `is_deleted`, `deleted_at`, `category`, `last_update_time`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, 'Product Inquiry', 'I would like to know more about your products.', 'in_progress', 1, 0, 0, NULL, 'general', '2025-06-02 23:58:12', '2025-06-02 23:58:12', '2025-06-05 05:51:29'),
+(2, 2, 1, 'Technical Support', 'I need help with installation.', 'in_progress', 1, 0, 1, '2025-06-05 05:58:47', 'installation', '2025-06-02 23:58:12', '2025-06-02 23:58:12', '2025-06-05 05:58:47'),
+(3, 3, NULL, 'pemasangan', 'How??????????????????????', 'new', 1, 0, 1, '2025-06-05 06:08:49', 'pemasangan', '2025-06-04 07:49:23', '2025-06-04 07:49:23', '2025-06-05 06:08:49'),
+(4, 3, NULL, 'lain', 'lagi', 'new', 1, 0, 0, NULL, 'lain', '2025-06-04 07:54:12', '2025-06-04 07:54:12', '2025-06-05 06:15:55'),
+(7, 1, NULL, 'garansi', 'Cimahi, Bandung\r\nPhone: 08211990442\r\nWhatsapp: 08211990442\r\ninfo@example.comCimahi, Bandung\r\nPhone: 08211990442\r\nWhatsapp: 08211990442\r\ninfo@example.com', 'new', 1, 0, 0, NULL, 'garansi', '2025-06-04 08:13:02', '2025-06-04 08:13:02', '2025-06-04 20:30:16'),
+(8, 3, NULL, 'pemasangan', 'aaaaaaaa', 'new', 1, 1, 0, NULL, 'pemasangan', '2025-06-04 09:30:30', '2025-06-04 09:30:30', '2025-06-05 05:38:33');
 
 -- --------------------------------------------------------
 
@@ -166,7 +167,15 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (15, '2025_06_04_060357_drop_users_table', 6),
 (16, '2025_06_04_060852_update_admin_table_column_sizes', 7),
 (17, '2025_06_04_061203_add_verified_column_to_admins_table', 8),
-(18, '2025_06_04_062113_remove_department_and_permissions_from_admins_table', 9);
+(18, '2025_06_04_062113_remove_department_and_permissions_from_admins_table', 9),
+(19, '2025_06_05_042152_create_ecommerce_platforms_table', 10),
+(20, '2025_06_05_042202_create_product_categories_table', 10),
+(21, '2025_06_05_042213_create_products_table', 10),
+(22, '2025_06_05_042224_create_ecommerce_transactions_table', 10),
+(23, '2025_06_05_042233_create_product_reviews_table', 10),
+(24, '2025_06_05_055211_ensure_remember_token_in_admins_table', 10),
+(25, '2025_06_05_123304_add_important_and_deleted_to_contact_messages_table', 11),
+(26, '2025_06_05_141840_drop_unused_ecommerce_tables', 12);
 
 -- --------------------------------------------------------
 
@@ -322,6 +331,28 @@ INSERT INTO `section_contents` (`id`, `section_id`, `content_key`, `content_valu
 (56, 14, 'SERVICE', '', 'image', '{\"image\": \"landing/images/categories/default.png\", \"link\": \"\"}', 1, '2025-03-20 04:22:22', '2025-03-20 04:22:22'),
 (57, 14, 'SOMETHING', '', 'image', '{\"image\": \"landing/images/categories/default.png\", \"link\": \"\"}', 1, '2025-03-20 04:22:22', '2025-03-20 04:22:22');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(255) NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
+  `last_activity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `sessions`
+--
+
+INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('DBIWBVtzOLL3sx0cFRpEQlgFMOryvMaMWWXTd8xd', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiQ1dwenplbFI2eE5MdmpZYm9rUFZCQ0ZraXVUdFREejBhT1pkcmY1NyI7czo1MjoibG9naW5fYWRtaW5fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQxOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vZG9jdW1lbnRhdGlvbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MjI6IlBIUERFQlVHQkFSX1NUQUNLX0RBVEEiO2E6MDp7fX0=', 1749132538);
+
 --
 -- Indexes for dumped tables
 --
@@ -377,6 +408,14 @@ ALTER TABLE `predefined_messages`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_user_id_index` (`user_id`),
+  ADD KEY `sessions_last_activity_index` (`last_activity`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -384,7 +423,7 @@ ALTER TABLE `predefined_messages`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `contact_messages`
@@ -408,7 +447,7 @@ ALTER TABLE `message_responses`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `predefined_messages`
