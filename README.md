@@ -332,13 +332,13 @@ Edit `public/landing/js/chat-bubble.js`:
 
 ## **📝 Updates History**
 
-### **Latest Features in 1.1.2 (July 2025)**
+### **Latest Features in 1.1.2 (June 2025)**
 - ✅ **Database Cleanup**: Removed unused e-commerce tables (products, transactions, reviews, categories, platforms)
 - ✅ **Project Optimization**: Removed unnecessary tests folder and phpunit configuration
 - ✅ **Dependency Cleanup**: Cleaned up composer.json by removing test-related packages
 - ✅ **Streamlined Codebase**: Focused on core message management and chat functionality
 
-### **Features in 1.1 (July 2025)**
+### **Features in 1.1 (June 2025)**
 - ✅ **Email Reply System**: Complete email response functionality with MessageReplyMail class
 - ✅ **Dynamic Email Templates**: Blade-based email templates with customer data integration
 - ✅ **Enhanced Chat Interface**: Filter and sort functionality with dropdown controls
@@ -348,7 +348,7 @@ Edit `public/landing/js/chat-bubble.js`:
 - ✅ **Sort Functions**: Newest First, Oldest First with time-based sorting
 - ✅ **Scrollable Design**: Enhanced sidebar with custom scrollbar styling
 
-### **Previous Features in 1.0 (June 2025)**
+### **Previous Features in 1.0 (May 2025)**
 - ✅ **E-Commerce Dashboard**: Complete transformation from crypto to motorcycle parts
 - ✅ **Enhanced Login**: Remember me functionality with 7-day sessions
 - ✅ **Email System Overhaul**: Anti-spam measures and professional templates
