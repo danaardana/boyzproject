@@ -39,14 +39,6 @@ require_once ("./admin/lang/" . $lang . ".php");
             <button type="button" class="btn btn-sm px-3 font-size-16 header-item" id="vertical-menu-btn">
                 <i class="fa fa-fw fa-bars"></i>
             </button>
-
-            <!-- App Search-->
-            <form class="app-search d-none d-lg-block">
-                <div class="position-relative">
-                    <input type="text" class="form-control" placeholder="{{ $language['Search'] }}">
-                    <button class="btn btn-primary" type="button"><i class="bx bx-search-alt align-middle"></i></button>
-                </div>
-            </form>
         </div>
 
         <div class="d-flex">
@@ -101,6 +93,46 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <i data-feather="moon" class="bx bx-moon layout-mode-dark"></i>
                     <i data-feather="sun" class="bx bx-sun layout-mode-light"></i>
                 </button>
+            </div>
+
+            <div class="dropdown d-none d-lg-inline-block ms-1">
+                <button type="button" class="btn header-item"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="bx bx-grid-alt icon-lg"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                    <div class="p-2">
+                        <div class="row g-0">
+                            <div class="col">
+                                <a class="dropdown-icon-item" href="#">
+                                    <img src="{{ asset('admin/images/brands/shopee.png') }}" alt="Github">
+                                    <span>Shopee</span>
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a class="dropdown-icon-item" href="#">
+                                    <img src="{{ asset('admin/images/brands/tokopedia.png') }}" alt="bitbucket">
+                                    <span>Tokopedia</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row g-0">
+                            <div class="col">
+                                <a class="dropdown-icon-item" href="#">
+                                    <img src="{{ asset('admin/images/brands/olx.png') }}" alt="dribbble">
+                                    <span>Olx</span>
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a class="dropdown-icon-item" href="#">
+                                    <img src="{{ asset('admin/images/brands/blibli.png') }}" alt="dropbox">
+                                    <span>Blibli</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="dropdown d-inline-block">
@@ -302,7 +334,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.faq') }}" data-key="faq">FAQ</a></li>
-                        <li><a href="#" data-key="documentation">{{ $language["Documentation"] }}</a></li>
+                        <li><a href="{{ route('admin.documentation') }}" data-key="documentation">{{ $language["Documentation"] }}</a></li>
                     </ul>
                 </li>
 

@@ -85,10 +85,15 @@ Route::prefix('admin')->group(function () {
         // Messages routes
         Route::get('/messages', [ContactController::class, 'index'])->name('admin.messages.index');
         Route::get('/messages/{message}', [ContactController::class, 'show'])->name('admin.messages.show');
+        Route::get('/sent/{response}', [ContactController::class, 'showSentMessage'])->name('admin.messages.sent.show');
         Route::post('/messages/{message}/read', [ContactController::class, 'markAsRead'])->name('admin.messages.mark-read');
         Route::post('/messages/{message}/assign', [ContactController::class, 'assign'])->name('admin.messages.assign');
         Route::post('/messages/{message}/respond', [ContactController::class, 'respond'])->name('admin.messages.respond');
+        Route::post('/messages/{message}/important', [ContactController::class, 'toggleImportant'])->name('admin.messages.toggle-important');
+        Route::post('/messages/{message}/trash', [ContactController::class, 'moveToTrash'])->name('admin.messages.trash');
+        Route::post('/messages/{message}/restore', [ContactController::class, 'restoreFromTrash'])->name('admin.messages.restore');
         Route::delete('/messages/{message}', [ContactController::class, 'destroy'])->name('admin.messages.destroy');
+        Route::delete('/messages/{message}/permanent', [ContactController::class, 'permanentDelete'])->name('admin.messages.permanent-delete');
         Route::post('/messages/read-all', [ContactController::class, 'markAllAsRead'])->name('admin.messages.mark-all-read');
         
         // Email routes
@@ -125,7 +130,8 @@ Route::prefix('admin')->group(function () {
         
         // Other admin features
         Route::get('/faq', [AdminController::class, 'faqPage'])->name('admin.faq');
-        Route::get('/chat', [ContactController::class, 'index'])->name('admin.chat');
+        Route::get('/documentation', [AdminController::class, 'documentationPage'])->name('admin.documentation');
+        Route::get('/chat', [ContactController::class, 'chat'])->name('admin.chat');
         Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
         Route::get('/history', [AdminController::class, 'historyPage'])->name('admin.history');
         

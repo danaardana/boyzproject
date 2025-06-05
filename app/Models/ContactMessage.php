@@ -31,11 +31,17 @@ class ContactMessage extends Model
         'status',
         'category',
         'is_read',
+        'is_important',
+        'is_deleted',
+        'deleted_at',
         'last_update_time'
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
+        'is_important' => 'boolean',
+        'is_deleted' => 'boolean',
+        'deleted_at' => 'datetime',
         'last_update_time' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -119,5 +125,53 @@ class ContactMessage extends Model
     public function scopeUnread($query)
     {
         return $query->where('is_read', false);
+    }
+
+    public function markAsImportant()
+    {
+        $this->is_important = true;
+        $this->save();
+    }
+
+    public function markAsUnimportant()
+    {
+        $this->is_important = false;
+        $this->save();
+    }
+
+    public function toggleImportant()
+    {
+        $this->is_important = !$this->is_important;
+        $this->save();
+        return $this->is_important;
+    }
+
+    public function moveToTrash()
+    {
+        $this->is_deleted = true;
+        $this->deleted_at = now();
+        $this->save();
+    }
+
+    public function restoreFromTrash()
+    {
+        $this->is_deleted = false;
+        $this->deleted_at = null;
+        $this->save();
+    }
+
+    public function scopeImportant($query)
+    {
+        return $query->where('is_important', true);
+    }
+
+    public function scopeNotDeleted($query)
+    {
+        return $query->where('is_deleted', false);
+    }
+
+    public function scopeTrashed($query)
+    {
+        return $query->where('is_deleted', true);
     }
 } 

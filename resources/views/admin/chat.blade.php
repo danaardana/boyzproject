@@ -4,6 +4,134 @@
 
 @section("title", "| Chat ")
 
+@push('styles')
+<style>
+    /* Enhanced Chat List Styling - No Avatars */
+    .chat-leftsidebar {
+        width: 350px !important;
+        max-height: calc(100vh - 180px) !important;
+        min-height: 600px !important;
+    }
+    
+    .chat-message-list {
+        max-height: calc(100vh - 280px) !important;
+        min-height: 500px !important;
+        overflow-y: auto !important;
+    }
+    
+    .chat-list {
+        padding-bottom: 20px !important;
+    }
+    
+    .chat-list li a {
+        padding: 18px 16px !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-bottom: 4px;
+        display: block;
+    }
+    
+    .chat-list li a:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+    
+    .chat-list li.active a {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+    }
+    
+    .chat-list li.unread a {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+    }
+    
+    .chat-list h5 {
+        font-size: 16px !important;
+        font-weight: 600;
+        margin-bottom: 4px !important;
+    }
+    
+    .chat-list p {
+        font-size: 14px !important;
+        color: #6c757d;
+        margin-bottom: 0;
+        line-height: 1.4;
+    }
+    
+    .chat-list .font-size-12 {
+        font-size: 13px !important;
+        color: #8a909d;
+        font-weight: 500;
+    }
+    
+    .chat-list .unread-message .badge {
+        font-size: 11px;
+        padding: 4px 8px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    
+    .chat-list .d-flex {
+        position: relative;
+    }
+    
+    /* Custom scrollbar for chat list */
+    .chat-message-list::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-message-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .chat-message-list::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+    
+    .chat-message-list::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }
+    
+    /* Filter button styling */
+    .chat-filters .btn {
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+        border-radius: 6px !important;
+    }
+    
+    .chat-filters .dropdown-menu {
+        min-width: 180px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e3e6f0;
+    }
+    
+    .chat-filters .dropdown-item {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+    
+    .chat-filters .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .chat-filters .dropdown-item.active {
+        background-color: #e3f2fd;
+        color: #2196f3;
+    }
+    
+    .chat-filters .dropdown-header {
+        font-size: 11px;
+        font-weight: 600;
+        color: #6c757d;
+        padding: 8px 16px 4px;
+    }
+</style>
+@endpush
+
 @section('content')
 
 <div class="main-content">
@@ -31,30 +159,6 @@
 
         <div class="d-lg-flex">
             <div class="chat-leftsidebar card">
-                <div class="p-3 px-4 border-bottom">
-                    <div class="d-flex align-items-start ">
-                        <div class="flex-shrink-0 me-3 align-self-center">
-                            <img src="assets/images/users/avatar-1.jpg" class="avatar-sm rounded-circle" alt="">
-                        </div>
-                        
-                        <div class="flex-grow-1">
-                            <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">Shawn <i class="mdi mdi-circle text-success align-middle font-size-10 ms-1"></i></a></h5>
-                            <p class="text-muted mb-0">Available</p>
-                        </div>
-
-                        <div class="flex-shrink-0">
-                            <div class="dropdown chat-noti-dropdown">
-                                <button class="btn dropdown-toggle p-0" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="bx bx-dots-horizontal-rounded"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="#">Profile</a>
-                                    <a class="dropdown-item" href="#">Offline</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="p-3">
                     <div class="search-box position-relative">
@@ -69,24 +173,35 @@
                             <div class="chat-message-list" data-simplebar>
                                 <div class="pt-3">
                                     <div class="px-3">
-                                        <h5 class="font-size-14 mb-3">Recent</h5>
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <h5 class="font-size-14 mb-0">Recent</h5>
+                                            <div class="chat-filters">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-filter-alt me-1"></i>Filter
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li><a class="dropdown-item" href="#" data-filter="all"><i class="bx bx-list-ul me-2"></i>All Messages</a></li>
+                                                        <li><a class="dropdown-item" href="#" data-filter="unread"><i class="bx bx-bell me-2"></i>Unread Only</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><h6 class="dropdown-header">Sort By</h6></li>
+                                                        <li><a class="dropdown-item" href="#" data-sort="newest"><i class="bx bx-time me-2"></i>Newest First</a></li>
+                                                        <li><a class="dropdown-item" href="#" data-sort="oldest"><i class="bx bx-history me-2"></i>Oldest First</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <ul class="list-unstyled chat-list">
                                         <li class="active">
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    
-                                                    <div class="flex-shrink-0 user-img online align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-2.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Jennie Sherlock</h5>
-                                                        <p class="text-truncate mb-0">Hey! there I'm available</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Jennie Sherlock</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Hey! there I'm available</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">02 min</div>
+                                                        <div class="font-size-12">02 min</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -94,21 +209,12 @@
                                         <li class="unread">
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    <div class="flex-shrink-0 user-img online align-self-center me-3">
-                                                        <div class="avatar-sm align-self-center">
-                                                            <span class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                                S
-                                                            </span>
-                                                        </div>
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Stacie Dube</h5>
-                                                        <p class="text-truncate mb-0">I've finished it! See you so</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Stacie Dube</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">I've finished it! See you so</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">10 min</div>
+                                                        <div class="font-size-12">10 min</div>
                                                     </div>
                                                     <div class="unread-message">
                                                         <span class="badge bg-danger rounded-pill">1</span>
@@ -119,17 +225,12 @@
                                         <li>
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    <div class="flex-shrink-0 user-img away align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-3.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Katie Olson</h5>
-                                                        <p class="text-truncate mb-0">This theme is awesome!</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Katie Olson</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">This theme is awesome!</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">22 min</div>
+                                                        <div class="font-size-12">22 min</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -137,18 +238,12 @@
                                         <li>
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    
-                                                    <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Marshall Wilson</h5>
-                                                        <p class="text-truncate mb-0">Nice to meet you</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Marshall Wilson</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Nice to meet you</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">01 Hr</div>
+                                                        <div class="font-size-12">01 Hr</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -156,42 +251,12 @@
                                         <li>
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    
-                                                    <div class="flex-shrink-0 user-img online align-self-center me-3">
-                                                        <div class="avatar-sm align-self-center">
-                                                            <span class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                                J
-                                                            </span>
-                                                        </div>
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">James Lee</h5>
-                                                        <p class="text-truncate mb-0">Wow that's great</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">James Lee</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Wow that's great</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">04 Hrs</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <div class="d-flex align-items-start">
-                                                    
-                                                    <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-5.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
-                                                    <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Ronald Tucker</h5>
-                                                        <p class="text-truncate mb-0">Nice to meet you</p>
-                                                    </div>
-                                                    <div class="flex-shrink-0">
-                                                        <div class="font-size-11">22/04</div>
+                                                        <div class="font-size-12">04 Hrs</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -199,18 +264,12 @@
                                         <li>
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    
-                                                    <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-6.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Dennis Stewart</h5>
-                                                        <p class="text-truncate mb-0">Nice to meet you</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Ronald Tucker</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Nice to meet you</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">22/04</div>
+                                                        <div class="font-size-12">22/04</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -218,17 +277,12 @@
                                         <li>
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    <div class="flex-shrink-0 user-img away align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-3.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Katie Olson</h5>
-                                                        <p class="text-truncate mb-0">This theme is awesome!</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Dennis Stewart</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Nice to meet you</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">22 min</div>
+                                                        <div class="font-size-12">22/04</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -236,18 +290,142 @@
                                         <li>
                                             <a href="#">
                                                 <div class="d-flex align-items-start">
-                                                    
-                                                    <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                        <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-sm" alt="">
-                                                        <span class="user-status"></span>
-                                                    </div>
-                                                    
                                                     <div class="flex-grow-1 overflow-hidden">
-                                                        <h5 class="text-truncate font-size-14 mb-1">Marshall Wilson</h5>
-                                                        <p class="text-truncate mb-0">Nice to meet you</p>
+                                                        <h5 class="text-truncate font-size-16 mb-1">Katie Olson</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">This theme is awesome!</p>
                                                     </div>
                                                     <div class="flex-shrink-0">
-                                                        <div class="font-size-11">01 Hr</div>
+                                                        <div class="font-size-12">22 min</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Marshall Wilson</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Nice to meet you</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">01 Hr</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Sarah Johnson</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Can you help me with my order?</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">2 Hrs</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Michael Brown</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Looking for motorcycle parts</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">3 Hrs</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Lisa Chen</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Thanks for the quick response!</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">4 Hrs</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">David Smith</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">When will my order arrive?</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">5 Hrs</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Emma Wilson</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Great service! Very satisfied</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">Yesterday</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Alex Martinez</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Need help with installation</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">Yesterday</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Jennifer Davis</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Product quality is excellent</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">2 days</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Robert Garcia</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Question about warranty</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">2 days</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-16 mb-1">Amanda Lee</h5>
+                                                        <p class="text-truncate mb-0 font-size-13">Shipping cost inquiry</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-12">3 days</div>
                                                     </div>
                                                 </div>
                                             </a>
@@ -268,9 +446,6 @@
                         <div class="row">
                             <div class="col-xl-4 col-7">
                                 <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 avatar-sm me-3 d-sm-block d-none">
-                                        <img src="assets/images/users/avatar-2.jpg" alt="" class="img-fluid d-block rounded-circle">
-                                    </div>
                                     <div class="flex-grow-1">
                                         <h5 class="font-size-14 mb-1 text-truncate"><a href="#" class="text-dark">Jennie Sherlock</a></h5>
                                         <p class="text-muted text-truncate mb-0">Online</p>
@@ -525,3 +700,104 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    let currentFilter = 'all';
+    let currentSort = 'newest';
+    
+    // Filter functionality
+    $('.chat-filters [data-filter]').on('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all filter items
+        $('.chat-filters [data-filter]').removeClass('active');
+        // Add active class to clicked item
+        $(this).addClass('active');
+        
+        currentFilter = $(this).data('filter');
+        applyFilters();
+        
+        // Update button text to show current filter
+        let filterText = currentFilter === 'all' ? 'All Messages' : 'Unread Only';
+        $('.chat-filters .dropdown-toggle').html('<i class="bx bx-filter-alt me-1"></i>' + filterText);
+    });
+    
+    // Sort functionality
+    $('.chat-filters [data-sort]').on('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all sort items
+        $('.chat-filters [data-sort]').removeClass('active');
+        // Add active class to clicked item
+        $(this).addClass('active');
+        
+        currentSort = $(this).data('sort');
+        applyFilters();
+    });
+    
+    function applyFilters() {
+        let chatItems = $('.chat-list li');
+        
+        // Filter logic
+        chatItems.each(function() {
+            let isUnread = $(this).hasClass('unread');
+            let shouldShow = true;
+            
+            if (currentFilter === 'unread' && !isUnread) {
+                shouldShow = false;
+            }
+            
+            if (shouldShow) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        
+        // Sort logic
+        let visibleItems = $('.chat-list li:visible');
+        let sortedItems = visibleItems.sort(function(a, b) {
+            let timeA = $(a).find('.font-size-12').text().trim();
+            let timeB = $(b).find('.font-size-12').text().trim();
+            
+            // Convert time strings to comparable values
+            let valueA = getTimeValue(timeA);
+            let valueB = getTimeValue(timeB);
+            
+            if (currentSort === 'newest') {
+                return valueA - valueB; // Newer (smaller values) first
+            } else {
+                return valueB - valueA; // Older (larger values) first
+            }
+        });
+        
+        // Reorder the items
+        $('.chat-list').append(sortedItems);
+    }
+    
+    function getTimeValue(timeString) {
+        // Convert time strings to numeric values for sorting
+        // Smaller values = more recent
+        if (timeString.includes('min')) {
+            return parseInt(timeString);
+        } else if (timeString.includes('Hr')) {
+            return parseInt(timeString) * 60;
+        } else if (timeString.includes('Yesterday')) {
+            return 1440; // 24 hours in minutes
+        } else if (timeString.includes('days')) {
+            let days = parseInt(timeString);
+            return days * 1440;
+        } else if (timeString.includes('/')) {
+            return 10000; // Old date format, make it very old
+        }
+        return 9999; // Default for unknown formats
+    }
+    
+    // Initialize with default active states
+    $('.chat-filters [data-filter="all"]').addClass('active');
+    $('.chat-filters [data-sort="newest"]').addClass('active');
+});
+</script>
+@endpush

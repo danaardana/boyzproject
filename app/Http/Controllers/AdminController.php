@@ -83,7 +83,101 @@ class AdminController extends Controller
     }
     
     public function faqPage(){        
-        return view('admin.faq');
+        // Define FAQ data dynamically
+        $faqs = [
+            [
+                'id' => '01',
+                'icon' => 'bx-tachometer',
+                'category' => 'Dashboard Overview',
+                'question' => 'What is the Boy Projects Admin Dashboard?',
+                'answer' => 'The Boy Projects Admin Dashboard is a comprehensive e-commerce management system specifically designed for motorcycle spare parts business with Shopee integration, real-time analytics, and customer engagement tools.'
+            ],
+            [
+                'id' => '02', 
+                'icon' => 'bx-shopping-bag',
+                'category' => 'E-Commerce Features',
+                'question' => 'What platforms are integrated?',
+                'answer' => 'Our dashboard integrates with multiple platforms including Shopee, Tokopedia, OLX, and Blibli for seamless multi-platform e-commerce management with real-time synchronization.'
+            ],
+            [
+                'id' => '03',
+                'icon' => 'bx-chart',
+                'category' => 'Analytics & Reports',
+                'question' => 'How do I view sales analytics?',
+                'answer' => 'Navigate to the Dashboard to view comprehensive analytics including total sales (Rp 12.8M+), order management (847+ orders), product performance, and interactive revenue charts with platform breakdowns.'
+            ],
+            [
+                'id' => '04',
+                'icon' => 'bx-message-dots',
+                'category' => 'Customer Support',
+                'question' => 'How does the chat system work?',
+                'answer' => 'Our smart chat system features auto-response for common queries, real-time notifications, conversation threading, and assignment system for efficient customer support management.'
+            ],
+            [
+                'id' => '05',
+                'icon' => 'bx-envelope',
+                'category' => 'Email System',
+                'question' => 'How do I manage admin emails?',
+                'answer' => 'The professional email system includes welcome emails, security codes, account verification, and reactivation notifications with anti-spam measures and secure token authentication.'
+            ],
+            [
+                'id' => '06',
+                'icon' => 'bx-user-circle',
+                'category' => 'User Management',
+                'question' => 'How do I manage admin accounts?',
+                'answer' => 'Access Admin Management to create new admins, verify accounts, activate/deactivate users, manage sessions, and track login history with comprehensive audit logging.'
+            ],
+            [
+                'id' => '07',
+                'icon' => 'bx-wrench',
+                'category' => 'Content Management',
+                'question' => 'How do I edit landing page content?',
+                'answer' => 'Use the Landing Page Editor to modify sections, update content, manage portfolio items, testimonials, social media feeds, and promotional content with real-time preview.'
+            ],
+            [
+                'id' => '08',
+                'icon' => 'bx-shield-check',
+                'category' => 'Security Features',
+                'question' => 'What security measures are implemented?',
+                'answer' => 'Advanced security includes middleware protection, anti-spam email system, remember me tokens, session management, forced logout routes, and SHA256 token-based verification.'
+            ],
+            [
+                'id' => '09',
+                'icon' => 'bx-mobile-alt',
+                'category' => 'Mobile Responsiveness',
+                'question' => 'Is the dashboard mobile-friendly?',
+                'answer' => 'Yes, the dashboard is fully responsive with mobile-optimized charts, touch-friendly interfaces, and adaptive layouts that work seamlessly across all device sizes.'
+            ]
+        ];
+
+        // Additional FAQ categories for the table
+        $faqCategories = [
+            ['name' => 'Dashboard Overview', 'count' => 3, 'color' => 'primary'],
+            ['name' => 'E-Commerce Features', 'count' => 5, 'color' => 'success'], 
+            ['name' => 'Analytics & Reports', 'count' => 4, 'color' => 'info'],
+            ['name' => 'Customer Support', 'count' => 6, 'color' => 'warning'],
+            ['name' => 'Email System', 'count' => 3, 'color' => 'danger'],
+            ['name' => 'User Management', 'count' => 4, 'color' => 'secondary'],
+            ['name' => 'Content Management', 'count' => 7, 'color' => 'dark'],
+            ['name' => 'Security Features', 'count' => 5, 'color' => 'primary'],
+            ['name' => 'Mobile Responsiveness', 'count' => 2, 'color' => 'success']
+        ];
+
+        return view('admin.faq', compact('faqs', 'faqCategories'));
+    }    
+
+    public function documentationPage(){        
+        // Read the README.md file content
+        $readmePath = base_path('README.md');
+        $readmeContent = '';
+        
+        if (file_exists($readmePath)) {
+            $readmeContent = file_get_contents($readmePath);
+        } else {
+            $readmeContent = '# Documentation\n\nNo README.md file found in the project root.';
+        }
+        
+        return view('admin.documentation', compact('readmeContent'));
     }    
         
     public function adminPage(){        

@@ -48,15 +48,24 @@ require_once ("./admin/lang/" . $lang . ".php");
                 <!-- Left sidebar -->
                 <div class="email-leftbar card">
                     <div class="mail-list mt-4">
-                        <a href="{{ route('admin.messages.index') }}" class="active">
+                        <a href="{{ route('admin.messages.index', ['filter' => 'inbox']) }}">
                             <i class="mdi mdi-email-outline me-2"></i> Inbox 
-                            <span class="ms-1 float-end" id="inbox-unread-count-single">({{ \App\Models\ContactMessage::where('is_read', false)->count() }})</span>
+                            @php
+                                $unreadCount = \App\Models\ContactMessage::where('is_read', false)->notDeleted()->count();
+                            @endphp
+                            @if($unreadCount > 0)
+                                <span class="ms-1 float-end badge bg-danger rounded-pill">{{ $unreadCount }}</span>
+                            @endif
                         </a>
-                        <a href="#"><i class="mdi mdi-star-outline me-2"></i>Starred</a>
-                        <a href="#"><i class="mdi mdi-diamond-stone me-2"></i>Important</a>
-                        <a href="#"><i class="mdi mdi-file-outline me-2"></i>Draft</a>
-                        <a href="#"><i class="mdi mdi-email-check-outline me-2"></i>Sent Mail</a>
-                        <a href="#"><i class="mdi mdi-trash-can-outline me-2"></i>Trash</a>
+                        <a href="{{ route('admin.messages.index', ['filter' => 'important']) }}">
+                            <i class="mdi mdi-star me-2"></i>Important
+                        </a>
+                        <a href="{{ route('admin.messages.index', ['filter' => 'sent']) }}">
+                            <i class="mdi mdi-email-check-outline me-2"></i>Sent Mail
+                        </a>
+                        <a href="{{ route('admin.messages.index', ['filter' => 'trash']) }}">
+                            <i class="mdi mdi-trash-can-outline me-2"></i>Trash
+                        </a>
                     </div>
 
 
@@ -86,10 +95,74 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 <i class="fa fa-check"></i>
                             </button>
                             @endif
+                            @if($message->is_deleted)
+                                <button type="button" class="btn btn-success waves-light waves-effect" 
+                                        onclick="restoreMessage({{ $message->id }})" title="Move to Inbox">
+                                    <i class="fas fa-inbox"></i>
+                                </button>
+                            @endif
                             <button type="button" class="btn btn-primary waves-light waves-effect" 
-                                    onclick="deleteMessage({{ $message->id }})" title="Delete">
+                                    data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" title="Delete">
                                 <i class="far fa-trash-alt"></i>
                             </button>
+
+                            
+                                                                         <!-- Delete Confirmation Modal -->
+                                     <div class="modal fade" id="deleteConfirmationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                         <div class="modal-dialog modal-dialog-centered" role="document">
+                                             <div class="modal-content">
+                                                 <div class="modal-header">
+                                                     <h5 class="modal-title" id="deleteModalLabel">
+                                                         @if($message->is_deleted)
+                                                             <i class="fas fa-exclamation-triangle text-danger me-2"></i>Permanent Delete Warning
+                                                         @else
+                                                             <i class="fas fa-trash-alt text-warning me-2"></i>Move to Trash
+                                                         @endif
+                                                     </h5>
+                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                 </div>
+                                                 <div class="modal-body">
+                                                     @if($message->is_deleted)
+                                                         <div class="alert alert-danger mb-3">
+                                                             <i class="fas fa-exclamation-circle me-2"></i>
+                                                             <strong>Warning!</strong> This action cannot be undone.
+                                                         </div>
+                                                         <p>This message is already in trash. Are you sure you want to <strong>permanently delete</strong> it from the database?</p>
+                                                         <p class="text-muted">Once deleted, this message and all its responses will be completely removed and cannot be recovered.</p>
+                                                     @else
+                                                         <p>Are you sure you want to move this message to trash?</p>
+                                                         <p class="text-muted">You can restore it later from the trash if needed.</p>
+                                                     @endif
+                                                     
+                                                     <hr>
+                                                     <div class="row">
+                                                         <div class="col-md-6">
+                                                             <strong>From:</strong> {{ $message->customer->name ?? 'Unknown' }}<br>
+                                                             <strong>Email:</strong> {{ $message->customer->email ?? 'N/A' }}
+                                                         </div>
+                                                         <div class="col-md-6">
+                                                             <strong>Subject:</strong> {{ $message->content_key ?? 'Message' }}<br>
+                                                             <strong>Date:</strong> {{ $message->created_at ? $message->created_at->format('M d, Y') : 'N/A' }}
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                                 <div class="modal-footer">
+                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                         <i class="fas fa-times me-1"></i>Cancel
+                                                     </button>
+                                                     @if($message->is_deleted)
+                                                         <button type="button" class="btn btn-danger" onclick="confirmPermanentDelete({{ $message->id }})">
+                                                             <i class="fas fa-trash me-1"></i>Permanently Delete
+                                                         </button>
+                                                     @else
+                                                         <button type="button" class="btn btn-warning" onclick="confirmMoveToTrash({{ $message->id }})">
+                                                             <i class="fas fa-trash-alt me-1"></i>Move to Trash
+                                                         </button>
+                                                     @endif
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -123,7 +196,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 <a class="dropdown-item" href="#" onclick="toggleImportant({{ $message->id }})">Toggle Important</a>
                                 <a class="dropdown-item" href="#" onclick="exportMessage({{ $message->id }})">Export</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="#" onclick="deleteMessage({{ $message->id }})">Delete Message</a>
+                                <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete Message</a>
                             </div>
                         </div>
                     </div>
@@ -374,6 +447,11 @@ $(document).ready(function() {
     $('#replyForm').on('submit', function(e) {
         e.preventDefault();
         var formData = new FormData(this);
+        var $submitBtn = $('#replyForm button[type="submit"]');
+        
+        // Disable submit button and show loading
+        $submitBtn.prop('disabled', true);
+        $submitBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status"></span>Sending...');
         
         $.ajax({
             url: $(this).attr('action'),
@@ -386,10 +464,29 @@ $(document).ready(function() {
             },
             success: function(response) {
                 $('#composemodal').modal('hide');
-                location.reload();
+                
+                // Show success message
+                showSuccessAlert('Response sent successfully and email notification sent to customer');
+                
+                // Reset form
+                $('#replyForm')[0].reset();
+                
+                // Reload after a short delay
+                setTimeout(function() {
+                    location.reload();
+                }, 2000);
             },
-            error: function() {
-                alert('Error sending response.');
+            error: function(xhr) {
+                var errorMessage = 'Error sending response.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                showErrorAlert(errorMessage);
+                
+                // Re-enable submit button
+                $submitBtn.prop('disabled', false);
+                $submitBtn.html('Send <i class="fab fa-telegram-plane ms-1"></i>');
             }
         });
     });
@@ -456,22 +553,144 @@ function exportMessage(messageId) {
     console.log('Export message:', messageId);
 }
 
-function deleteMessage(messageId) {
-    if (confirm('Are you sure you want to delete this message?')) {
-        $.ajax({
-            url: `/admin/messages/${messageId}`,
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
+function confirmMoveToTrash(messageId) {
+    // Close the modal first
+    $('#deleteConfirmationModal').modal('hide');
+    
+    // Show loading state
+    showLoadingState();
+    
+    $.ajax({
+        url: `/admin/messages/${messageId}/trash`,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            // Show success message
+            showSuccessAlert('Message moved to trash successfully');
+            
+            // Redirect to inbox after a short delay
+            setTimeout(function() {
                 window.location.href = '{{ route("admin.messages.index") }}';
-            },
-            error: function() {
-                alert('Error deleting message.');
-            }
-        });
-    }
+            }, 1500);
+        },
+        error: function() {
+            hideLoadingState();
+            showErrorAlert('Error moving message to trash. Please try again.');
+        }
+    });
+}
+
+function confirmPermanentDelete(messageId) {
+    // Close the modal first
+    $('#deleteConfirmationModal').modal('hide');
+    
+    // Show loading state
+    showLoadingState();
+    
+    $.ajax({
+        url: `/admin/messages/${messageId}/trash`,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            // Show success message
+            showSuccessAlert('Message permanently deleted from database');
+            
+            // Redirect to trash view after a short delay
+            setTimeout(function() {
+                window.location.href = '{{ route("admin.messages.index", ["filter" => "trash"]) }}';
+            }, 1500);
+        },
+        error: function() {
+            hideLoadingState();
+            showErrorAlert('Error permanently deleting message. Please try again.');
+        }
+    });
+}
+
+function showLoadingState() {
+    // Create loading overlay
+    const loadingHtml = `
+        <div id="loadingOverlay" class="d-flex justify-content-center align-items-center position-fixed" 
+             style="top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+            <div class="text-center text-white">
+                <div class="spinner-border text-light mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div>Processing...</div>
+            </div>
+        </div>
+    `;
+    $('body').append(loadingHtml);
+}
+
+function hideLoadingState() {
+    $('#loadingOverlay').remove();
+}
+
+function showSuccessAlert(message) {
+    hideLoadingState();
+    const alertHtml = `
+        <div id="successAlert" class="alert alert-success alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 10000; min-width: 300px;">
+            <i class="fas fa-check-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('body').append(alertHtml);
+    
+    // Auto-hide after 3 seconds
+    setTimeout(function() {
+        $('#successAlert').alert('close');
+    }, 3000);
+}
+
+function showErrorAlert(message) {
+    hideLoadingState();
+    const alertHtml = `
+        <div id="errorAlert" class="alert alert-danger alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 10000; min-width: 300px;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('body').append(alertHtml);
+    
+    // Auto-hide after 5 seconds
+    setTimeout(function() {
+        $('#errorAlert').alert('close');
+    }, 5000);
+}
+
+function restoreMessage(messageId) {
+    // Show loading state
+    showLoadingState();
+    
+    $.ajax({
+        url: `/admin/messages/${messageId}/restore`,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            // Show success message
+            showSuccessAlert('Message restored to inbox successfully');
+            
+            // Redirect to inbox after a short delay
+            setTimeout(function() {
+                window.location.href = '{{ route("admin.messages.index") }}';
+            }, 1500);
+        },
+        error: function() {
+            hideLoadingState();
+            showErrorAlert('Error restoring message. Please try again.');
+        }
+    });
 }
 </script>
 @endpush

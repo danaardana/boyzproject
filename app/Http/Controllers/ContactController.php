@@ -14,39 +14,9 @@ use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
-    public function chat(Request $request, ContactMessage $message = null)
+    public function chat(Request $request)
     {
-        // Get all messages for the sidebar
-        $messages = ContactMessage::with('customer')
-            ->latest()
-            ->get();
-
-        // If a specific message is selected, load its details
-        $selectedMessage = $message ?? $messages->first();
-        
-        // Get the conversation history if there's a selected message
-        $conversation = null;
-        if ($selectedMessage) {
-            // Mark the message as read
-            if (!$selectedMessage->is_read) {
-                $selectedMessage->markAsRead();
-            }
-
-            // Get all messages between this customer and admin
-            if ($selectedMessage->customer_id) {
-                $conversation = ContactMessage::where('customer_id', $selectedMessage->customer_id)
-                    ->latest()
-                    ->get();
-            }
-        }
-
-        // Get stats for the dashboard
-        $stats = $this->getMessageStats();
-        
-        // Get all admins for assignment
-        $admins = Admin::all();
-
-        return view('admin.messages', compact('messages', 'selectedMessage', 'conversation', 'stats', 'admins'));
+        return view('admin.chat');
     }
 
     public function submit(Request $request)
@@ -110,11 +80,47 @@ class ContactController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $messages = ContactMessage::with(['customer', 'assignedAdmin'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $filter = $request->get('filter', 'inbox'); // inbox, important, trash, sent
+        
+        if ($filter === 'sent') {
+            // Handle sent mail - show message responses
+            $responses = MessageResponse::with(['admin', 'contactMessage.customer'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+                
+            // Get stats for the dashboard
+            $stats = $this->getMessageStats();
+            
+            // Get all admins for assignment
+            $admins = Admin::all();
+            
+            // Get counts for sidebar
+            $inboxCount = ContactMessage::notDeleted()->count();
+            $unreadMessagesCount = ContactMessage::notDeleted()->where('is_read', false)->count();
+            $importantCount = ContactMessage::important()->notDeleted()->count();
+            $trashCount = ContactMessage::trashed()->count();
+            $sentCount = MessageResponse::count();
+            
+            return view('admin.messages-sent', compact('responses', 'stats', 'admins', 'unreadMessagesCount', 'inboxCount', 'importantCount', 'trashCount', 'sentCount', 'filter'));
+        }
+        
+        $query = ContactMessage::with(['customer', 'assignedAdmin']);
+        
+        switch($filter) {
+            case 'important':
+                $query->important()->notDeleted();
+                break;
+            case 'trash':
+                $query->trashed();
+                break;
+            default: // inbox
+                $query->notDeleted();
+                break;
+        }
+        
+        $messages = $query->orderBy('created_at', 'desc')->paginate(15);
             
         // Get stats for the dashboard
         $stats = $this->getMessageStats();
@@ -122,10 +128,14 @@ class ContactController extends Controller
         // Get all admins for assignment
         $admins = Admin::all();
         
-        // Get unread messages count
-        $unreadMessagesCount = ContactMessage::where('is_read', false)->count();
-            
-        return view('admin.messages', compact('messages', 'stats', 'admins', 'unreadMessagesCount'));
+        // Get counts for sidebar
+        $inboxCount = ContactMessage::notDeleted()->count();
+        $unreadMessagesCount = ContactMessage::notDeleted()->where('is_read', false)->count();
+        $importantCount = ContactMessage::important()->notDeleted()->count();
+        $trashCount = ContactMessage::trashed()->count();
+        $sentCount = MessageResponse::count();
+        
+        return view('admin.messages', compact('messages', 'stats', 'admins', 'unreadMessagesCount', 'inboxCount', 'importantCount', 'trashCount', 'sentCount', 'filter'));
     }
 
     /**
@@ -158,6 +168,14 @@ class ContactController extends Controller
         $message->load(['responses.admin']);
         
         return view('admin.messages-single', compact('message'));
+    }
+
+    public function showSentMessage(MessageResponse $response)
+    {
+        // Load the relationships
+        $response->load(['admin', 'contactMessage.customer']);
+        
+        return view('admin.messages-sent-single', compact('response'));
     }
 
     public function markAsRead(ContactMessage $message)
@@ -198,30 +216,95 @@ class ContactController extends Controller
             'status' => 'nullable|string'
         ]);
 
-        // Create new response record
-        $message->responses()->create([
-            'admin_id' => auth('admin')->id(),
-            'message' => $request->response,
-        ]);
+        try {
+            // Get the current admin
+            $admin = auth('admin')->user();
+            $newStatus = $request->status ?? ContactMessage::STATUS_RESOLVED;
 
-        // Update message status and assignment
-        $message->update([
-            'status' => $request->status ?? ContactMessage::STATUS_RESOLVED,
-            'admin_id' => $message->admin_id ?? auth('admin')->id(), // Assign to current admin if not already assigned
-            'last_update_time' => now()
-        ]);
-
-        // Broadcast the event
-        broadcast(new ContactMessageEvent())->toOthers();
-
-        if ($request->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Response sent successfully'
+            // Create new response record
+            $response = $message->responses()->create([
+                'admin_id' => $admin->id,
+                'message' => $request->response,
             ]);
-        }
 
-        return back()->with('success', 'Response sent successfully.');
+            // Update message status and assignment
+            $message->update([
+                'status' => $newStatus,
+                'admin_id' => $message->admin_id ?? $admin->id, // Assign to current admin if not already assigned
+                'last_update_time' => now()
+            ]);
+
+            // Send email to customer
+            $emailSent = false;
+            if ($message->customer && $message->customer->email) {
+                try {
+                    \Mail::to($message->customer->email)->send(
+                        new \App\Mail\MessageReplyMail(
+                            $message->customer,
+                            $request->response,
+                            $message,
+                            $newStatus,
+                            $admin->name
+                        )
+                    );
+                    
+                    $emailSent = true;
+                    \Log::info('Reply email sent successfully', [
+                        'customer_email' => $message->customer->email,
+                        'message_id' => $message->id,
+                        'admin_id' => $admin->id
+                    ]);
+                } catch (\Exception $emailError) {
+                    \Log::error('Failed to send reply email', [
+                        'error' => $emailError->getMessage(),
+                        'customer_email' => $message->customer->email,
+                        'message_id' => $message->id
+                    ]);
+                    // Don't fail the whole operation if email fails
+                }
+            } else {
+                \Log::warning('Cannot send reply email - customer or email not found', [
+                    'message_id' => $message->id,
+                    'has_customer' => !!$message->customer,
+                    'customer_email' => $message->customer ? $message->customer->email : null
+                ]);
+            }
+
+            // Broadcast the event
+            broadcast(new ContactMessageEvent())->toOthers();
+
+            $successMessage = 'Response sent successfully';
+            if ($emailSent) {
+                $successMessage .= ' and email notification sent to customer';
+            } else {
+                $successMessage .= ' (email notification could not be sent)';
+            }
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $successMessage
+                ]);
+            }
+
+            return back()->with('success', $successMessage);
+
+        } catch (\Exception $e) {
+            \Log::error('Error in respond method', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'message_id' => $message->id
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to send response. Please try again.'
+                ], 500);
+            }
+
+            return back()->withErrors(['response' => 'Failed to send response. Please try again.']);
+        }
     }
 
     public function assign(Request $request, ContactMessage $message)
@@ -256,6 +339,96 @@ class ContactController extends Controller
         }
 
         return back()->with('success', 'Message assigned successfully.');
+    }
+
+    public function toggleImportant(ContactMessage $message)
+    {
+        $isImportant = $message->toggleImportant();
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_important' => $isImportant,
+                'message' => $isImportant ? 'Message marked as important.' : 'Message unmarked as important.'
+            ]);
+        }
+        
+        return back()->with('success', $isImportant ? 'Message marked as important.' : 'Message unmarked as important.');
+    }
+
+    public function moveToTrash(ContactMessage $message)
+    {
+        // Check if message is already in trash
+        if ($message->is_deleted) {
+            // If already in trash, permanently delete from database
+            $message->delete();
+            
+            // Broadcast the event
+            broadcast(new ContactMessageEvent())->toOthers();
+            
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Message permanently deleted from database.'
+                ]);
+            }
+            
+            return redirect()->route('admin.messages.index', ['filter' => 'trash'])
+                ->with('success', 'Message permanently deleted from database.');
+        } else {
+            // If not in trash, move to trash (soft delete)
+            $message->moveToTrash();
+            
+            // Broadcast the event
+            broadcast(new ContactMessageEvent())->toOthers();
+            
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Message moved to trash.'
+                ]);
+            }
+            
+            return back()->with('success', 'Message moved to trash.');
+        }
+    }
+
+    public function restoreFromTrash(ContactMessage $message)
+    {
+        $message->restoreFromTrash();
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Message restored from trash.'
+            ]);
+        }
+        
+        return back()->with('success', 'Message restored from trash.');
+    }
+
+    public function permanentDelete(ContactMessage $message)
+    {
+        $message->delete();
+        
+        // Broadcast the event
+        broadcast(new ContactMessageEvent())->toOthers();
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Message permanently deleted.'
+            ]);
+        }
+        
+        return redirect()->route('admin.messages.index', ['filter' => 'trash'])
+            ->with('success', 'Message permanently deleted.');
     }
 
     public function getChatSuggestions()
