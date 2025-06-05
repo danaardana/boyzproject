@@ -11,6 +11,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('landing/css/master.css') }}">
     <link rel="stylesheet" href="{{ asset('landing/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('landing/css/chat-bubble.css') }}">
     
     <!-- IcoFont CDN -->
 
@@ -51,6 +52,7 @@
     <script src="{{ asset('landing/js/plugins.js') }}"></script>
     <script src="{{ asset('landing/js/master.js') }}"></script>
     <script src="{{ asset('landing/js/bootsnav.js') }}"></script>
+    <script src="{{ asset('landing/js/chat-bubble.js') }}"></script>
 
 
     <!-- Load Slick dan Waypoints -->
