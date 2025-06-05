@@ -5,14 +5,17 @@ namespace App\Mail;
 use App\Models\Admin;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 
 class AdminReactivationNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $admin;
-    public $whatsappLink;
+    public $reactivationUrl;
 
     /**
      * Create a new message instance.
@@ -20,20 +23,47 @@ class AdminReactivationNotification extends Mailable
     public function __construct(Admin $admin)
     {
         $this->admin = $admin;
-        $this->whatsappLink = "https://api.whatsapp.com/send/?phone=082216649329&text=reactivate%20account%20" . urlencode($admin->name);
+        $this->reactivationUrl = $this->generateReactivationUrl($admin);
     }
 
     /**
-     * Build the message.
+     * Generate a secure reactivation URL
      */
-    public function build()
+    private function generateReactivationUrl(Admin $admin)
     {
-        return $this->view('admin.email.reactivate')
-                    ->subject('Account Deactivation Notification - ' . $this->admin->name)
-                    ->with([
-                        'adminName' => $this->admin->name,
-                        'adminId' => $this->admin->id,
-                        'whatsappLink' => $this->whatsappLink,
-                    ]);
+        $token = hash('sha256', $admin->id . $admin->email . $admin->created_at . config('app.key'));
+        return route('admin.reactivate', ['id' => $admin->id, 'token' => $token]);
+    }
+
+    /**
+     * Get the message envelope.
+     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Account Deactivation Notification - ' . $this->admin->name,
+            from: new Address(config('mail.from.address'), config('mail.from.name')),
+            replyTo: [new Address(config('mail.from.address'), config('mail.from.name'))],
+        );
+    }
+
+    /**
+     * Get the message content definition.
+     */
+    public function content(): Content
+    {
+        return new Content(
+            html: 'admin.email.reactivate',
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
+    public function attachments(): array
+    {
+        return [];
     }
 } 

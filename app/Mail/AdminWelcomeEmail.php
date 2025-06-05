@@ -2,28 +2,33 @@
 
 namespace App\Mail;
 
-use App\Models\Admin;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Admin;
 use Illuminate\Mail\Mailables\Address;
 
-class AdminSecurityCode extends Mailable
+class AdminWelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $admin;
-    public $securityCode;
+    public $password;
+    public $loginUrl;
+    public $verificationUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Admin $admin, string $securityCode)
+    public function __construct(Admin $admin, string $password = null, string $verificationUrl = null)
     {
         $this->admin = $admin;
-        $this->securityCode = $securityCode;
+        $this->password = $password;
+        $this->loginUrl = route('admin.login');
+        $this->verificationUrl = $verificationUrl;
     }
 
     /**
@@ -32,7 +37,7 @@ class AdminSecurityCode extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Security Code for Password Reset - ' . $this->admin->name,
+            subject: 'Welcome to ' . config('app.name', 'Boy Projects') . ' - Admin Account Created',
             from: new Address(config('mail.from.address'), config('mail.from.name')),
             replyTo: [new Address(config('mail.from.address'), config('mail.from.name'))],
         );
@@ -44,7 +49,8 @@ class AdminSecurityCode extends Mailable
     public function content(): Content
     {
         return new Content(
-            html: 'admin.email.security_code',
+            html: 'admin.email.welcome_admin',
+            text: 'emails.admin-welcome-text',
         );
     }
 
@@ -57,4 +63,4 @@ class AdminSecurityCode extends Mailable
     {
         return [];
     }
-} 
+}

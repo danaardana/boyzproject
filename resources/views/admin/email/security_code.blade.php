@@ -3,7 +3,7 @@
 <head>
 
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
-<title>Boy Projects</title>
+<title>{{ config('app.name', 'Boy Projects') }} - Security Code</title>
 
 <style type="text/css">
 
@@ -84,7 +84,11 @@
             
             <table border="0" align="center" cellpadding="0" cellspacing="0">
               <tr>
-                <td align="center" valign="middle"><a href="#"><img editable="true" mc:edit="bm24-01" src="{{ asset('admin/email/logo.png') }}" width="105" height="40" alt="Boy Projects" /></a></td>
+                <td align="center" valign="middle">
+                    <h2 style="color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 10px;">
+                        {{ config('app.name', 'Boy Projects') }}
+                    </h2>
+                </td>
               </tr>
             </table></td>
           </tr>
@@ -140,7 +144,7 @@
                 <td height="10" align="center" valign="top" style="font-size:10px; line-height:10px;">&nbsp;</td>
               </tr>
               <tr>
-                <td align="center" valign="top" style="font-family:'Open Sans', sans-serif, Verdana; font-size:15px; color:#4c4c4c; font-weight:normal; line-height:24px; padding:0px 35px;" mc:edit="bm24-05"><multiline>Security code is used to reset your password for {{ $adminName }}. @if($expiresAt) It will expire at {{ $expiresAt->format('M d, Y H:i') }}. @endif</multiline></td>
+                <td align="center" valign="top" style="font-family:'Open Sans', sans-serif, Verdana; font-size:15px; color:#4c4c4c; font-weight:normal; line-height:24px; padding:0px 35px;" mc:edit="bm24-05"><multiline>Security code for password reset for {{ $admin->name }}. @if($admin->security_code_expires_at) It will expire at {{ $admin->security_code_expires_at->format('M d, Y H:i') }}. @endif</multiline></td>
               </tr>
               
                 <tr>
@@ -150,7 +154,9 @@
               <tr>
                 <td align="center" valign="top"><table width="150" border="0" align="center" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td height="50" align="center" valign="middle" bgcolor="#875ab9" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-weight:bold; -moz-border-radius: 30px; border-radius: 30px;" mc:edit="bm24-06"><multiline><a href="{{ route('admin.password.reset') }}" style="text-decoration:none; color:#FFF;">Reset Password</a></multiline></td>
+                    <td height="50" align="center" valign="middle" bgcolor="#875ab9" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-weight:bold; -moz-border-radius: 30px; border-radius: 30px;" mc:edit="bm24-06">
+                        <a href="{{ route('admin.password.reset') }}" style="text-decoration:none; color:#FFF; display: block; padding: 15px; width: 100%; box-sizing: border-box;">Reset Password</a>
+                    </td>
                   </tr>
                 </table></td>
               </tr>

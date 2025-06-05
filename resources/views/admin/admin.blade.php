@@ -130,7 +130,8 @@ require_once ("./admin/lang/" . $lang . ".php");
                         <button type="button" class="btn btn-info" onclick="sendBulkEmails()"><i class="bx bx-mail-send me-1"></i>Send Bulk Emails</button>
                     </div>
                     <div>
-                        <a href="#" class="btn btn-primary"><i class="bx bx-plus me-1"></i>Add New Admin</a>
+                        <button type="button" class="btn btn-primary waves-effect" data-bs-toggle="modal"
+                    data-bs-target=".modal-add"><i class="bx bx-plus me-1"></i>Add New Admin</button>
                     </div>
                 </div>
             </div>
@@ -140,7 +141,104 @@ require_once ("./admin/lang/" . $lang . ".php");
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body">            
+                        <!-- Modal for adding item -->
+                        <div class="modal fade modal-add" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form action="{{ route('admin.admins.store') }}" method="POST" id="add-admin-form">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myLargeModalLabel">Add New Admin</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">   
+                                            <div class="card">      
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                                                <input class="form-control" type="text" name="name" id="name" 
+                                                                       placeholder="Enter admin full name" required>
+                                                                <div class="invalid-feedback name-error"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                                                <input class="form-control" type="email" name="email" id="email" 
+                                                                       placeholder="Enter email address" required>
+                                                                <div class="invalid-feedback email-error"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                                                <input class="form-control" type="password" name="password" id="password" 
+                                                                       placeholder="Enter password (min 8 characters)" required minlength="8">
+                                                                <div class="invalid-feedback password-error"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                                                <input class="form-control" type="password" name="password_confirmation" id="password_confirmation" 
+                                                                       placeholder="Confirm password" required minlength="8">
+                                                                <div class="invalid-feedback password-confirmation-error"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="is_active" class="form-label">Status</label>
+                                                                <select class="form-select" name="is_active" id="is_active">
+                                                                    <option value="1" selected>Active</option>
+                                                                    <option value="0">Inactive</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Verification Status</label>
+                                                                <div class="form-control-static">
+                                                                    <span class="badge bg-warning">
+                                                                        <i class="bx bx-time me-1"></i>Pending Verification (Default)
+                                                                    </span>
+                                                                    <small class="text-muted d-block mt-1">New admins must verify their email after creation</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="send_welcome_email" name="send_welcome_email" checked>
+                                                            <label class="form-check-label" for="send_welcome_email">
+                                                                Send welcome email with login credentials
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bx bx-plus me-1"></i>Create Admin
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
                         <div class="table-responsive">
                             <table class="table table-bordered dt-responsive nowrap w-100" id="admins-datatable">
                                 <thead class="table-light">
@@ -148,7 +246,6 @@ require_once ("./admin/lang/" . $lang . ".php");
                                         <th><input type="checkbox" id="select-all"></th>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Email</th>
                                         <th>Status</th>
                                         <th>Verified</th>
                                         <th>Last Login</th>
@@ -171,7 +268,6 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $admin->email }}</td>
                                         <td>
                                             @if($admin->is_active)
                                                 <span class="badge bg-success">Active</span>
@@ -284,6 +380,16 @@ $(document).ready(function() {
         order: [[1, 'asc']] // Sort by ID ascending (adjusted for checkbox column)
     });
     
+    // Initialize sessions datatable if exists
+    if ($('#sessions-datatable').length) {
+        $('#sessions-datatable').DataTable({
+            lengthChange: false,
+            buttons: ['copy', 'excel', 'pdf'],
+            order: [[5, 'desc']], // Sort by Login Time descending
+            pageLength: 10
+        });
+    }
+    
     // Select all checkbox functionality
     $('#select-all').on('change', function() {
         $('input[data-admin-id]').prop('checked', this.checked);
@@ -294,6 +400,185 @@ $(document).ready(function() {
         const totalCheckboxes = $('input[data-admin-id]').length;
         const checkedCheckboxes = $('input[data-admin-id]:checked').length;
         $('#select-all').prop('checked', totalCheckboxes === checkedCheckboxes);
+    });
+
+    // Add Admin Form Submission
+    $('#add-admin-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').empty();
+        
+        // Basic client-side validation
+        var name = $('#name').val().trim();
+        var email = $('#email').val().trim();
+        var password = $('#password').val();
+        var passwordConfirmation = $('#password_confirmation').val();
+        
+        var hasErrors = false;
+        
+        if (!name) {
+            $('#name').addClass('is-invalid');
+            $('.name-error').html('Name is required');
+            hasErrors = true;
+        }
+        
+        if (!email || !email.includes('@')) {
+            $('#email').addClass('is-invalid');
+            $('.email-error').html('Valid email is required');
+            hasErrors = true;
+        }
+        
+        if (!password || password.length < 8) {
+            $('#password').addClass('is-invalid');
+            $('.password-error').html('Password must be at least 8 characters');
+            hasErrors = true;
+        }
+        
+        if (password !== passwordConfirmation) {
+            $('#password_confirmation').addClass('is-invalid');
+            $('.password-confirmation-error').html('Passwords do not match');
+            hasErrors = true;
+        }
+        
+        if (hasErrors) {
+            showErrorMessage('Please fix the validation errors and try again.');
+            return;
+        }
+        
+        // Get form data
+        var formData = new FormData(this);
+        
+        // Ensure boolean values are properly converted
+        formData.set('is_active', $('#is_active').val() === '1' ? 1 : 0);
+        formData.set('send_welcome_email', $('#send_welcome_email').is(':checked') ? 1 : 0);
+        
+        // Debug: Log form data
+        console.log('Form Data being sent:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ': ' + value);
+        }
+        
+        // Disable submit button
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin me-1"></i>Creating...');
+        
+        // Send AJAX request
+        $.ajax({
+            url: '{{ route("admin.admins.store") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function(response) {
+                console.log('Success response:', response);
+                
+                if (response.success) {
+                    // Close modal
+                    $('.modal-add').modal('hide');
+                    
+                    // Reset form
+                    $('#add-admin-form')[0].reset();
+                    
+                    // Show success message
+                    showSuccessMessage(response.message, response.email_sent);
+                    
+                    // Reload page to show new admin
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showErrorMessage(response.message || 'Unknown error occurred');
+                }
+            },
+            error: function(xhr) {
+                console.log('Error response:', xhr);
+                console.log('Response text:', xhr.responseText);
+                
+                if (xhr.status === 422) {
+                    // Validation errors
+                    var errors = xhr.responseJSON.errors;
+                    
+                    $.each(errors, function(field, messages) {
+                        var input = $('[name="' + field + '"]');
+                        input.addClass('is-invalid');
+                        input.siblings('.invalid-feedback').html(messages[0]);
+                        
+                        // For specific error containers
+                        $('.' + field + '-error').html(messages[0]);
+                    });
+                    
+                    showErrorMessage('Please fix the validation errors and try again.');
+                } else if (xhr.status === 419) {
+                    showErrorMessage('Session expired. Please refresh the page and try again.');
+                } else {
+                    var errorMessage = 'Unknown error occurred';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            var parsed = JSON.parse(xhr.responseText);
+                            errorMessage = parsed.message || errorMessage;
+                        } catch (e) {
+                            errorMessage = 'Server error: ' + xhr.status;
+                        }
+                    }
+                    showErrorMessage('Error creating admin: ' + errorMessage);
+                }
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false).html(originalText);
+            }
+        });
+    });
+
+    // Email availability check
+    var emailCheckTimeout;
+    $('#email').on('keyup', function() {
+        var email = $(this).val();
+        var emailInput = $(this);
+        
+        clearTimeout(emailCheckTimeout);
+        
+        if (email.length > 0 && email.includes('@')) {
+            emailCheckTimeout = setTimeout(function() {
+                $.ajax({
+                    url: '/admin/check-email',
+                    method: 'POST',
+                    data: {
+                        email: email,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.exists) {
+                            emailInput.addClass('is-invalid');
+                            $('.email-error').html('This email is already registered');
+                        } else {
+                            emailInput.removeClass('is-invalid');
+                            $('.email-error').empty();
+                        }
+                    },
+                    error: function() {
+                        // Ignore errors for now
+                    }
+                });
+            }, 1000); // Check after 1 second of no typing
+        }
+    });
+
+    // Reset form when modal is closed
+    $('.modal-add').on('hidden.bs.modal', function() {
+        $('#add-admin-form')[0].reset();
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').empty();
+        clearTimeout(emailCheckTimeout);
     });
     
     // Verify admin
@@ -494,6 +779,50 @@ function sendBulkEmails() {
             }
         });
     }
+}
+
+// Success and Error Message Functions
+function showSuccessMessage(message, emailSent) {
+    var emailText = emailSent ? ' Welcome email sent successfully.' : ' Welcome email could not be sent.';
+    var fullMessage = message + emailText;
+    
+    // Create success alert
+    var alertHtml = `
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <i class="bx bx-check-circle me-2"></i>
+            <strong>Success!</strong> ${fullMessage}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+    
+    $('body').append(alertHtml);
+    
+    // Auto remove after 5 seconds
+    setTimeout(function() {
+        $('.alert-success').fadeOut('slow', function() {
+            $(this).remove();
+        });
+    }, 5000);
+}
+
+function showErrorMessage(message) {
+    // Create error alert
+    var alertHtml = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <i class="bx bx-error-circle me-2"></i>
+            <strong>Error!</strong> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+    
+    $('body').append(alertHtml);
+    
+    // Auto remove after 7 seconds (longer for errors)
+    setTimeout(function() {
+        $('.alert-danger').fadeOut('slow', function() {
+            $(this).remove();
+        });
+    }, 7000);
 }
 </script>
 @endpush

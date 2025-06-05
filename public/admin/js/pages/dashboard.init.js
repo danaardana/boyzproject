@@ -6,19 +6,29 @@ Contact: themesbrand@gmail.com
 File: Dashboard Init Js File
 */
 
+/*!
+ * Dashboard Init Script
+ * E-commerce Motorcycle Spare Parts Dashboard
+ */
+
 // get colors array from the string
 function getChartColorsArray(chartId) {
-    var colors = $(chartId).attr('data-colors');
-    var colors = JSON.parse(colors);
-    return colors.map(function(value){
-        var newValue = value.replace(' ', '');
-        if(newValue.indexOf('--') != -1) {
-            var color = getComputedStyle(document.documentElement).getPropertyValue(newValue);
-            if(color) return color;
-        } else {
-            return newValue;
+    if (document.getElementById(chartId) !== null) {
+        var colors = document.getElementById(chartId).getAttribute("data-colors");
+        if (colors) {
+            colors = JSON.parse(colors);
+            return colors.map(function (value) {
+                var newValue = value.replace(" ", "");
+                if (newValue.indexOf("--") != -1) {
+                    var color = getComputedStyle(document.documentElement).getPropertyValue(newValue);
+                    if (color) return color;
+                } else {
+                    return newValue;
+                }
+            });
         }
-    })
+    }
+    return [];
 }
 
 //  MINI CHART
@@ -349,7 +359,7 @@ $('#sales-by-locations').vectorMap({
     markerStyle: {
         initial: {
             r: 9,
-            'fill': vectormapColors,
+            'fill': vectormapColors[0] || '#5156be',
             'fill-opacity': 0.9,
             'stroke': '#fff',
             'stroke-width': 7,
@@ -374,3 +384,325 @@ $('#sales-by-locations').vectorMap({
         name: 'Australia'
     }]
 });
+
+// Transaction Distribution Pie Chart
+var transactionDistributionChart = {
+    series: [647, 287, 59],
+    chart: {
+        type: 'pie',
+        height: 320,
+        fontFamily: 'Poppins, sans-serif'
+    },
+    labels: ['Shopee', 'Tokopedia', 'Direct Sales'],
+    colors: ['#5156be', '#34c38f', '#f1b44c'],
+    legend: {
+        show: false
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+            return val.toFixed(1) + "%"
+        }
+    },
+    plotOptions: {
+        pie: {
+            expandOnClick: false,
+            donut: {
+                size: '70%'
+            }
+        }
+    },
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return val + " transactions"
+            }
+        }
+    },
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                height: 250
+            }
+        }
+    }]
+};
+
+// Revenue by Platform Chart (Donut Chart)
+var revenueChart = {
+    series: [8700000, 3200000, 900000],
+    chart: {
+        type: 'donut',
+        height: 220,
+        fontFamily: 'Poppins, sans-serif'
+    },
+    labels: ['Shopee', 'Tokopedia', 'Direct Sales'],
+    colors: ['#5156be', '#34c38f', '#f1b44c'],
+    legend: {
+        show: false
+    },
+    dataLabels: {
+        enabled: false
+    },
+    plotOptions: {
+        pie: {
+            donut: {
+                size: '75%',
+                labels: {
+                    show: true,
+                    name: {
+                        show: true,
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        color: '#495057'
+                    },
+                    value: {
+                        show: true,
+                        fontSize: '24px',
+                        fontWeight: 700,
+                        color: '#495057',
+                        formatter: function (val) {
+                            return 'Rp ' + (val / 1000000).toFixed(1) + 'M'
+                        }
+                    },
+                    total: {
+                        show: true,
+                        showAlways: true,
+                        label: 'Total Revenue',
+                        fontSize: '14px',
+                        fontWeight: 400,
+                        color: '#74788d',
+                        formatter: function (w) {
+                            var total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                            return 'Rp ' + (total / 1000000).toFixed(1) + 'M'
+                        }
+                    }
+                }
+            }
+        }
+    },
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return 'Rp ' + (val / 1000000).toFixed(1) + 'M'
+            }
+        }
+    },
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                height: 200
+            }
+        }
+    }]
+};
+
+// Top-Selling Categories Chart (existing chart)
+var categoryChart = {
+    series: [524, 312, 89],
+    chart: {
+        type: 'donut',
+        height: 280,
+        fontFamily: 'Poppins, sans-serif'
+    },
+    labels: ['Mounting & Body', 'Lighting', 'Installation Service'],
+    colors: ['#34c38f', '#5156be', '#a8aada'],
+    legend: {
+        show: false
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+            return val.toFixed(1) + "%"
+        }
+    },
+    plotOptions: {
+        pie: {
+            donut: {
+                size: '70%'
+            }
+        }
+    },
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return val + " units"
+            }
+        }
+    },
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                height: 200
+            }
+        }
+    }]
+};
+
+// Mini charts for the metric cards
+var miniChart1 = {
+    series: [{
+        data: [25, 30, 25, 45, 30, 55, 40]
+    }],
+    chart: {
+        type: 'line',
+        height: 50,
+        sparkline: {
+            enabled: true
+        }
+    },
+    stroke: {
+        curve: 'smooth',
+        width: 2
+    },
+    colors: ['#5156be'],
+    tooltip: {
+        enabled: false
+    }
+};
+
+var miniChart2 = {
+    series: [{
+        data: [10, 15, 12, 18, 15, 25, 20, 30, 25, 35]
+    }],
+    chart: {
+        type: 'line',
+        height: 50,
+        sparkline: {
+            enabled: true
+        }
+    },
+    stroke: {
+        curve: 'smooth',
+        width: 2
+    },
+    colors: ['#5156be'],
+    tooltip: {
+        enabled: false
+    }
+};
+
+var miniChart3 = {
+    series: [{
+        data: [20, 25, 30, 25, 35, 30, 40, 35, 45]
+    }],
+    chart: {
+        type: 'line',
+        height: 50,
+        sparkline: {
+            enabled: true
+        }
+    },
+    stroke: {
+        curve: 'smooth',
+        width: 2
+    },
+    colors: ['#5156be'],
+    tooltip: {
+        enabled: false
+    }
+};
+
+var miniChart4 = {
+    series: [{
+        data: [4.5, 4.6, 4.7, 4.8, 4.7, 4.9, 4.8]
+    }],
+    chart: {
+        type: 'line',
+        height: 50,
+        sparkline: {
+            enabled: true
+        }
+    },
+    stroke: {
+        curve: 'smooth',
+        width: 2
+    },
+    colors: ['#5156be'],
+    tooltip: {
+        enabled: false
+    }
+};
+
+// Counter animation
+function animateCounters() {
+    var counters = document.querySelectorAll('.counter-value');
+    counters.forEach(function(counter) {
+        var target = parseFloat(counter.getAttribute('data-target'));
+        var current = 0;
+        var increment = target / 100;
+        var timer = setInterval(function() {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            counter.textContent = current.toFixed(1);
+        }, 20);
+    });
+}
+
+// Initialize dashboard when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Initialize Transaction Distribution Chart
+    if (document.getElementById('transaction-distribution-chart')) {
+        var transDistChart = new ApexCharts(
+            document.querySelector("#transaction-distribution-chart"), 
+            transactionDistributionChart
+        );
+        transDistChart.render();
+    }
+
+    // Initialize Revenue Chart
+    if (document.getElementById('revenue-chart')) {
+        var revChart = new ApexCharts(
+            document.querySelector("#revenue-chart"), 
+            revenueChart
+        );
+        revChart.render();
+    }
+
+    // Initialize Category Chart
+    if (document.getElementById('category-chart')) {
+        var catChart = new ApexCharts(
+            document.querySelector("#category-chart"), 
+            categoryChart
+        );
+        catChart.render();
+    }
+
+    // Initialize Mini Charts
+    if (document.getElementById('mini-chart1')) {
+        var chart1 = new ApexCharts(document.querySelector("#mini-chart1"), miniChart1);
+        chart1.render();
+    }
+
+    if (document.getElementById('mini-chart2')) {
+        var chart2 = new ApexCharts(document.querySelector("#mini-chart2"), miniChart2);
+        chart2.render();
+    }
+
+    if (document.getElementById('mini-chart3')) {
+        var chart3 = new ApexCharts(document.querySelector("#mini-chart3"), miniChart3);
+        chart3.render();
+    }
+
+    if (document.getElementById('mini-chart4')) {
+        var chart4 = new ApexCharts(document.querySelector("#mini-chart4"), miniChart4);
+        chart4.render();
+    }
+
+    // Initialize counter animation
+    animateCounters();
+});
+
+// Export for external use
+window.dashboardCharts = {
+    transactionDistributionChart: transactionDistributionChart,
+    revenueChart: revenueChart,
+    categoryChart: categoryChart
+};

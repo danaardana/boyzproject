@@ -3,7 +3,7 @@
 <head>
 
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
-<title>Boy Projects</title>
+<title>{{ config('app.name', 'Boy Projects') }} - Email Verification</title>
 
 <style type="text/css">
 
@@ -82,7 +82,11 @@
           <tr>
             <td align="center" valign="top"><table border="0" align="center" cellpadding="0" cellspacing="0">
               <tr>
-                <td align="center" valign="middle"><a href="#"><img editable="true" mc:edit="bm14-01" src="{{ asset('admin/email/logo.png') }}" width="105" height="40" alt="Boy Projects" /></a></td>
+                <td align="center" valign="middle">
+                    <h2 style="color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 10px;">
+                        {{ config('app.name', 'Boy Projects') }}
+                    </h2>
+                </td>
               </tr>
             </table></td>
           </tr>
@@ -109,7 +113,7 @@
                 <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:35px; color:#4c4c4c; font-weight:normal;" mc:edit="bm14-05"><multiline>Email Verification</multiline></td>
               </tr>
               <tr>
-                <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:18px; color:#4c4c4c; font-weight:normal; line-height:36px;" mc:edit="bm14-02"><multiline>Hello {{ $adminName }},<br>Click the button below to verify <br>your email to activate your account</multiline></td>
+                <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:18px; color:#4c4c4c; font-weight:normal; line-height:36px;" mc:edit="bm14-02"><multiline>Hello {{ $admin->name }},<br>Click the button below to verify <br>your email to activate your account</multiline></td>
               </tr>
               <tr>
                 <td align="center" valign="top">&nbsp;</td>
@@ -117,7 +121,9 @@
               <tr>
                 <td align="center" valign="top"><table width="155" border="0" align="center" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td height="50" align="center" valign="middle" bgcolor="#875ab9" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-weight:normal; text-transform:uppercase; -moz-border-radius: 30px; border-radius: 30px;" mc:edit="bm14-06"><multiline><a href="{{ $verificationUrl }}" style="text-decoration:none; color:#FFF;">verify</a></multiline></td>
+                    <td height="50" align="center" valign="middle" bgcolor="#875ab9" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-weight:normal; text-transform:uppercase; -moz-border-radius: 30px; border-radius: 30px;" mc:edit="bm14-06">
+                        <a href="{{ $verificationUrl }}" style="text-decoration:none; color:#FFF; display: block; padding: 15px; width: 100%; box-sizing: border-box;">verify</a>
+                    </td>
                   </tr>
                 </table></td>
               </tr>

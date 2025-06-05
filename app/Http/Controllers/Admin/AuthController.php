@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Admin;
 use App\Models\Section;
 use App\Models\SectionContent;
+use App\Models\Session;
 use App\Mail\AdminSecurityCode;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -28,8 +29,27 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
+        // Check if admin is already authenticated
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.dashboard');
+            $admin = Auth::guard('admin')->user();
+            
+            // Check if admin is verified and active
+            if ($admin && $admin->verified && $admin->is_active) {
+                return redirect()->route('admin.dashboard')
+                    ->with('status', 'You are already logged in!');
+            } else {
+                // If admin is not verified or not active, logout and show login
+                Auth::guard('admin')->logout();
+                session()->invalidate();
+                session()->regenerateToken();
+                
+                $errorMessage = !$admin->verified 
+                    ? 'Your account is not verified. Please check your email for verification instructions.'
+                    : 'Your account has been deactivated. Please contact the system administrator.';
+                
+                return redirect()->route('admin.login')
+                    ->withErrors(['email' => $errorMessage]);
+            }
         }
 
         // Get testimonials for the background
@@ -55,14 +75,55 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6',
         ]);
 
         $credentials = $request->only('email', 'password');
-        $remember = $request->filled('remember');
+        $remember = $request->boolean('remember');
+
+        // Set a longer session lifetime if remember me is checked
+        if ($remember) {
+            config(['session.lifetime' => 10080]); // 7 days in minutes
+        }
 
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $admin = Auth::guard('admin')->user();
+            
+            // Check if admin is verified
+            if (!$admin->verified) {
+                Auth::guard('admin')->logout();
+                return back()->withErrors([
+                    'email' => 'Your account is not verified. Please check your email for verification instructions.',
+                ])->withInput($request->except('password'));
+            }
+            
+            // Check if admin is active
+            if (!$admin->is_active) {
+                Auth::guard('admin')->logout();
+                return back()->withErrors([
+                    'email' => 'Your account has been deactivated. Please contact the system administrator.',
+                ])->withInput($request->except('password'));
+            }
+            
+            // Regenerate session for security
             $request->session()->regenerate();
+            
+            // Set additional session data for remember functionality
+            if ($remember) {
+                $request->session()->put('admin_remember', true);
+                $request->session()->put('admin_last_activity', now());
+            }
+            
+            // Log the admin login session
+            try {
+                Session::logAdminLogin($admin, $request);
+            } catch (\Exception $e) {
+                // Log the error but don't fail the login
+                \Log::error('Failed to log admin session: ' . $e->getMessage());
+            }
+            
+            // Flash success message
+            session()->flash('status', 'Welcome back, ' . $admin->name . '!');
             
             return redirect()->intended(route('admin.dashboard'));
         }
@@ -79,6 +140,13 @@ class AuthController extends Controller
     {
         // Store admin email for logging purposes
         $adminEmail = Auth::guard('admin')->user()->email ?? 'Unknown';
+        
+        // Clean up session record
+        try {
+            Session::logAdminLogout();
+        } catch (\Exception $e) {
+            \Log::error('Failed to clean admin session: ' . $e->getMessage());
+        }
         
         // Logout the admin
         Auth::guard('admin')->logout();
@@ -141,8 +209,30 @@ class AuthController extends Controller
             ]);
         }
 
+        // Check if admin is still verified and active
+        if (!$admin->verified) {
+            session()->forget('lockscreen_admin_id');
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Your account is no longer verified. Please contact the system administrator.',
+            ]);
+        }
+        
+        if (!$admin->is_active) {
+            session()->forget('lockscreen_admin_id');
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Your account has been deactivated. Please contact the system administrator.',
+            ]);
+        }
+
         Auth::guard('admin')->login($admin);
         session()->forget('lockscreen_admin_id');
+
+        // Log the unlock as a new session
+        try {
+            Session::logAdminLogin($admin, $request);
+        } catch (\Exception $e) {
+            \Log::error('Failed to log admin unlock session: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.dashboard');
     }

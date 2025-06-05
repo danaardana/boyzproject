@@ -57,7 +57,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 </form>
 
                                 <div class="mt-5 text-center">
-                                    <p class="text-muted mb-0">{{ $language['not_you'] }} <a href="{{ route('login') }}"
+                                    <p class="text-muted mb-0">{{ $language['not_you'] }} <a href="{{ route('admin.login') }}"
                                             class="text-primary fw-semibold"> {{ $language['login'] }}</a> </p>
                                 </div>
                             </div>

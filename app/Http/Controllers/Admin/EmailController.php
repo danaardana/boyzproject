@@ -114,6 +114,35 @@ class EmailController extends Controller
     }
 
     /**
+     * Reactivate admin account
+     */
+    public function reactivateAdmin(Request $request, $id, $token)
+    {
+        $admin = Admin::findOrFail($id);
+        
+        // Verify token (same logic as verification)
+        $expectedToken = hash('sha256', $admin->id . $admin->email . $admin->created_at . config('app.key'));
+        
+        if ($token !== $expectedToken) {
+            return redirect()->route('admin.login')->with('error', 'Invalid reactivation token or link has expired.');
+        }
+
+        // Check if admin is already active
+        if ($admin->is_active) {
+            return redirect()->route('admin.login')->with('status', 'Your account is already active. You can login now.');
+        }
+
+        // Reactivate the admin account
+        $admin->is_active = true;
+        $admin->save();
+
+        // Log the reactivation (optional)
+        \Log::info("Admin account reactivated: {$admin->email} (ID: {$admin->id})");
+        
+        return redirect()->route('admin.login')->with('success', 'Your account has been successfully reactivated! You can now login.');
+    }
+
+    /**
      * Send bulk emails
      */
     public function sendBulkEmails(Request $request)

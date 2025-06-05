@@ -1,117 +1,161 @@
-# Boy Projects - Laravel Admin System with Real-Time Notifications
+# Boy Projects - E-Commerce Motorcycle Spare Parts Admin Dashboard
 
-## **🎯 Overview**
-A comprehensive Laravel-based application featuring:
-1. **Customizable Landing Page** – Dynamic content management with multiple template layouts
-2. **Advanced Admin Dashboard** – Complete admin management with real-time notifications
-3. **Real-Time Notification System** – Live updates using Pusher for instant notifications
-4. **Email Management System** – Automated notifications, verification, and contact management
-5. **Enhanced Security** – Session management with back-button prevention and authentication checks
+## **🏍️ Overview**
+A comprehensive Laravel-based e-commerce admin dashboard specifically designed for motorcycle spare parts business with Shopee integration. Features a complete transformation from crypto trading to automotive parts management with advanced admin tools, real-time notifications, and customer engagement systems.
 
----
-
-## **📋 Table of Contents**
-- [Features](#features)
-- [Installation](#installation)
-- [Real-Time Configuration](#real-time-configuration)
-- [Email Configuration](#email-configuration)
-- [Admin System](#admin-system)
-- [Security Features](#security-features)
-- [File Structure](#file-structure)
-- [Usage Guide](#usage-guide)
-- [Technologies Used](#technologies-used)
+## **🎯 Core Business Features**
+- **E-Commerce Motorcycle Parts Dashboard** – Complete sales analytics with Indonesian currency formatting
+- **Multi-Platform Integration** – Shopee, Tokopedia platform support with filtering
+- **Advanced Analytics** – Revenue tracking, top-selling categories, product performance
+- **Customer Reviews System** – Star ratings and platform-specific feedback management
+- **Real-Time Chat Support** – Smart auto-response system for customer inquiries
+- **Professional Email System** – Anti-spam measures with automated admin workflows
 
 ---
 
-## **✨ Features**
+## **📊 Dashboard Features**
 
-### **🎨 Landing Page Management**
-- Dynamic section management (enable/disable)
-- Multiple template layouts per section
-- Real-time content editing
-- Order management for sections
-- Responsive design with modern UI
+### **🚀 E-Commerce Analytics**
+- **Total Sales**: Rp 12.8M+ with trend indicators
+- **Order Management**: 847+ orders with status tracking  
+- **Product Performance**: 1,247+ products sold with category breakdown
+- **Customer Satisfaction**: 4.8/5 average rating display
+- **Revenue Charts**: Interactive donut charts with ApexCharts integration
+- **Transaction Distribution**: Platform-wise sales breakdown with percentages
 
-### **📡 Real-Time Notification System**
-- **Live Dashboard Updates**: Instant notification updates without page refresh
-- **Contact Form Alerts**: Real-time notifications when new contact messages arrive
-- **Pusher Integration**: WebSocket-based real-time communication
-- **Badge Counters**: Dynamic notification counters that update instantly
-- **Multi-Page Support**: Real-time updates work across all admin pages
-- **Browser Notifications**: Desktop notifications for new messages
-- **Unread Message Tracking**: Real-time unread message counts
+### **🏷️ Motorcycle Categories**
+- **Mounting & Body Parts**: Brackets, fairings, body panels
+- **Lighting Systems**: LED lights, indicators, headlamps  
+- **Installation Services**: Professional installation and maintenance
+- **Accessories**: Custom parts and performance upgrades
 
-### **👥 Admin Management System**
-- Secure admin authentication
-- Role-based access control
-- Admin account verification
-- Real-time notification preferences
-- Contact message management with live updates
+### **📈 Advanced Charts & Analytics**
+- **Revenue by Platform**: Donut chart with Shopee/Tokopedia breakdown
+- **Transaction Distribution**: Pie chart with percentage breakdowns
+- **Responsive Design**: Mobile-optimized charts with proper aspect ratios
+- **Indonesian Currency**: Proper Rupiah formatting throughout dashboard
+- **Real-Time Updates**: Dynamic data updates without page refresh
 
-### **📧 Enhanced Contact System**
-- **Contact Form Submissions**: Secure CSRF-protected contact forms
-- **Real-Time Notifications**: Instant alerts when new messages arrive
-- **Message Status Tracking**: New, In Progress, Resolved, Closed statuses
-- **Admin Responses**: Reply to customer messages with status updates
-- **Assignment System**: Assign messages to specific admins
-- **Filtering & Search**: Filter by category, status, and read/unread
+---
+
+## **🔐 Enhanced Authentication System**
+
+### **👨‍💼 Admin Management**
+- **Secure Login System**: Enhanced with remember me functionality (7-day sessions)
+- **Real-Time Validation**: Live form validation with loading states
+- **Account Verification**: Email-based verification with secure tokens
+- **Password Management**: Secure reset with email verification codes
+- **Session Management**: Extended sessions with localStorage email persistence
+- **Admin Reactivation**: Automated reactivation system via email links
+
+### **🛡️ Security Features**
+- **Middleware Protection**: AdminVerificationMiddleware with proper resolution
+- **Anti-Spam Email System**: Professional templates with proper headers
+- **Remember Me Implementation**: Database token storage with 7-day expiration
+- **Forced Logout Routes**: Edge case handling for authentication conflicts
+- **Session Invalidation**: Proper cleanup on logout with cache clearing
+
+---
+
+## **📧 Professional Email System**
+
+### **✉️ Admin Email Templates**
+- **Welcome Emails**: Professional onboarding with secure verification links
+- **Security Codes**: Time-limited codes for password resets (15-minute expiry)
+- **Account Verification**: SHA256 token-based email verification
+- **Reactivation Notifications**: Automated account reactivation with instant database updates
+- **Anti-Spam Measures**: Proper email headers, HTML text logos, professional styling
+
+### **🔧 Email Technical Features**
+- **Laravel Mailables**: Modern mail system with Address objects and proper envelopes
+- **SMTP Configuration**: Gmail integration with app passwords
+- **Template Responsiveness**: Mobile-friendly email templates
+- **Security Tokens**: Cryptographically secure verification tokens
+- **Audit Logging**: Complete email activity tracking
+
+---
+
+## **💬 Smart Chat System**
+
+### **🤖 Auto-Response Configuration**
+Location: `public/landing/js/chat-bubble.js`
+
+```javascript
+autoResponses: {
+    'hello': 'Hello! Welcome to Boys Project! How can I assist you today?',
+    'hi': 'Hi there! Thanks for visiting Boys Project. What can I do for you?',
+    'help': 'I\'m here to help! What do you need assistance with regarding our services?',
+    'contact': 'You can reach us at info@boysproject.com or through our contact form.',
+    'hours': 'We\'re available Monday-Friday 9AM-6PM.',
+    'pricing': 'For detailed pricing information, please check our services page!',
+    'services': 'We offer a wide range of digital services.',
+    'thanks': 'You\'re very welcome! Is there anything else I can help you with?',
+    'bye': 'Goodbye! Thank you for your interest in Boys Project!',
+    'default': 'Thanks for your message: "{{message}}". Let me connect you with our team!'
+}
+```
+
+### **💬 Chat Features**
+- **Smart Keyword Detection**: Automatic response matching for common queries
+- **Professional UI**: Modern chat bubble with gradient design
+- **Quick Actions**: Pre-configured response buttons
+- **Typing Indicators**: Visual feedback during bot responses
+- **Mobile Responsive**: Optimized for all device sizes
+- **Message History**: Conversation persistence and tracking
+
+---
+
+## **📨 Message Management System**
+
+### **📥 Admin Message Center**
+- **Inbox Management**: Complete message categorization system
+- **Category Badges**: Color-coded labels (Warranty, Installation, Support, General)
+- **Status Tracking**: New, In Progress, Resolved, Closed workflow
+- **Assignment System**: Assign messages to specific admin members
+- **Response Management**: Reply system with conversation threading
 - **Bulk Operations**: Mark all as read, delete multiple messages
 
-### **🔒 Security Features**
-- Enhanced logout with session invalidation
-- Back-button prevention after logout
-- Real-time session validation
-- Cache control headers
-- CSRF protection with token validation
-- Password visibility toggles
-- Database injection protection
+### **🔔 Real-Time Notifications**
+- **Navbar Notifications**: Live message counts with dropdown preview
+- **Pusher Integration**: WebSocket-based real-time updates
+- **Unread Counters**: Dynamic badge updates without page refresh
+- **Message Previews**: Quick message content preview in notifications
 
 ---
 
-## **🚀 Installation**
+## **🚀 Installation & Setup**
 
 ### **Prerequisites**
 - PHP 8.1+
-- Composer
+- Composer 2.0+
 - MySQL 8.0+
-- Node.js 14.17.3+ & NPM
+- Node.js 16+ & NPM
 - Pusher account (for real-time features)
 
-### **Setup Steps**
+### **Quick Setup**
 
-1. **Clone Repository**
+1. **Clone & Install**
    ```bash
-   git clone https://github.com/danaardana/boyzproject
+   git clone https://github.com/danaardana/boyzproject.git
    cd boyzproject
-   ```
-
-2. **Install Dependencies**
-   ```bash
    composer install
    npm install
    ```
 
-3. **Environment Configuration**
+2. **Environment Configuration**
    ```bash
    cp .env.example .env
+   php artisan key:generate
    ```
-   
-   Update your `.env` file:
+
+3. **Database Setup**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+4. **Email Configuration**
    ```env
-   APP_NAME="Boy Projects"
-   APP_ENV=local
-   APP_KEY=
-   APP_DEBUG=true
-   APP_URL=http://localhost
-
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=boyzproject
-   DB_USERNAME=your_username
-   DB_PASSWORD=your_password
-
-   # Email Configuration
    MAIL_MAILER=smtp
    MAIL_HOST=smtp.gmail.com
    MAIL_PORT=587
@@ -119,295 +163,176 @@ A comprehensive Laravel-based application featuring:
    MAIL_PASSWORD=your-app-password
    MAIL_ENCRYPTION=tls
    MAIL_FROM_ADDRESS=your-email@gmail.com
-   MAIL_FROM_NAME="${APP_NAME}"
+   MAIL_FROM_NAME="Boy Projects"
+   ```
 
-   # Pusher Configuration (Required for real-time features)
+5. **Real-Time Features (Pusher)**
+   ```env
    BROADCAST_DRIVER=pusher
    PUSHER_APP_ID=your_app_id
    PUSHER_APP_KEY=your_app_key
    PUSHER_APP_SECRET=your_app_secret
-   PUSHER_HOST=
-   PUSHER_PORT=443
-   PUSHER_SCHEME=https
    PUSHER_APP_CLUSTER=ap1
    ```
 
-4. **Generate Application Key**
-   ```bash
-   php artisan key:generate
-   ```
-
-5. **Database Setup**
-   ```bash
-   php artisan migrate
-   php artisan db:seed
-   ```
-
-6. **Compile Assets**
+6. **Compile & Run**
    ```bash
    npm run dev
-   # or for production
-   npm run build
-   ```
-
-7. **Start Development Server**
-   ```bash
    php artisan serve
    ```
 
 ---
 
-## **📡 Real-Time Configuration**
+## **🏗️ Project Structure**
 
-### **Pusher Setup**
-1. **Create Pusher Account**
-   - Visit [pusher.com](https://pusher.com)
-   - Create a new app
-   - Get your app credentials
-
-2. **Configure Environment**
-   ```env
-   BROADCAST_DRIVER=pusher
-   PUSHER_APP_ID=2003476
-   PUSHER_APP_KEY=826b21ec656c73be408d
-   PUSHER_APP_SECRET=2c3e417407e10ea3cd24
-   PUSHER_APP_CLUSTER=ap1
-   ```
-
-3. **Broadcasting Routes**
-   - Channel: `admin.notifications`
-   - Event: `ContactMessageEvent`
-   - Authentication: Admin only
-
-### **Real-Time Features**
-- **Dashboard Notifications**: Live updates in admin navbar
-- **Message Counters**: Real-time unread message counts
-- **Instant Alerts**: New contact form submissions
-- **Cross-Page Updates**: Updates work on all admin pages
-- **WebSocket Connection**: Persistent connection for instant updates
-
----
-
-## **📧 Email Configuration**
-
-### **Gmail Setup (Recommended)**
-1. Enable 2-Factor Authentication on your Gmail account
-2. Generate an App Password:
-   - Go to Google Account settings
-   - Security → 2-Step Verification → App passwords
-   - Generate password for "Mail"
-3. Use the generated password in `MAIL_PASSWORD`
-
-### **Email Templates**
-Located in `resources/views/admin/email/`:
-- `reactivate.blade.php` - Account reactivation with WhatsApp integration
-- `security_code.blade.php` - Password reset security codes
-- `verification.blade.php` - Email verification links
-
----
-
-## **🎛️ Admin System**
-
-### **Admin Access**
-- URL: `/admin/login`
-- Real-time dashboard with live notifications
-- Contact message management with instant updates
-
-### **Admin Features**
-- **Real-Time Dashboard**: Live notification updates and statistics
-- **Contact Management**: 
-  - View all messages with real-time updates
-  - Reply to customers with status tracking
-  - Assign messages to team members
-  - Filter by category, status, read/unread
-  - Bulk operations (mark all as read, delete)
-- **Content Management**: Edit landing page sections
-- **Email Operations**: Send verification, reactivation, security codes
-- **User Management**: Admin account management
-
-### **Contact System Endpoints**
-```php
-// Contact form submission (public)
-POST /contact/submit
-
-// Admin message management
-GET /admin/messages              // List all messages
-GET /admin/messages/{id}         // View single message
-POST /admin/messages/{id}/read   // Mark as read
-POST /admin/messages/read-all    // Mark all as read
-POST /admin/messages/{id}/respond // Reply to message
-POST /admin/messages/{id}/assign  // Assign to admin
-DELETE /admin/messages/{id}      // Delete message
-```
-
----
-
-## **🛡️ Security Features**
-
-### **Enhanced Security**
-- **CSRF Protection**: All forms protected with CSRF tokens
-- **Database Security**: Prepared statements prevent SQL injection
-- **Input Validation**: Server-side validation for all inputs
-- **Session Security**: Secure session management
-- **Password Security**: Strong password requirements
-
-### **Contact Form Security**
-- CSRF token validation
-- Input sanitization
-- Rate limiting protection
-- Validation for all fields:
-  - Name: Required, max 255 characters
-  - Email: Required, valid email format
-  - Phone: Optional, max 20 characters
-  - Subject: Required, max 255 characters
-  - Message: Required content
-
-### **Authentication Security**
-- Password requirements (8+ chars, mixed case, numbers, symbols)
-- Security code expiration (1 hour)
-- Session invalidation on logout
-- CSRF token validation
-- Back-button prevention after logout
-
----
-
-## **📁 File Structure**
+### **Key Files & Directories**
 ```
 boyzproject/
 ├── app/
-│   ├── Events/
-│   │   └── ContactMessageEvent.php      # Real-time event broadcasting
 │   ├── Http/Controllers/
-│   │   ├── AdminController.php          # Admin dashboard with real-time data
-│   │   └── ContactController.php        # Contact management with broadcasting
-│   ├── Models/
-│   │   ├── ContactMessage.php           # Contact message model
-│   │   ├── Customer.php                 # Customer model
-│   │   └── MessageResponse.php          # Admin response model
-│   └── Providers/
-│       └── ViewComposerServiceProvider.php # Navbar notifications
-├── resources/
-│   ├── views/
-│   │   ├── admin/
-│   │   │   ├── messages.blade.php       # Message list with real-time updates
-│   │   │   ├── messages-single.blade.php # Single message view
-│   │   │   └── partials/
-│   │   │       └── navbar.blade.php     # Real-time notification navbar
-│   │   └── layouts/
-│   │       ├── admin.blade.php          # Admin layout
-│   │       └── landing.blade.php        # Landing page with contact form
-│   └── js/
-│       └── notifications.js             # Real-time notification handling
-├── routes/
-│   ├── web.php                          # Web routes
-│   └── channels.php                     # Broadcasting channels
-├── config/
-│   └── broadcasting.php                 # Broadcasting configuration
-├── database/
-│   └── migrations/                      # Database schema
-├── webpack.mix.js                       # Laravel Mix configuration
-└── package.json                         # NPM dependencies with Pusher
+│   │   ├── AdminController.php          # Dashboard & admin management
+│   │   ├── Admin/AuthController.php     # Enhanced login system
+│   │   ├── Admin/EmailController.php    # Email verification & reactivation
+│   │   └── ContactController.php        # Message management
+│   ├── Mail/
+│   │   ├── AdminWelcomeEmail.php        # Professional welcome emails
+│   │   ├── AdminSecurityCode.php        # Security code emails
+│   │   ├── AdminVerification.php        # Account verification
+│   │   └── AdminReactivationNotification.php # Auto-reactivation
+│   └── Models/
+│       ├── Admin.php                    # Admin user model
+│       ├── ContactMessage.php           # Message system
+│       └── Session.php                  # Session tracking
+├── public/
+│   ├── admin/js/pages/dashboard.init.js # Dashboard charts (ApexCharts)
+│   └── landing/js/chat-bubble.js        # Chat auto-responses
+├── resources/views/
+│   ├── admin/
+│   │   ├── dashboard.blade.php          # E-commerce dashboard
+│   │   ├── messages.blade.php           # Message management
+│   │   ├── auth/login.blade.php         # Enhanced login form
+│   │   └── email/                       # Email templates
+│   └── layouts/admin.blade.php          # Admin layout with notifications
+└── routes/web.php                       # Application routes
+```
+
+### **Database Schema**
+- **admins**: Enhanced with remember_token, verification, security codes
+- **contact_messages**: Message system with categories and status tracking
+- **customers**: Customer information for message system
+- **message_responses**: Admin responses to customer messages
+- **predefined_messages**: Chat auto-response configuration
+- **sessions**: Admin login history and session tracking
+
+---
+
+## **🎯 Usage Guide**
+
+### **Admin Access**
+1. Navigate to `/admin/login`
+2. Use admin credentials (create via seeder)
+3. Access dashboard at `/admin/dashboard`
+
+### **Dashboard Navigation**
+- **📊 Dashboard**: E-commerce analytics and charts
+- **📨 Messages**: Customer message management
+- **👥 Admin**: Admin user management
+- **📈 History**: Login session tracking
+- **💬 Chat**: Real-time message interface
+
+### **Email System**
+- **Send Welcome**: Create new admin → auto-sends welcome email
+- **Verification**: Email verification links with secure tokens
+- **Reactivation**: Deactivated accounts can self-reactivate via email
+- **Security Codes**: Password reset with time-limited codes
+
+### **Chat Configuration**
+Edit `public/landing/js/chat-bubble.js`:
+```javascript
+// Add new auto-response
+'new_keyword': 'Your custom response here',
 ```
 
 ---
 
-## **🔧 Technologies Used**
+## **🛠️ Technologies Used**
 
 ### **Backend**
-- **Laravel 10** - PHP framework
-- **MySQL** - Database
-- **Pusher** - Real-time WebSocket service
-- **Laravel Echo** - Broadcasting client
-- **Laravel Mix** - Asset compilation
+- **Laravel 10**: PHP framework with modern features
+- **MySQL 8**: Database with proper indexing and relationships
+- **Pusher**: Real-time WebSocket communication
+- **Laravel Mail**: Professional email system with templates
 
 ### **Frontend**
-- **Bootstrap 5** - UI framework
-- **jQuery** - JavaScript library
-- **Pusher JS** - Real-time client library
-- **Font Awesome** - Icons
+- **Bootstrap 5**: Responsive UI framework
+- **ApexCharts**: Interactive charts and analytics
+- **Vanilla JavaScript**: Custom chat and dashboard functionality
+- **CSS3**: Modern styling with gradients and animations
 
-### **Real-Time Stack**
-- **Pusher Channels** - WebSocket service
-- **Laravel Broadcasting** - Server-side broadcasting
-- **Laravel Echo** - Client-side listener
-- **pusher-js** - JavaScript WebSocket client
-
----
-
-## **📱 Usage Guide**
-
-### **Customer Experience**
-1. Fill out contact form on landing page
-2. Receive confirmation message
-3. Admin receives real-time notification
-
-### **Admin Experience**
-1. Log into admin dashboard
-2. See real-time notifications in navbar
-3. View all messages with live updates
-4. Respond to customers with status tracking
-5. Assign messages to team members
-6. Filter and manage messages efficiently
-
-### **Real-Time Features**
-- **Instant Notifications**: New messages appear immediately
-- **Live Counters**: Unread message counts update in real-time
-- **Cross-Page Updates**: Works on dashboard, message list, and single message pages
-- **Desktop Notifications**: Browser notifications for new messages
+### **Development Tools**
+- **Composer**: PHP dependency management
+- **NPM**: Frontend asset compilation
+- **Laravel Mix**: Asset bundling and optimization
+- **Git**: Version control with comprehensive history
 
 ---
 
-## **🧪 Testing**
+## **🔧 Configuration Notes**
 
-### **Test Real-Time Features**
-1. Open admin dashboard in one browser
-2. Submit contact form in another browser/tab
-3. Watch admin dashboard update instantly
-4. Verify notification counters update
-5. Check message appears in inbox immediately
+### **Chart Integration**
+- **ApexCharts**: Properly integrated with vanilla JavaScript
+- **Responsive Design**: Charts adapt to screen sizes
+- **Indonesian Currency**: Rupiah formatting throughout
+- **Data Binding**: Dynamic data from Laravel backend
 
-### **Test Contact System**
-1. Submit contact form with various data
-2. Verify admin receives notification
-3. Test admin response functionality
-4. Check message status updates
-5. Test assignment features
+### **Email Anti-Spam**
+- **Proper Headers**: From, Reply-To, Message-ID
+- **HTML Text Logos**: No image dependencies
+- **Professional Templates**: GDPR-compliant and mobile-friendly
+- **SPF/DKIM**: Email authentication setup required
 
----
-
-## **📈 Performance Notes**
-
-- **Real-time updates** use minimal bandwidth (WebSocket)
-- **Database queries** optimized with proper indexing
-- **Asset compilation** uses Laravel Mix for optimization
-- **Broadcasting** only to authenticated admin users
-- **Memory efficient** event handling
+### **Security Considerations**
+- **Token Validation**: Cryptographically secure tokens
+- **Session Management**: Proper cleanup and invalidation
+- **CSRF Protection**: All forms protected
+- **Input Validation**: Server-side validation on all inputs
 
 ---
 
-## **🤝 Contributing**
+## **📝 Recent Updates**
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### **Latest Features (05/07/2025)**
+- ✅ **E-Commerce Dashboard**: Complete transformation from crypto to motorcycle parts
+- ✅ **Enhanced Login**: Remember me functionality with 7-day sessions
+- ✅ **Email System Overhaul**: Anti-spam measures and professional templates
+- ✅ **Chart Integration**: Working ApexCharts with Indonesian currency
+- ✅ **Automated Reactivation**: Email-based account reactivation system
+- ✅ **Middleware Fixes**: Proper middleware resolution and routing
+- ✅ **Message Management**: Complete inbox system with categorization
+
+### **Technical Improvements**
+- ✅ **JavaScript Optimization**: Converted jQuery dependencies to vanilla JS
+- ✅ **Database Optimization**: Proper migrations and relationships
+- ✅ **Asset Management**: Corrected asset paths and dependencies
+- ✅ **Cache Management**: Proper cache clearing procedures
+- ✅ **Mobile Responsiveness**: Optimized for all device sizes
+
+---
+
+## **📞 Support & Contact**
+
+- **Email**: info@boysproject.com
+- **Business Hours**: Monday-Friday 9AM-6PM (GMT+7)
+- **Technical Support**: Available via admin dashboard messaging system
+- **Documentation**: Complete inline documentation in codebase
 
 ---
 
 ## **📄 License**
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is proprietary software developed for Boy Projects. All rights reserved.
 
 ---
 
-## **📞 Support**
-
-For support and questions:
-- 📧 Email: support@boyprojects.com
-- 📱 WhatsApp: [Contact via WhatsApp](https://wa.me/your_number)
-- 🐛 Issues: [GitHub Issues](https://github.com/danaardana/boyzproject/issues)
-
----
-
-**Made with ❤️ by the Boy Projects Team**
+*Last Updated: December 2024*
+*Version: 2.0.0 - E-Commerce Motorcycle Parts Edition*

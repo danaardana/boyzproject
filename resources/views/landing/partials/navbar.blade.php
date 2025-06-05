@@ -18,7 +18,16 @@ $sections = Section::where('is_active', true)
         <ul class="social-media-dark social-top">
           <li><a href="https://wa.me/08211990442" class="icofont icofont-whatsapp"></a></li>
           <li><a href="https://linktr.ee/boyprojects" class="icofont icofont-linkedin"></a></li>
-          <li><a href="{{ route('admin.login') }}" class="icofont icofont-user"></a></li>
+          @if(Auth::guard('admin')->check())
+            <li>
+              <a href="{{ route('admin.dashboard') }}" class="icofont icofont-dashboard" title="Admin Dashboard"></a>
+            </li>
+            <li>
+              <a href="{{ route('admin.logout') }}" class="icofont icofont-logout" title="Logout"></a>
+            </li>
+          @else
+            <li><a href="{{ route('admin.login') }}" class="icofont icofont-user" title="Admin Login"></a></li>
+          @endif
         </ul>
       </div>
       <!--=== End Atribute Navigation ===-->

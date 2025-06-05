@@ -15,8 +15,19 @@ use Illuminate\Http\Request;
 Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
+// Force logout route (accessible even if middleware fails)
+Route::get('/admin/force-logout', function() {
+    Auth::guard('admin')->logout();
+    session()->invalidate();
+    session()->regenerateToken();
+    return redirect()->route('admin.login')->with('status', 'You have been logged out successfully.');
+})->name('admin.force-logout');
+
 // Admin verification route (public for email verification)
 Route::get('/admin/verify/{id}/{token}', [EmailController::class, 'verifyAdmin'])->name('admin.verify');
+
+// Admin reactivation route (public for email reactivation)
+Route::get('/admin/reactivate/{id}/{token}', [EmailController::class, 'reactivateAdmin'])->name('admin.reactivate');
 
 // Test route for email functionality (remove after testing)
 Route::get('/test-email/{adminId}', function($adminId) {
@@ -30,6 +41,21 @@ Route::get('/test-email/{adminId}', function($adminId) {
         return "Failed to send email: " . $e->getMessage();
     }
 })->name('test.email');
+
+// Test welcome email route
+Route::get('/test-welcome-email/{adminId}', function($adminId) {
+    $admin = \App\Models\Admin::findOrFail($adminId);
+    $testPassword = 'TempPass123!';
+    $verificationUrl = route('admin.login');
+    
+    try {
+        \Illuminate\Support\Facades\Mail::to($admin->email)
+            ->send(new \App\Mail\AdminWelcomeEmail($admin, $testPassword, $verificationUrl));
+        return "Welcome email sent successfully to {$admin->email}!";
+    } catch (\Exception $e) {
+        return "Failed to send welcome email: " . $e->getMessage();
+    }
+})->name('test.welcome.email');
 
 // Admin Auth Routes
 Route::prefix('admin')->group(function () {
@@ -45,8 +71,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('admin.password.update');
     });
 
-    // Protected routes - Option 1: Full class name (current)
-    Route::middleware(['auth:admin', \App\Http\Middleware\PreventBackHistory::class])->group(function () {
+    // Protected routes - Use full class path to avoid middleware resolution issues
+    Route::middleware(['auth:admin', \App\Http\Middleware\PreventBackHistory::class, \App\Http\Middleware\AdminVerificationMiddleware::class])->group(function () {
         // Dashboard and main features
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -102,6 +128,21 @@ Route::prefix('admin')->group(function () {
         Route::get('/chat', [ContactController::class, 'index'])->name('admin.chat');
         Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
         Route::get('/history', [AdminController::class, 'historyPage'])->name('admin.history');
+        
+        // Session Management Routes
+        Route::get('/admin-login-history/{adminId?}', [AdminController::class, 'adminLoginHistory'])->name('admin.login-history');
+        Route::post('/clean-old-sessions', [AdminController::class, 'cleanOldSessions'])->name('admin.clean-sessions');
+        
+        // Admin Management Routes
+        Route::prefix('admins')->group(function () {
+            Route::post('/', [AdminController::class, 'storeAdmin'])->name('admin.admins.store');
+            Route::post('/{admin}/verify', [AdminController::class, 'verifyAdmin'])->name('admin.admins.verify');
+            Route::post('/{admin}/activate', [AdminController::class, 'activateAdmin'])->name('admin.admins.activate');
+            Route::post('/{admin}/deactivate', [AdminController::class, 'deactivateAdmin'])->name('admin.admins.deactivate');
+            Route::delete('/{admin}', [AdminController::class, 'deleteAdmin'])->name('admin.admins.destroy');
+        });
+        Route::post('/check-email', [AdminController::class, 'checkEmailAvailability'])->name('admin.check-email');
+        
         Route::get('/email-verification/{email}', [AdminController::class, 'emailVerification'])->name('admin.email-verification');
         Route::get('/email-confirmation', [AdminController::class, 'emailConfirmation'])->name('admin.email-confirmation');
         Route::post('/verify-email', [EmailVerificationController::class, 'verify'])->name('verify.email.submit');
