@@ -301,7 +301,7 @@ Edit `public/landing/js/chat-bubble.js`:
 
 ## **📝 Recent Updates**
 
-### **Latest Features (05/07/2025)**
+### **Latest Features in 1.0 (05/07/2025)**
 - ✅ **E-Commerce Dashboard**: Complete transformation from crypto to motorcycle parts
 - ✅ **Enhanced Login**: Remember me functionality with 7-day sessions
 - ✅ **Email System Overhaul**: Anti-spam measures and professional templates
