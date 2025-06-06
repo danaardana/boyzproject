@@ -342,6 +342,7 @@ Edit `public/landing/js/chat-bubble.js`:
 
 <details>
 <summary>Latest Version 1.1.2 (June 2025)</summary>
+
 - ✅ **Database Cleanup**: Removed unused e-commerce tables (products, transactions, reviews, categories, platforms)
 - ✅ **Project Optimization**: Removed unnecessary tests folder and phpunit configuration
 - ✅ **Dependency Cleanup**: Cleaned up composer.json by removing test-related packages
@@ -363,6 +364,7 @@ Edit `public/landing/js/chat-bubble.js`:
 
 <details>
 <summary>Version 1.0 (May 2025)</summary>
+
 - ✅ **E-Commerce Dashboard**: Complete transformation from crypto to motorcycle parts
 - ✅ **Enhanced Login**: Remember me functionality with 7-day sessions
 - ✅ **Email System Overhaul**: Anti-spam measures and professional templates
