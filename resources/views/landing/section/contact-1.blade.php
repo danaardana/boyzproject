@@ -72,9 +72,10 @@ $contactDetails = SectionContent::where('section_id', $contact->id ?? null)->get
               <label class="sr-only" for="subject">Subject</label>          
               <select class="form-control" name="subject" id="subject">
                 <option value="" disabled {{ old('subject') ? '' : 'selected' }}>Pilih subject</option>
-                <option value="garansi" {{ old('subject') == 'garansi' ? 'selected' : '' }}>Garansi</option>
-                <option value="pemasangan" {{ old('subject') == 'pemasangan' ? 'selected' : '' }}>Pemasangan</option>
-                <option value="lain" {{ old('subject') == 'lain' ? 'selected' : '' }}>Lainnya</option>
+                <option value="{{ \App\Models\ContactMessage::CATEGORY_WARRANTY }}" {{ old('subject') == \App\Models\ContactMessage::CATEGORY_WARRANTY ? 'selected' : '' }}>Garansi</option>
+                <option value="{{ \App\Models\ContactMessage::CATEGORY_INSTALLATION }}" {{ old('subject') == \App\Models\ContactMessage::CATEGORY_INSTALLATION ? 'selected' : '' }}>Pemasangan</option>
+                <option value="{{ \App\Models\ContactMessage::CATEGORY_SUPPORT }}" {{ old('subject') == \App\Models\ContactMessage::CATEGORY_SUPPORT ? 'selected' : '' }}>Support</option>
+                <option value="{{ \App\Models\ContactMessage::CATEGORY_GENERAL }}" {{ old('subject') == \App\Models\ContactMessage::CATEGORY_GENERAL ? 'selected' : '' }}>Lainnya</option>
               </select>
             </div>
 

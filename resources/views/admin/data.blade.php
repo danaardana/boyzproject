@@ -79,28 +79,58 @@ use Illuminate\Support\Str;
                                                         <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                    <div class="modal-body">   
-                                                        <div class="card">      
-                                                            <div class="card-body">                               
-                                                                <div class="mb-3">
-                                                                    <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                                    <input class="form-control"  type="number" name="show_Order" id="show_Order">
-                                                                </div>                                                         
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Title"] }}</label>
-                                                                    <input class="form-control" type="text" name="Title" id="Title" required>
-                                                                </div>                                             
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">Hyperlink</label>
-                                                                    <input class="form-control" type="url" name="link" id="link">
-                                                                </div>                                                                        
-                                                                <div class="mb-3">     
-                                                                    <label for="example-url-input" class="form-label">{{ $language["Image"] }}</label>
-                                                                    <input id="image" name="image" type="file" accept="image/*" required/>                               
-                                                                </div>
+                                                                                        <div class="modal-body">
+                                        <div class="row">
+                                            <!-- Basic Information -->
+                                            <div class="col-lg-6">
+                                                <div class="card border">
+                                                    <div class="card-header bg-light">
+                                                        <h6 class="card-title mb-0">
+                                                            <i class="mdi mdi-information-outline me-1"></i>Category Information
+                                                        </h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <label for="category-title" class="form-label">{{ $language["Title"] }} <span class="text-danger">*</span></label>
+                                                            <input class="form-control" type="text" name="Title" id="category-title" placeholder="Enter category title" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="category-link" class="form-label">Hyperlink</label>
+                                                            <input class="form-control" type="url" name="link" id="category-link" placeholder="https://example.com">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="category-order" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                            <input class="form-control" type="number" name="show_Order" id="category-order" min="0" value="0">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Image Upload -->
+                                            <div class="col-lg-6">
+                                                <div class="card border">
+                                                    <div class="card-header bg-light">
+                                                        <h6 class="card-title mb-0">
+                                                            <i class="mdi mdi-image-outline me-1"></i>{{ $language["Image"] }}
+                                                        </h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <label for="category-image" class="form-label">{{ $language["Image"] }} <span class="text-danger">*</span></label>
+                                                            <input id="category-image" name="image" type="file" accept="image/*" class="form-control" required>
+                                                            <small class="text-muted">Recommended size: 300x300px, Max: 2MB</small>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <div class="border rounded p-4 bg-light">
+                                                                <i class="mdi mdi-cloud-upload display-4 text-muted"></i>
+                                                                <p class="text-muted mb-0 mt-2">Upload category image</p>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -883,6 +913,20 @@ use Illuminate\Support\Str;
 
 <!-- Responsive datatable examples -->
 <link href="{{ asset('admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+
+<style>
+.badge-soft-primary { background-color: rgba(116, 120, 141, 0.1); color: #74788d; }
+.badge-soft-success { background-color: rgba(52, 168, 83, 0.1); color: #34a853; }
+.badge-soft-danger { background-color: rgba(234, 67, 53, 0.1); color: #ea4335; }
+.badge-soft-warning { background-color: rgba(251, 188, 52, 0.1); color: #fbbc34; }
+.badge-soft-info { background-color: rgba(52, 168, 226, 0.1); color: #34a8e2; }
+.badge-soft-secondary { background-color: rgba(116, 120, 141, 0.1); color: #74788d; }
+
+.card-title-desc { 
+    font-size: 0.875rem; 
+    color: #6c757d; 
+}
+</style>
 @endpush
 
 @push("scripts")

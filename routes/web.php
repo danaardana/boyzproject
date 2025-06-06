@@ -116,6 +116,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/landingpage-tables', [AdminController::class, 'landingPageTables'])->name('admin.landingPageTables');
         Route::get('/subsection-tables', [AdminController::class, 'subsectionTables'])->name('admin.subsectionTables');
         Route::get('/subsections/{id}', [AdminController::class, 'subsectionTables'])->name('admin.subsection_tables');
+        Route::get('/products-tables', [AdminController::class, 'productsTables'])->name('admin.productsTables');
 
         // Table routes
         Route::get('/portofolio', [TableController::class, 'show'])->defaults('type', 'portofolio')->name('admin.portofolio');

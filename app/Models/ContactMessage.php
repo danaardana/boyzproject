@@ -110,6 +110,20 @@ class ContactMessage extends Model
         };
     }
 
+    /**
+     * Get user-friendly category display name
+     */
+    public function getCategoryDisplayName()
+    {
+        return match($this->category) {
+            self::CATEGORY_WARRANTY => 'Warranty',
+            self::CATEGORY_INSTALLATION => 'Installation',
+            self::CATEGORY_SUPPORT => 'Support',
+            self::CATEGORY_GENERAL => 'General',
+            default => ucfirst($this->category)
+        };
+    }
+
     public function markAsRead()
     {
         $this->is_read = true;

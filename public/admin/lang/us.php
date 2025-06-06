@@ -78,6 +78,13 @@ $language['login'] = "Login";
 $language['Messages'] = "Messages";   
 $language["View_All"] = "View All";
 $language["Reset_Password"] = "Reset Password";
+$language["Enter_your_password"] = "Enter your password";
+$language["Not_you_Sign_out"] = "Not you? Sign out";
+$language["Last_activity"] = "Last activity";
+$language["Secure_Access"] = "Secure Access";
+$language["Session_locked_security"] = "Your session has been locked for security. Please enter your password to continue.";
+$language["Session_locked_at"] = "Session locked at";
+$language["Unlocking"] = "Unlocking...";
 
 $language['Search'] = "Search...";
 $language['Notifications'] = "Notifications";

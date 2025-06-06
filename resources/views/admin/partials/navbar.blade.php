@@ -358,8 +358,8 @@ require_once ("./admin/lang/" . $lang . ".php");
                         
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="#" data-key="faq">{{ $language["Products"] }}</a></li>
-                        <li><a href="#" data-key="documentation">{{ $language["Services"] }}</a></li>
+                        <li><a href="{{ route('admin.productsTables') }}" data-key="products">{{ $language["Products"] }}</a></li>
+                        <li><a href="#" data-key="services">{{ $language["Services"] }}</a></li>
                     </ul>
                 </li>
 
@@ -399,6 +399,13 @@ require_once ("./admin/lang/" . $lang . ".php");
                         <li><a href="{{ route('admin.landingPageTables') }}" data-key="landing-page-edit">{{ $language["Landing_Page"] }}</a></li>
                         <li><a href="{{ route('admin.subsectionTables') }}" data-key="section-content">{{ $language["Section_Content"] }}</a></li>
                     </ul>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.productsTables') }}">
+                        <i class="mdi mdi-package-variant"></i>
+                        <span data-key="products">{{ $language["Products"] }}</span>
+                    </a>
                 </li>
 
                 <li>

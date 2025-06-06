@@ -105,7 +105,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                     <span class="badge bg-info">By {{ $response->admin->name }}</span>
                                     @if($response->contactMessage->category)
                                     <span class="badge {{ $response->contactMessage->getCategoryBadgeClass() }}">
-                                        {{ ucfirst($response->contactMessage->getCategory()) }}
+                                        {{ $response->contactMessage->getCategoryDisplayName() }}
                                     </span>
                                     @endif
                                 </div>
@@ -138,7 +138,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 <h6 class="font-size-13 text-muted mb-2">Original Message Info:</h6>
                                 <ul class="list-unstyled mb-0">
                                     <li><strong>Subject:</strong> {{ $response->contactMessage->content_key ?? 'Message' }}</li>
-                                    <li><strong>Category:</strong> {{ $response->contactMessage->category ? ucfirst($response->contactMessage->getCategory()) : 'N/A' }}</li>
+                                    <li><strong>Category:</strong> {{ $response->contactMessage->category ? $response->contactMessage->getCategoryDisplayName() : 'N/A' }}</li>
                                     <li><strong>Status:</strong> {{ $response->contactMessage->status ? ucfirst($response->contactMessage->getStatus()) : 'N/A' }}</li>
                                     <li><strong>Received:</strong> {{ $response->contactMessage->created_at ? $response->contactMessage->created_at->format('M d, Y H:i') : 'N/A' }}</li>
                                 </ul>

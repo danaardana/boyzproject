@@ -20,7 +20,8 @@ class Admin extends Authenticatable
         'is_active',
         'verified',
         'security_code',
-        'security_code_expires_at'
+        'security_code_expires_at',
+        'avatar_path'
     ];
 
     protected $hidden = [

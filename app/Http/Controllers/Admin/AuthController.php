@@ -182,10 +182,15 @@ class AuthController extends Controller
 
         // Get testimonials for the lockscreen background
         $sections = Section::where('name', 'testimonials')->get();
-        $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
-        $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
+        $SectionContents = [];
+        $totalSectionContents = 0;
         
-        return view('admin.lockscreen', compact('admin', 'SectionContents', 'totalSectionContents'));
+        if ($sections->isNotEmpty()) {
+            $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
+            $totalSectionContents = $SectionContents->count();
+        }
+        
+        return view('admin.auth.lockscreen', compact('admin', 'SectionContents', 'totalSectionContents'));
     }
 
     /**

@@ -81,6 +81,11 @@ class AdminController extends Controller
     
         return view('admin.subsection_tables', compact('sections', 'sectionName'));
     }
+
+    public function productsTables(){
+        $products = \App\Models\Product::with('productOptions.productOptionValues')->get();
+        return view('admin.products_tables', compact('products'));
+    }
     
     public function faqPage(){        
         // Define FAQ data dynamically

@@ -154,7 +154,7 @@ use Illuminate\Support\Str;
                                 <div class="col-mail col-mail-2">
                                     <a href="{{ route('admin.messages.show', $message) }}" class="subject">
                                         @if($message->category)
-                                            <span class="badge {{ $message->getCategoryBadgeClass() }} me-2">{{ ucfirst($message->getCategory()) }}</span>
+                                            <span class="badge {{ $message->getCategoryBadgeClass() }} me-2">{{ $message->getCategoryDisplayName() }}</span>
                                         @endif
                                         {{ $message->content_key ?? 'Message' }} – 
                                         <span class="teaser">{{ Str::limit($message->content, 60) }}</span>

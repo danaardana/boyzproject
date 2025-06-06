@@ -78,10 +78,20 @@ use Illuminate\Support\Str;
                                                     <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <div class="modal-body">                                    
+                                                                                <div class="modal-body">
+                                    <div class="row">
+                                        <!-- Basic Information -->
+                                        <div class="col-lg-6">
+                                            <div class="card border">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="card-title mb-0">
+                                                        <i class="mdi mdi-information-outline me-1"></i>Basic Information
+                                                    </h6>
+                                                </div>
+                                                <div class="card-body">
                                                     <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                        <select required class="form-control form-select">
+                                                        <label for="section-name" class="form-label">{{ $language["Name"] }} <span class="text-danger">*</span></label>
+                                                        <select required class="form-control form-select" id="section-name">
                                                         <option value="">{{ $language["Choose_a_Category"] }}</option>    
                                                             @foreach ($sections as $section)
                                                                <option value="{{ $section->name }}">{{ $section->name }}</option>
@@ -89,38 +99,72 @@ use Illuminate\Support\Str;
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="example-url-input" class="form-label">{{ $language["Title"] }}</label>
-                                                        <input class="form-control" type="url" value="" id="example-url-input">
-                                                    </div>                           
+                                                        <label for="section-title" class="form-label">{{ $language["Title"] }}</label>
+                                                        <input class="form-control" type="text" id="section-title" placeholder="Enter section title">
+                                                    </div>
                                                     <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                    
+                                                        <label for="section-description" class="form-label">{{ $language["Description"] }}</label>
+                                                        <textarea class="form-control" id="section-description" rows="3" placeholder="Enter section description"></textarea>
+                                                    </div>
                                                     <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Content"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                    
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Btn_Text"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                    
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Btn_URL"] }}</label>
-                                                        <input class="form-control" type="text" value="" id="example-text-input">
-                                                    </div>                
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Active"] }}</label>
-                                                        <input class="form-control" type="text" value="0" id="example-text-input">
-                                                    </div>          
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Layout"] }}</label>
-                                                        <input class="form-control" type="text" value="1" id="example-text-input">
-                                                    </div>                
-                                                    <div class="mb-3">
-                                                        <label for="example-text-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                        <input class="form-control" type="text" value="0" id="example-text-input">
-                                                    </div>           
+                                                        <label for="section-content" class="form-label">{{ $language["Content"] }}</label>
+                                                        <textarea class="form-control" id="section-content" rows="3" placeholder="Enter section content"></textarea>
+                                                    </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Button & Settings -->
+                                        <div class="col-lg-6">
+                                            <div class="card border">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="card-title mb-0">
+                                                        <i class="mdi mdi-cog-outline me-1"></i>Button & Settings
+                                                    </h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label for="section-btn-text" class="form-label">{{ $language["Btn_Text"] }}</label>
+                                                        <input class="form-control" type="text" id="section-btn-text" placeholder="Button text">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="section-btn-url" class="form-label">{{ $language["Btn_URL"] }}</label>
+                                                        <input class="form-control" type="url" id="section-btn-url" placeholder="https://example.com">
+                                                    </div>
+                                                    
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="section-layout" class="form-label">{{ $language["Layout"] }}</label>
+                                                                <select class="form-control form-select" id="section-layout">
+                                                                    <option value="1">Layout 1</option>
+                                                                    <option value="2">Layout 2</option>
+                                                                    <option value="3">Layout 3</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="section-order" class="form-label">{{ $language["Show_Order"] }}</label>
+                                                                <input class="form-control" type="number" id="section-order" min="0" value="0">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch form-switch-lg">
+                                                            <input class="form-check-input" type="checkbox" id="section-active" checked>
+                                                            <label class="form-check-label" for="section-active">
+                                                                <span class="fw-medium">{{ $language["Active"] }}</span>
+                                                                <small class="text-muted d-block">Enable this section for display</small>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                                                     <button type="button" class="btn btn-primary">Save changes</button>
@@ -176,40 +220,88 @@ use Illuminate\Support\Str;
                                                                 <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
-                                                            <div class="modal-body">                                    
+                                                                                                        <div class="modal-body">
+                                                <div class="row">
+                                                    <!-- Basic Information -->
+                                                    <div class="col-lg-6">
+                                                        <div class="card border">
+                                                            <div class="card-header bg-light">
+                                                                <h6 class="card-title mb-0">
+                                                                    <i class="mdi mdi-information-outline me-1"></i>Basic Information
+                                                                </h6>
+                                                            </div>
+                                                            <div class="card-body">
                                                                 <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->name }}" id="example-text-input">
+                                                                    <label class="form-label">{{ $language["Name"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $section->name }}" disabled>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="example-url-input" class="form-label">{{ $language["Title"] }}</label>
-                                                                    <input class="form-control" type="url" value="{{ $section->tittle }}" id="example-url-input">
-                                                                </div>                           
+                                                                    <label class="form-label">{{ $language["Title"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $section->title }}">
+                                                                </div>
                                                                 <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Description"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->description ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                    
+                                                                    <label class="form-label">{{ $language["Description"] }}</label>
+                                                                    <textarea class="form-control" rows="3">{{ $section->description ?? '' }}</textarea>
+                                                                </div>
                                                                 <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Content"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->content  ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                    
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Btn_Text"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->butten_text ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                    
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Btn_URL"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->butten_link ?? 'Not Set'  }}" id="example-text-input">
-                                                                </div>                
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Active"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->is_active ? 'Active' : 'Non Active' }}" id="example-text-input">
-                                                                </div>                
-                                                                <div class="mb-3">
-                                                                    <label for="example-text-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                                    <input class="form-control" type="text" value="{{ $section->show_order }}" id="example-text-input">
-                                                                </div>           
+                                                                    <label class="form-label">{{ $language["Content"] }}</label>
+                                                                    <textarea class="form-control" rows="3">{{ $section->content ?? '' }}</textarea>
+                                                                </div>
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Button & Settings -->
+                                                    <div class="col-lg-6">
+                                                        <div class="card border">
+                                                            <div class="card-header bg-light">
+                                                                <h6 class="card-title mb-0">
+                                                                    <i class="mdi mdi-cog-outline me-1"></i>Button & Settings
+                                                                </h6>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">{{ $language["Btn_Text"] }}</label>
+                                                                    <input class="form-control" type="text" value="{{ $section->butten_text ?? '' }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">{{ $language["Btn_URL"] }}</label>
+                                                                    <input class="form-control" type="url" value="{{ $section->butten_link ?? '' }}">
+                                                                </div>
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">{{ $language["Layout"] }}</label>
+                                                                            <select class="form-control form-select">
+                                                                                <option value="1" {{ $section->layout == 1 ? 'selected' : '' }}>Layout 1</option>
+                                                                                <option value="2" {{ $section->layout == 2 ? 'selected' : '' }}>Layout 2</option>
+                                                                                <option value="3" {{ $section->layout == 3 ? 'selected' : '' }}>Layout 3</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">{{ $language["Show_Order"] }}</label>
+                                                                            <input class="form-control" type="number" value="{{ $section->show_order }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <div class="form-check form-switch form-switch-lg">
+                                                                        <input class="form-check-input" type="checkbox" {{ $section->is_active ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">
+                                                                            <span class="fw-medium">{{ $language["Active"] }}</span>
+                                                                            <small class="text-muted d-block">Enable this section for display</small>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                                                                 <button type="button" class="btn btn-primary">Save changes</button>
@@ -244,6 +336,20 @@ use Illuminate\Support\Str;
 
 <!-- Responsive datatable examples -->
 <link href="{{ asset('admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+
+<style>
+.badge-soft-primary { background-color: rgba(116, 120, 141, 0.1); color: #74788d; }
+.badge-soft-success { background-color: rgba(52, 168, 83, 0.1); color: #34a853; }
+.badge-soft-danger { background-color: rgba(234, 67, 53, 0.1); color: #ea4335; }
+.badge-soft-warning { background-color: rgba(251, 188, 52, 0.1); color: #fbbc34; }
+.badge-soft-info { background-color: rgba(52, 168, 226, 0.1); color: #34a8e2; }
+.badge-soft-secondary { background-color: rgba(116, 120, 141, 0.1); color: #74788d; }
+
+.card-title-desc { 
+    font-size: 0.875rem; 
+    color: #6c757d; 
+}
+</style>
 @endpush
 
 @push("scripts")
