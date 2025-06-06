@@ -212,37 +212,45 @@ autoResponses: {
 ### **Key Files & Directories**
 ```
 boyzproject/
-├── app/
-│   ├── Http/Controllers/
-│   │   ├── AdminController.php          # Dashboard & admin management
-│   │   ├── Admin/AuthController.php     # Enhanced login system
-│   │   ├── Admin/EmailController.php    # Email verification & reactivation
-│   │   └── ContactController.php        # Message management & chat interface
-│   ├── Mail/
-│   │   ├── AdminWelcomeEmail.php        # Professional welcome emails
-│   │   ├── AdminSecurityCode.php        # Security code emails
-│   │   ├── AdminVerification.php        # Account verification
-│   │   ├── AdminReactivationNotification.php # Auto-reactivation
-│   │   └── MessageReplyMail.php         # Customer email reply system
-│   └── Models/
-│       ├── Admin.php                    # Admin user model
-│       ├── ContactMessage.php           # Message system
-│       └── Session.php                  # Session tracking
-├── public/
-│   ├── admin/js/pages/dashboard.init.js # Dashboard charts (ApexCharts)
-│   └── landing/js/chat-bubble.js        # Chat auto-responses
-├── resources/views/
-│   ├── admin/
-│   │   ├── dashboard.blade.php          # E-commerce dashboard
-│   │   ├── messages.blade.php           # Message management
-│   │   ├── messages-single.blade.php    # Individual message with reply form
-│   │   ├── chat.blade.php               # Enhanced chat interface with filter/sort
-│   │   ├── auth/login.blade.php         # Enhanced login form
-│   │   └── email/                       # Email templates
-│   │       ├── reply.blade.php          # Dynamic customer reply template
-│   │       └── reply.html               # Static HTML email template
-│   └── layouts/admin.blade.php          # Admin layout with notifications
-└── routes/web.php                       # Application routes
+├── 📁app/
+│   ├── 📁Http/Controllers/
+│   │   ├── 📄 Admin Controller.php            
+│   │   ├── 📄 Contact Controller.php         
+│   │   └── 📁 Models/
+│   │       ├── 📄 📄 Auth Controller.php      
+│   │       └── 📄 📄 Email Controller.php     
+│   ├── 📁 Mail/
+│   │   ├── 📄 Admin Welcome Email.php          
+│   │   ├── 📄 Admin Security Code.php        
+│   │   ├── 📄 Admin Verification.php          
+│   │   ├── 📄 Admin Reactivation Notification.php 
+│   │   └── 📄 Message ReplyMail.php           
+│   └── 📁 Models/
+│       ├── 📄 Admin.php                        
+│       ├── 📄 Contact Message.php             
+│       └── 📄 Session.php                      
+├── 📁 resources/views/
+│   ├── 📁 admin/
+│   │   ├── 📄 dashboard.blade.php              
+│   │   ├── 📄 messages.blade.php             
+│   │   ├── 📄 messages-single.blade.php       
+│   │   ├── 📄 chat.blade.php                   
+│   │   └── 📁 auth/
+│   │       ├── 📄 Change Password.blade.php   
+│   │       ├── 📄 Forgot Password.blade.php   
+│   │       ├── 📄 Reset Password.blade.php   
+│   │       ├── 📄 Lockscreen.blade.php    
+│   │       └── 📄 login.blade.php              
+│   └── 📁 models
+│       ├── 📄 Admin.blade.php              
+│       ├── 📄 Contact Message.blade.php                 
+│       ├── 📄 Custumer.blade.php                 
+│       ├── 📄 Message Response.blade.php                 
+│       ├── 📄 Section.blade.php                 
+│       ├── 📄 Section Content.blade.php       
+│       └── 📄 Session.blade.php                  
+└── 📁 routes
+    └── 📄 web.php                              
 ```
 
 ### **Database Schema**
@@ -332,13 +340,17 @@ Edit `public/landing/js/chat-bubble.js`:
 
 ## **📝 Updates History**
 
-### **Latest Features in 1.1.2 (June 2025)**
+<details>
+<summary>Latest Version 1.1.2 (June 2025)</summary>
 - ✅ **Database Cleanup**: Removed unused e-commerce tables (products, transactions, reviews, categories, platforms)
 - ✅ **Project Optimization**: Removed unnecessary tests folder and phpunit configuration
 - ✅ **Dependency Cleanup**: Cleaned up composer.json by removing test-related packages
 - ✅ **Streamlined Codebase**: Focused on core message management and chat functionality
+</details>
 
-### **Features in 1.1 (June 2025)**
+<details>
+<summary>Version 1.1 (June 2025)</summary>
+
 - ✅ **Email Reply System**: Complete email response functionality with MessageReplyMail class
 - ✅ **Dynamic Email Templates**: Blade-based email templates with customer data integration
 - ✅ **Enhanced Chat Interface**: Filter and sort functionality with dropdown controls
@@ -347,8 +359,10 @@ Edit `public/landing/js/chat-bubble.js`:
 - ✅ **Filter Options**: All Messages, Unread Only with visual indicators
 - ✅ **Sort Functions**: Newest First, Oldest First with time-based sorting
 - ✅ **Scrollable Design**: Enhanced sidebar with custom scrollbar styling
+</details>
 
-### **Previous Features in 1.0 (May 2025)**
+<details>
+<summary>Version 1.0 (May 2025)</summary>
 - ✅ **E-Commerce Dashboard**: Complete transformation from crypto to motorcycle parts
 - ✅ **Enhanced Login**: Remember me functionality with 7-day sessions
 - ✅ **Email System Overhaul**: Anti-spam measures and professional templates
@@ -363,7 +377,7 @@ Edit `public/landing/js/chat-bubble.js`:
 - ✅ **Asset Management**: Corrected asset paths and dependencies
 - ✅ **Cache Management**: Proper cache clearing procedures
 - ✅ **Mobile Responsiveness**: Optimized for all device sizes
-
+</details>
 ---
 
 ## **📄 License**
