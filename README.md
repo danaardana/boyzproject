@@ -447,7 +447,7 @@ Edit `public/landing/js/chat-bubble.js`:
 </details>
 
 <details>
-<summary>Version 1.2.0 (June 6, 2025) - Products Management Edition</summary>
+<summary>Version 1.2.0 (June 2025) - Products Management Edition</summary>
 
 - ✅ **Products Management System**: Complete product catalog with enhanced table views
 - ✅ **Advanced Options Management**: Comprehensive product options with values and pricing
