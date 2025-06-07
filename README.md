@@ -76,33 +76,58 @@ A comprehensive Laravel-based e-commerce admin dashboard specifically designed f
 
 ---
 
-## **💬 Smart Chat System**
+## **💬 Advanced Bilingual Chat System**
 
-### **🤖 Auto-Response Configuration**
-Location: `public/landing/js/chat-bubble.js`
-
+### **🌍 Bilingual Interface**
+**Customer Side (Bahasa Indonesia):**
 ```javascript
-autoResponses: {
-    'hello': 'Hello! Welcome to Boys Project! How can I assist you today?',
-    'hi': 'Hi there! Thanks for visiting Boys Project. What can I do for you?',
-    'help': 'I\'m here to help! What do you need assistance with regarding our services?',
-    'contact': 'You can reach us at info@boysproject.com or through our contact form.',
-    'hours': 'We\'re available Monday-Friday 9AM-6PM.',
-    'pricing': 'For detailed pricing information, please check our services page!',
-    'services': 'We offer a wide range of digital services.',
-    'thanks': 'You\'re very welcome! Is there anything else I can help you with?',
-    'bye': 'Goodbye! Thank you for your interest in Boys Project!',
-    'default': 'Thanks for your message: "{{message}}". Let me connect you with our team!'
+// Indonesian interface elements
+greetingMessage: "Halo! Selamat datang di Boys Project! 👋"
+chatModes: {
+    landing: "Chat di Landing Page",
+    admin: "Chat dengan Admin"
+}
+dataCollection: {
+    name: "Silakan masukkan nama Anda:",
+    email: "Email Anda (opsional):",
+    message: "Apa yang ingin Anda tanyakan?"
 }
 ```
 
-### **💬 Chat Features**
-- **Smart Keyword Detection**: Automatic response matching for common queries
-- **Professional UI**: Modern chat bubble with gradient design
-- **Quick Actions**: Pre-configured response buttons
-- **Typing Indicators**: Visual feedback during bot responses
-- **Mobile Responsive**: Optimized for all device sizes
-- **Message History**: Conversation persistence and tracking
+**Admin Side (English):**
+- Professional English interface for admin dashboard
+- Real-time conversation management
+- Complete customer context and history
+
+### **🚀 Advanced Features**
+- **Dual Chat Modes**: Choose between landing page chat or direct admin communication
+- **Inline Data Collection**: Step-by-step customer information gathering within chat interface
+- **Real-time Communication**: 3-second polling for instant message synchronization
+- **Smart Status Management**: Resolved conversations don't show as unread
+- **Professional UI**: Modern gradient design with smooth animations
+
+### **🤖 Intelligent Auto-Responses (Indonesian)**
+```javascript
+autoResponses: {
+    'halo': 'Halo! Selamat datang di Boys Project! Bagaimana saya bisa membantu Anda hari ini?',
+    'hai': 'Hai! Terima kasih telah mengunjungi Boys Project. Ada yang bisa saya bantu?',
+    'bantuan': 'Saya siap membantu! Apa yang Anda perlukan terkait layanan kami?',
+    'kontak': 'Anda bisa menghubungi kami di info@boysproject.com atau melalui formulir kontak.',
+    'jam': 'Kami tersedia Senin-Jumat pukul 09.00-18.00.',
+    'harga': 'Untuk informasi harga detail, silakan cek halaman layanan kami!',
+    'layanan': 'Kami menawarkan berbagai layanan digital.',
+    'terima kasih': 'Sama-sama! Apakah ada hal lain yang bisa saya bantu?',
+    'selamat tinggal': 'Selamat tinggal! Terima kasih atas minat Anda pada Boys Project!',
+    'default': 'Terima kasih atas pesan Anda: "{{message}}". Saya akan menghubungkan Anda dengan tim kami!'
+}
+```
+
+### **💬 Real-time Communication Features**
+- **Customer Polling**: Automatic check for admin responses every 3 seconds
+- **Admin Dashboard**: Live conversation updates with professional interface
+- **Message Threading**: Organized conversation display with timestamps
+- **Status Indicators**: Visual feedback for conversation states (active, resolved, unread)
+- **Cross-platform**: Seamless communication between landing page and admin dashboard
 
 ---
 
@@ -388,7 +413,41 @@ Edit `public/landing/js/chat-bubble.js`:
 ## **📝 Updates History**
 
 <details>
-<summary>Latest Version 1.2.0 (June 6, 2025)</summary>
+<summary>Latest Version 1.3.0 (January 7, 2025) - Advanced Chat System Edition</summary>
+
+### **💬 Major Chat System Enhancements**
+- ✅ **Bilingual Chat System**: Complete Indonesian interface for customers, English for admins
+- ✅ **Dual Chat Modes**: Landing page chat vs. direct admin chat selection interface
+- ✅ **Real-time Communication**: 3-second polling system for instant admin-customer messaging
+- ✅ **Inline Data Collection**: Step-by-step customer information gathering within chat interface
+- ✅ **Smart Conversation Resolution**: Proper unread status management for resolved/closed chats
+
+### **🔧 Backend Improvements**
+- ✅ **Enhanced ChatConversation Model**: Status-aware unread detection (resolved chats don't show as unread)
+- ✅ **Complete ChatController**: Full CRUD operations with conversation resolution
+- ✅ **Database Migration Fixes**: Corrected field names and added missing columns (resolved_at, resolved_by)
+- ✅ **Public Chat Routes**: Secure endpoints for customer chat initiation and messaging
+
+### **🎨 Frontend Enhancements**
+- ✅ **Modern Chat Bubble**: Gradient design with smooth animations and mode selection
+- ✅ **Professional Admin Dashboard**: Real-time conversation management interface
+- ✅ **Visual Status Indicators**: Color-coded conversation states (active, unread, resolved)
+- ✅ **Real-time Polling**: Seamless message synchronization between customer and admin
+
+### **🛡️ Critical Bug Fixes**
+- 🔧 **Resolved Chat Unread Issue**: Fixed bug where resolved conversations still showed as unread
+- 🔧 **Message Status Logic**: Proper handling of conversation status in unread calculations
+- 🔧 **UI State Management**: Immediate visual feedback when resolving conversations
+- 🔧 **Database Consistency**: Proper message marking as read on conversation resolution
+
+### **📚 Documentation Updates**
+- 📖 **Comprehensive Chat Documentation**: Complete system documentation (CHAT_SYSTEM_DOCUMENTATION.md)
+- 📖 **Enhanced README**: Updated with detailed chat system features and usage guides
+- 📖 **Updated CHANGELOG**: Detailed release notes with technical specifications
+</details>
+
+<details>
+<summary>Version 1.2.0 (June 6, 2025) - Products Management Edition</summary>
 
 - ✅ **Products Management System**: Complete product catalog with enhanced table views
 - ✅ **Advanced Options Management**: Comprehensive product options with values and pricing
@@ -448,5 +507,5 @@ This project is proprietary software developed for Boy Projects. All rights rese
 
 ---
 
-*Last Updated: June 6, 2025*
-*Version: 1.2.0 - Products Management Edition*
+*Last Updated: June 7, 2025*
+*Version: 1.3.0 - Advanced Chat System Edition*

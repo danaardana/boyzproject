@@ -10,10 +10,18 @@ use App\Http\Controllers\EmailVerificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 // Public routes
 Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Public Chat Routes (for landing page chat to admin)
+Route::prefix('chat')->group(function () {
+    Route::post('/start', [App\Http\Controllers\Admin\ChatController::class, 'startConversationFromLanding'])->name('public.chat.start');
+    Route::post('/{conversation}/reply', [App\Http\Controllers\Admin\ChatController::class, 'sendReplyFromLanding'])->name('public.chat.reply');
+    Route::get('/{conversation}/messages', [App\Http\Controllers\Admin\ChatController::class, 'getConversationMessages'])->name('public.chat.messages');
+});
 
 // Force logout route (accessible even if middleware fails)
 Route::get('/admin/force-logout', function() {
@@ -56,6 +64,11 @@ Route::get('/test-welcome-email/{adminId}', function($adminId) {
         return "Failed to send welcome email: " . $e->getMessage();
     }
 })->name('test.welcome.email');
+
+// Test route for debugging chat bubble
+Route::get('/test-chat', function () {
+    return view('test-chat');
+})->name('test.chat');
 
 // Admin Auth Routes
 Route::prefix('admin')->group(function () {
@@ -132,7 +145,24 @@ Route::prefix('admin')->group(function () {
         // Other admin features
         Route::get('/faq', [AdminController::class, 'faqPage'])->name('admin.faq');
         Route::get('/documentation', [AdminController::class, 'documentationPage'])->name('admin.documentation');
-        Route::get('/chat', [ContactController::class, 'chat'])->name('admin.chat');
+        
+        // Documentation Routes
+        Route::prefix('documentation')->group(function () {
+            Route::get('/', [App\Http\Controllers\DocumentationController::class, 'index'])->name('admin.documentation.index');
+            Route::get('/search', [App\Http\Controllers\DocumentationController::class, 'search'])->name('admin.documentation.search');
+            Route::get('/{system}', [App\Http\Controllers\DocumentationController::class, 'show'])->name('admin.documentation.show');
+            Route::get('/{system}/export', [App\Http\Controllers\DocumentationController::class, 'export'])->name('admin.documentation.export');
+        });
+        
+        // Chat routes
+        Route::get('/chat', [App\Http\Controllers\Admin\ChatController::class, 'index'])->name('admin.chat');
+        Route::post('/chat/start', [App\Http\Controllers\Admin\ChatController::class, 'startConversation'])->name('admin.chat.start');
+        Route::get('/chat/conversation/{conversationId}', [App\Http\Controllers\Admin\ChatController::class, 'getConversation'])->name('admin.chat.conversation');
+        Route::post('/chat/conversation/{conversationId}/reply', [App\Http\Controllers\Admin\ChatController::class, 'sendReply'])->name('admin.chat.reply');
+        Route::post('/chat/conversation/{conversationId}/transfer', [App\Http\Controllers\Admin\ChatController::class, 'transferConversation'])->name('admin.chat.transfer');
+        Route::post('/chat/conversation/{conversationId}/resolve', [App\Http\Controllers\Admin\ChatController::class, 'resolveConversation'])->name('admin.chat.resolve');
+        Route::get('/chat/stats', [App\Http\Controllers\Admin\ChatController::class, 'getStats'])->name('admin.chat.stats');
+        
         Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
         Route::get('/history', [AdminController::class, 'historyPage'])->name('admin.history');
         
@@ -155,3 +185,21 @@ Route::prefix('admin')->group(function () {
         Route::post('/verify-email', [EmailVerificationController::class, 'verify'])->name('verify.email.submit');
     });
 });
+
+// Database health check route (add this at the end)
+Route::get('/admin/health/database', function () {
+    try {
+        DB::connection()->getPdo();
+        return response()->json([
+            'status' => 'connected',
+            'message' => 'Database connection is healthy',
+            'timestamp' => now()
+        ]);
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'disconnected',
+            'message' => 'Database connection failed',
+            'timestamp' => now()
+        ], 503);
+    }
+})->name('admin.health.database');

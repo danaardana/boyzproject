@@ -6,7 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>@yield('title', 'Boys Project')</title>
+    <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('landing/images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('landing/images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('landing/images/logo-white.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('landing/images/logo-white.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('landing/images/logo-white.png') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('landing/css/master.css') }}">

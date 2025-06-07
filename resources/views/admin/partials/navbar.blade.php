@@ -330,11 +330,20 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <a href="javascript: void(0);" class="has-arrow">
                         <i class=" far fa-question-circle"></i>
                         <span data-key="support">{{ $language["Support"] }}</span>
-                        
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.faq') }}" data-key="faq">FAQ</a></li>
-                        <li><a href="{{ route('admin.documentation') }}" data-key="documentation">{{ $language["Documentation"] }}</a></li>
+                    <ul class="sub-menu" aria-expanded="true">
+                    <li><a href="{{ route('admin.faq') }}" data-key="faq">FAQ</a></li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow" data-key="t-level-1-2">{{ $language["Documentation"] }}</a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ route('admin.documentation.index') }}" data-key="t-level-2-0">All Documentation</a></li>
+                                <li><a href="{{ route('admin.documentation.show', 'landing-page-system') }}" data-key="t-level-2-1">Landing Page System</a></li>
+                                <li><a href="{{ route('admin.documentation.show', 'product-system') }}" data-key="t-level-2-2">Product System</a></li>
+                                <li><a href="{{ route('admin.documentation.show', 'email-system') }}" data-key="t-level-2-3">E-mail System</a></li>
+                                <li><a href="{{ route('admin.documentation.show', 'message-system') }}" data-key="t-level-2-4">Message System</a></li>
+                                <li><a href="{{ route('admin.documentation.show', 'chat-system') }}" data-key="t-level-2-5">Chat System</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 

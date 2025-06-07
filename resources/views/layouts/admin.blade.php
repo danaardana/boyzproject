@@ -23,7 +23,16 @@ require_once ("./admin/lang/" . $lang . ".php");
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta content="Boy Projects Dashboard" name="description"/>
     <meta content="Boy Projects" name="author"/>
+    <meta name="msapplication-TileColor" content="#556ee6">
+    <meta name="theme-color" content="#556ee6">
+    <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('landing/images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('landing/images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('landing/images/logo-white.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('landing/images/logo-white.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('landing/images/logo-white.png') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('admin/css/preloader.min.css') }}" type="text/css" />
 

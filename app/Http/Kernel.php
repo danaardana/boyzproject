@@ -18,6 +18,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \App\Http\Middleware\DatabaseSessionFallback::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
@@ -52,6 +53,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\PreventBackHistory::class,
+            \App\Http\Middleware\DatabaseErrorHandler::class,
         ],
     ];
 
@@ -76,5 +78,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'prevent.back' => \App\Http\Middleware\PreventBackHistory::class,
         'admin.verified' => \App\Http\Middleware\AdminVerificationMiddleware::class,
+        'db.error' => \App\Http\Middleware\DatabaseErrorHandler::class,
     ];
 } 

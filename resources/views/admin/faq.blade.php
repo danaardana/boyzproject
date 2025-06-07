@@ -42,7 +42,7 @@
                                         <a href="{{ route('admin.messages.index') }}" class="btn btn-primary mt-2 me-2 waves-effect waves-light">
                                             <i class="bx bx-envelope me-1"></i>Contact Support
                                         </a>
-                                        <a href="{{ route('admin.documentation') }}" class="btn btn-success mt-2 waves-effect waves-light">
+                                        <a href="{{ route('admin.documentation.index') }}" class="btn btn-success mt-2 waves-effect waves-light">
                                             <i class="bx bx-book me-1"></i>View Documentation
                                         </a>
                                     </div>
