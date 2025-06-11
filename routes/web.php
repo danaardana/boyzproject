@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\DB;
 Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
+// Define a regular 'login' route that redirects to admin login (for fallback)
+Route::get('/login', function() {
+    return redirect()->route('admin.login');
+})->name('login');
+
 // Public Chat Routes (for landing page chat to admin)
 Route::prefix('chat')->group(function () {
     Route::post('/start', [App\Http\Controllers\Admin\ChatController::class, 'startConversationFromLanding'])->name('public.chat.start');
@@ -94,6 +99,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/auth-check', function() {
             return response()->json(['authenticated' => true]);
         })->name('admin.auth.check');
+        
+        // Session validation route (for cross-tab logout detection)
+        Route::get('/session-check', function() {
+            if (!Auth::guard('admin')->check()) {
+                return response()->json(['authenticated' => false, 'redirect' => route('admin.login')], 401);
+            }
+            return response()->json(['authenticated' => true]);
+        })->name('admin.session.check');
         
         // Messages routes
         Route::get('/messages', [ContactController::class, 'index'])->name('admin.messages.index');
@@ -179,6 +192,19 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{admin}', [AdminController::class, 'deleteAdmin'])->name('admin.admins.destroy');
         });
         Route::post('/check-email', [AdminController::class, 'checkEmailAvailability'])->name('admin.check-email');
+        
+        // Customer Management Routes
+            Route::prefix('customers')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('admin.customers.index');
+        Route::get('/search', [App\Http\Controllers\Admin\CustomerController::class, 'search'])->name('admin.customers.search');
+        Route::get('/stats', [App\Http\Controllers\Admin\CustomerController::class, 'getStats'])->name('admin.customers.stats');
+        Route::get('/export', [App\Http\Controllers\Admin\CustomerController::class, 'export'])->name('admin.customers.export');
+        Route::post('/send-email', [App\Http\Controllers\Admin\CustomerController::class, 'sendEmailAjax'])->name('admin.customers.send-email-ajax');
+        Route::get('/{customer}', [App\Http\Controllers\Admin\CustomerController::class, 'show'])->name('admin.customers.show');
+        Route::put('/{customer}', [App\Http\Controllers\Admin\CustomerController::class, 'update'])->name('admin.customers.update');
+        Route::delete('/{customer}', [App\Http\Controllers\Admin\CustomerController::class, 'destroy'])->name('admin.customers.destroy');
+        Route::post('/{customer}/send-email', [App\Http\Controllers\Admin\CustomerController::class, 'sendEmail'])->name('admin.customers.send-email');
+        });
         
         Route::get('/email-verification/{email}', [AdminController::class, 'emailVerification'])->name('admin.email-verification');
         Route::get('/email-confirmation', [AdminController::class, 'emailConfirmation'])->name('admin.email-confirmation');

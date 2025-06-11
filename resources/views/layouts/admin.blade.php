@@ -225,6 +225,110 @@ require_once ("./admin/lang/" . $lang . ".php");
     }
 </script>
 
+<!-- Session Monitoring Script -->
+<script>
+$(document).ready(function() {
+    // Session monitoring for cross-tab logout detection
+    let sessionCheckInterval;
+    
+    function startSessionMonitoring() {
+        // Check session status every 30 seconds
+        sessionCheckInterval = setInterval(function() {
+            $.ajax({
+                url: '{{ route("admin.session.check") }}',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                success: function(response) {
+                    if (!response.authenticated) {
+                        // Session expired, redirect to login
+                        clearInterval(sessionCheckInterval);
+                        window.location.href = response.redirect || '{{ route("admin.login") }}';
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        // Unauthorized, session expired
+                        clearInterval(sessionCheckInterval);
+                        const response = xhr.responseJSON;
+                        window.location.href = (response && response.redirect) || '{{ route("admin.login") }}';
+                    }
+                    // For other errors (network issues, etc.), continue checking
+                }
+            });
+        }, 30000); // Check every 30 seconds
+    }
+    
+    // Start monitoring when page loads
+    startSessionMonitoring();
+    
+    // Handle page visibility changes (when tab becomes active/inactive)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            // Tab became visible, do immediate session check
+            $.ajax({
+                url: '{{ route("admin.session.check") }}',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                success: function(response) {
+                    if (!response.authenticated) {
+                        window.location.href = response.redirect || '{{ route("admin.login") }}';
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        const response = xhr.responseJSON;
+                        window.location.href = (response && response.redirect) || '{{ route("admin.login") }}';
+                    }
+                }
+            });
+        }
+    });
+    
+    // Handle beforeunload event
+    window.addEventListener('beforeunload', function() {
+        if (sessionCheckInterval) {
+            clearInterval(sessionCheckInterval);
+        }
+    });
+    
+    // Global AJAX error handler for 401 responses
+    $(document).ajaxError(function(event, xhr, settings) {
+        if (xhr.status === 401) {
+            // Clear any intervals
+            if (sessionCheckInterval) {
+                clearInterval(sessionCheckInterval);
+            }
+            
+            // Redirect to login
+            const response = xhr.responseJSON;
+            const redirectUrl = (response && response.redirect) || '{{ route("admin.login") }}';
+            
+            // Show a brief message before redirecting
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Redirecting to login...',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(function() {
+                    window.location.href = redirectUrl;
+                });
+            } else {
+                alert('Your session has expired. Redirecting to login...');
+                window.location.href = redirectUrl;
+            }
+        }
+    });
+});
+</script>
+
 @stack('scripts')
 
 </body>

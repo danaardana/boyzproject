@@ -45,22 +45,44 @@ require_once ("./admin/lang/" . $lang . ".php");
         </div>
         <!-- end page title -->
 
+        @if($totalAdmins == 1)
+        <!-- Last Admin Warning -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bx bx-error-circle me-2"></i>
+                    <strong>Critical Warning:</strong> You are the last remaining admin user. 
+                    The delete function has been disabled to prevent system lockout. 
+                    Consider adding additional admin users for system security.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Stats Cards -->
         <div class="row">
             <div class="col-xl-3 col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex">
-                            <div class="flex-grow-1">
-                                <p class="text-truncate font-size-14 mb-2">Total Admins</p>
-                                <h4 class="mb-2">{{ $totalAdmins }}</h4>
+                                                    <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <p class="text-truncate font-size-14 mb-2">Total Admins</p>
+                                    <h4 class="mb-2">
+                                        {{ $totalAdmins }}
+                                        @if($totalAdmins == 1)
+                                            <span class="badge bg-warning ms-2" title="Warning: Only one admin remaining!">
+                                                <i class="bx bx-error-circle"></i> LAST
+                                            </span>
+                                        @endif
+                                    </h4>
+                                </div>
+                                <div class="avatar-sm">
+                                    <span class="avatar-title bg-light {{ $totalAdmins == 1 ? 'text-warning' : 'text-primary' }} rounded-3">
+                                        <i class="bx bx-user font-size-24"></i>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="avatar-sm">
-                                <span class="avatar-title bg-light text-primary rounded-3">
-                                    <i class="bx bx-user font-size-24"></i>
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -327,9 +349,16 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                         <li><a class="dropdown-item" href="#" onclick="sendReactivationEmail({{ $admin->id }})"><i class="bx bx-refresh me-2"></i>Send Reactivation</a></li>
                                                         <li><hr class="dropdown-divider"></li>
                                                         @if($admin->id !== auth('admin')->id())
-                                                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteAdmin({{ $admin->id }})">
-                                                                <i class="bx bx-trash me-2"></i>Delete
-                                                            </a></li>
+                                                            @if($totalAdmins > 1)
+                                                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteAdmin({{ $admin->id }})">
+                                                                    <i class="bx bx-trash me-2"></i>Delete
+                                                                </a></li>
+                                                            @else
+                                                                <li><a class="dropdown-item text-muted disabled" href="#" onclick="return false;" 
+                                                                       title="Cannot delete the last admin user">
+                                                                    <i class="bx bx-trash me-2"></i>Delete (Last Admin)
+                                                                </a></li>
+                                                            @endif
                                                         @endif
                                                     </ul>
                                                 </div>
@@ -360,6 +389,21 @@ require_once ("./admin/lang/" . $lang . ".php");
 <link href="{{ asset('admin/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('admin/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('admin/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+    .dropdown-item.disabled {
+        color: #6c757d !important;
+        pointer-events: none;
+        background-color: transparent;
+        cursor: not-allowed !important;
+    }
+    
+    .dropdown-item.disabled:hover,
+    .dropdown-item.disabled:focus {
+        color: #6c757d !important;
+        text-decoration: none;
+        background-color: transparent;
+    }
+</style>
 @endpush
 
 @push('scripts')
@@ -626,6 +670,13 @@ $(document).ready(function() {
 });
 
 function deleteAdmin(adminId) {
+    // Check if this would be the last admin
+    var totalAdmins = {{ $totalAdmins }};
+    if (totalAdmins <= 1) {
+        alert('Cannot delete the last admin user. At least one admin must remain in the system.');
+        return;
+    }
+    
     if (confirm('Are you sure you want to delete this admin? This action cannot be undone.')) {
         $.ajax({
             url: `/admin/admins/${adminId}`,
@@ -634,10 +685,21 @@ function deleteAdmin(adminId) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                location.reload();
+                if (response.success) {
+                    showSuccessMessage('Admin deleted successfully');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showErrorMessage(response.message || 'Error deleting admin');
+                }
             },
-            error: function() {
-                alert('Error deleting admin.');
+            error: function(xhr) {
+                let errorMessage = 'Error deleting admin.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                showErrorMessage(errorMessage);
             }
         });
     }

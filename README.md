@@ -167,6 +167,59 @@ autoResponses: {
 
 ---
 
+## **👥 Advanced Customer Management System**
+
+### **🔐 Encrypted Customer Data**
+- **Data Encryption**: All sensitive customer data encrypted using Laravel Crypt
+- **Secure Fields**: Name, email, phone, and address automatically encrypted/decrypted
+- **Migration System**: Automated encryption of existing customer data
+- **Fallback Handling**: Seamless support for both encrypted and plain text data
+- **Search Capability**: Advanced search functionality that works with encrypted data
+
+### **💻 Dynamic Customer Interface**
+- **Card-Based Layout**: Professional customer cards with avatar icons and full information
+- **Real-Time Statistics**: Dynamic customer count display with pagination support
+- **Interactive Actions**: Dropdown menus with comprehensive action options (View, Edit, Email, Delete)
+- **Responsive Design**: Mobile-optimized grid layout with Bootstrap integration
+- **Empty States**: Helpful messages and refresh options when no customers exist
+
+### **🔍 Profile Modal System**
+- **Instant Profile View**: Click customer name or "Profile" button for modal popup
+- **Complete Information Display**: Shows name, email, phone, address, join date, and last update
+- **AJAX Powered**: Loads data without page refresh using secure API endpoints
+- **Professional Layout**: Two-column modal design with avatar and organized information
+- **Error Handling**: Graceful error messages with retry options
+
+### **✏️ Edit Modal System**
+- **Inline Editing**: Edit customer information directly in modal popup
+- **Pre-filled Forms**: Automatically populates current customer data
+- **Form Validation**: Client-side and server-side validation for data integrity
+- **Real-time Updates**: AJAX submission with immediate visual feedback
+- **Success Notifications**: Auto-refresh functionality after successful updates
+
+### **📧 Email Integration**
+- **Direct Email System**: Send emails to customers directly from the interface
+- **Professional Templates**: HTML email templates with customer personalization
+- **Modal Email Form**: Dedicated modal for composing and sending emails
+- **Database Logging**: All email activities logged in contact_messages table
+- **Success Tracking**: Real-time feedback on email delivery status
+
+### **🗑️ Customer Management Operations**
+- **Safe Deletion**: Confirmation prompts before customer removal
+- **Cascade Cleanup**: Automatic removal of related messages and conversations
+- **Bulk Operations**: Support for multiple customer operations
+- **Audit Trail**: Complete logging of all customer management activities
+- **Export Functionality**: CSV and JSON export capabilities with encrypted data handling
+
+### **🔧 Technical Features**
+- **CustomerController**: Comprehensive CRUD operations with encryption handling
+- **Customer Model**: Advanced Eloquent model with automatic encryption/decryption accessors
+- **Route Protection**: All routes secured with admin authentication middleware
+- **CSRF Protection**: All AJAX requests properly secured with CSRF tokens
+- **Error Logging**: Comprehensive logging for debugging and audit purposes
+
+---
+
 ## **📨 Advanced Message Management System**
 
 ### **📥 Admin Message Center**
@@ -303,6 +356,7 @@ boyzproject/
 │   │   ├── 📄 messages.blade.php             
 │   │   ├── 📄 messages-single.blade.php       
 │   │   ├── 📄 chat.blade.php                   
+│   │   ├── 📄 customers.blade.php                                 
 │   │   └── 📁 auth/
 │   │       ├── 📄 Change Password.blade.php   
 │   │       ├── 📄 Forgot Password.blade.php   
@@ -327,7 +381,7 @@ boyzproject/
 - **product_options**: Product option configurations (Size, Color, Material, etc.)
 - **product_option_values**: Individual option values with pricing and availability
 - **contact_messages**: Message system with categories and status tracking
-- **customers**: Customer information for message system
+- **customers**: Customer information with encrypted data (name, email, phone, address)
 - **message_responses**: Admin responses to customer messages
 - **predefined_messages**: Chat auto-response configuration
 - **sessions**: Admin login history and session tracking
@@ -347,6 +401,7 @@ boyzproject/
 - **📊 Dashboard**: E-commerce analytics and charts
 - **🛍️ Products**: Complete product catalog and options management
 - **📨 Messages**: Customer message management
+- **👥 Customers**: Encrypted customer management with dynamic modal interface
 - **👥 Admin**: Admin user management
 - **📈 History**: Login session tracking
 - **💬 Chat**: Real-time message interface
@@ -413,7 +468,44 @@ Edit `public/landing/js/chat-bubble.js`:
 ## **📝 Updates History**
 
 <details>
-<summary>Latest Version 1.3.0 (June 7, 2025) - Advanced Chat System Edition</summary>
+<summary>Latest Version 1.4.0 (June 2025) - Advanced Customer Management Edition</summary>
+
+### **👥 Customer Management System Overhaul**
+- ✅ **Complete Data Encryption**: All customer data (name, email, phone, address) encrypted using Laravel Crypt
+- ✅ **Dynamic Customer Interface**: Professional card-based layout with real-time statistics and pagination
+- ✅ **Modal Popup System**: Both Profile and Edit modals for seamless customer interaction
+- ✅ **AJAX-Powered Operations**: View, edit, email, and delete customers without page refresh
+- ✅ **Email Integration**: Direct email sending to customers with professional templates
+
+### **🔒 Security & Data Protection**
+- ✅ **Automatic Encryption**: All sensitive customer fields encrypted on save, decrypted on retrieval
+- ✅ **Migration System**: Automated encryption of existing customer data with fallback support
+- ✅ **Search Functionality**: Advanced search that works with encrypted data
+- ✅ **CSRF Protection**: All AJAX requests properly secured with CSRF tokens
+- ✅ **Route Protection**: Customer routes secured with admin authentication middleware
+
+### **💻 User Experience Enhancements**
+- ✅ **Profile Modal**: Instant customer profile view with complete information display
+- ✅ **Edit Modal**: Inline editing with pre-filled forms and real-time validation
+- ✅ **Email Modal**: Dedicated interface for composing and sending customer emails
+- ✅ **Responsive Design**: Mobile-optimized interface with Bootstrap integration
+- ✅ **Success Feedback**: Real-time notifications and auto-refresh functionality
+
+### **🔧 Technical Improvements**
+- ✅ **Enhanced CustomerController**: Comprehensive CRUD operations with encryption handling
+- ✅ **Advanced Customer Model**: Eloquent accessors/mutators for automatic encryption/decryption
+- ✅ **Database Integration**: Proper relationships with contact messages and chat conversations
+- ✅ **Export Functionality**: CSV and JSON export with encrypted data handling
+- ✅ **Audit Logging**: Complete activity logging for customer management operations
+
+### **📚 Documentation Updates**
+- 📖 **Updated README**: Comprehensive customer management documentation
+- 📖 **Security Guidelines**: Best practices for handling encrypted customer data
+- 📖 **API Documentation**: Detailed endpoint documentation for customer operations
+</details>
+
+<details>
+<summary>Version 1.3.0 (June 7, 2025) - Advanced Chat System Edition</summary>
 
 ### **💬 Major Chat System Enhancements**
 - ✅ **Bilingual Chat System**: Complete Indonesian interface for customers, English for admins
@@ -507,5 +599,5 @@ This project is proprietary software developed for Boy Projects. All rights rese
 
 ---
 
-*Last Updated: June 7, 2025*
-*Version: 1.3.0 - Advanced Chat System Edition*
+*Last Updated: June 2025*
+*Version: 1.4.0 - Advanced Customer Management Edition*

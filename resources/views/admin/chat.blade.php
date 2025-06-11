@@ -374,10 +374,20 @@
                                                 <i class="bx bx-dots-horizontal-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#" id="viewCustomerBtn">View Customer Info</a>
-                                                <a class="dropdown-item" href="#" id="conversationHistoryBtn">Conversation History</a>
+                                                <a class="dropdown-item" href="#" id="viewCustomerBtn">
+                                                    <i class="ri-user-line me-2"></i>View Customer Info
+                                                </a>
+                                                <a class="dropdown-item" href="#" id="conversationHistoryBtn">
+                                                    <i class="ri-history-line me-2"></i>Conversation History
+                                                </a>
                                                 <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item text-danger" href="#" id="closeConversationBtn">Close Conversation</a>
+                                                <a class="dropdown-item" href="#" id="sendEmailToCustomerBtn">
+                                                    <i class="ri-mail-send-line me-2"></i>Send Email to Customer
+                                                </a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item text-danger" href="#" id="closeConversationBtn">
+                                                    <i class="ri-close-circle-line me-2"></i>Close Conversation
+                                                </a>
                                             </div>
                                         </div>
                                     </li>
@@ -831,6 +841,250 @@ function showErrorMessage(message) {
     `;
     $('body').append(alertHtml);
     setTimeout(() => $('.alert-danger').fadeOut(), 7000);
+}
+
+// Customer Information Functions
+$(document).on('click', '#viewCustomerBtn', function(e) {
+    e.preventDefault();
+    
+    if (!currentConversationId) {
+        showErrorMessage('Please select a conversation first');
+        return;
+    }
+    
+    // Get customer info from current conversation
+    getCustomerInfoFromConversation(currentConversationId);
+});
+
+$(document).on('click', '#sendEmailToCustomerBtn', function(e) {
+    e.preventDefault();
+    
+    if (!currentConversationId) {
+        showErrorMessage('Please select a conversation first');
+        return;
+    }
+    
+    // Get customer info and show email modal
+    getCustomerInfoForEmail(currentConversationId);
+});
+
+function getCustomerInfoFromConversation(conversationId) {
+    console.log('📱 [DEBUG] Getting customer info for conversation:', conversationId);
+    
+    $.ajax({
+        url: `/admin/chat/conversation/${conversationId}`,
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        success: function(response) {
+            if (response.success && response.conversation.customer_id) {
+                // Redirect to customer page with modal
+                const customerId = response.conversation.customer_id;
+                const customerEmail = response.conversation.customer_email;
+                const customerName = response.conversation.customer_name;
+                
+                // Open customer page in new tab
+                window.open(`/admin/customers?customer_id=${customerId}&show_modal=true`, '_blank');
+                
+                // Or show customer info in a modal here
+                showCustomerInfoModal({
+                    id: customerId,
+                    name: customerName,
+                    email: customerEmail,
+                    from_chat: true
+                });
+            } else {
+                showErrorMessage('Customer information not available for this conversation');
+            }
+        },
+        error: function() {
+            showErrorMessage('Failed to load customer information');
+        }
+    });
+}
+
+function getCustomerInfoForEmail(conversationId) {
+    console.log('📧 [DEBUG] Getting customer info for email from conversation:', conversationId);
+    
+    $.ajax({
+        url: `/admin/chat/conversation/${conversationId}`,
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        success: function(response) {
+            if (response.success && response.conversation.customer_id) {
+                const customerId = response.conversation.customer_id;
+                const customerEmail = response.conversation.customer_email;
+                const customerName = response.conversation.customer_name;
+                
+                if (!customerEmail) {
+                    showErrorMessage('This customer does not have an email address');
+                    return;
+                }
+                
+                // Show email modal with customer info
+                showEmailToCustomerModal({
+                    id: customerId,
+                    name: customerName,
+                    email: customerEmail
+                });
+            } else {
+                showErrorMessage('Customer information not available for this conversation');
+            }
+        },
+        error: function() {
+            showErrorMessage('Failed to load customer information');
+        }
+    });
+}
+
+function showCustomerInfoModal(customer) {
+    // Create a modal HTML for customer info
+    const modalHtml = `
+        <div class="modal fade" id="customerInfoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Customer Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-4">
+                            <div class="avatar-lg mx-auto">
+                                <span class="avatar-title rounded-circle bg-primary font-size-24">
+                                    ${customer.name.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
+                            <h5 class="mt-3">${customer.name}</h5>
+                            <p class="text-muted">Customer ID: #${customer.id}</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Email:</th>
+                                        <td>${customer.email || 'Not provided'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Source:</th>
+                                        <td><span class="badge bg-info">Live Chat</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="/admin/customers" class="btn btn-primary" target="_blank">
+                            <i class="ri-external-link-line me-1"></i>View Full Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#customerInfoModal').remove();
+    
+    // Add modal to body and show
+    $('body').append(modalHtml);
+    $('#customerInfoModal').modal('show');
+    
+    // Remove modal from DOM when hidden
+    $('#customerInfoModal').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
+}
+
+function showEmailToCustomerModal(customer) {
+    // Create email modal HTML
+    const emailModalHtml = `
+        <div class="modal fade" id="emailCustomerModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Send Email to ${customer.name}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="chatEmailForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">To:</label>
+                                <input type="text" class="form-control" value="${customer.email}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="chatEmailSubject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="chatEmailSubject" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="chatEmailMessage" class="form-label">Message</label>
+                                <textarea class="form-control" id="chatEmailMessage" rows="6" required></textarea>
+                            </div>
+                            <input type="hidden" id="chatEmailCustomerId" value="${customer.id}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ri-mail-send-line me-1"></i>Send Email
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#emailCustomerModal').remove();
+    
+    // Add modal to body and show
+    $('body').append(emailModalHtml);
+    $('#emailCustomerModal').modal('show');
+    
+    // Handle form submission
+    $('#chatEmailForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const customerId = $('#chatEmailCustomerId').val();
+        const subject = $('#chatEmailSubject').val();
+        const message = $('#chatEmailMessage').val();
+        
+        // Disable submit button
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<i class="ri-loader-2-line"></i> Sending...');
+        
+        $.ajax({
+            url: `/admin/customers/${customerId}/send-email`,
+            method: 'POST',
+            data: {
+                subject: subject,
+                message: message,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    showSuccessMessage(response.message);
+                    $('#emailCustomerModal').modal('hide');
+                }
+            },
+            error: function(xhr) {
+                const error = xhr.responseJSON?.message || 'Failed to send email';
+                showErrorMessage(error);
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).html(originalText);
+            }
+        });
+    });
+    
+    // Remove modal from DOM when hidden
+    $('#emailCustomerModal').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
 }
 </script>
 @endpush

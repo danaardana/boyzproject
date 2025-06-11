@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use App\Providers\EncryptedUserProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,11 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        // Register custom encrypted user provider
+        Auth::provider('encrypted_eloquent', function ($app, array $config) {
+            return new EncryptedUserProvider($app['hash'], $config['model']);
+        });
 
         // Define a super admin gate
         Gate::define('super-admin', function ($user) {

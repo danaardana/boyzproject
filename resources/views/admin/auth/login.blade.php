@@ -129,48 +129,10 @@
                                     </div>
                                 </form>
 
-                                <div class="mt-4">
-                                    <div class="text-center">
-                                        <div class="signin-other-title">
-                                            <h5 class="font-size-14 mb-3 title">Security Features</h5>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="text-center">
-                                                    <div class="avatar-sm mx-auto mb-2">
-                                                        <span class="avatar-title rounded-circle bg-soft-primary text-primary">
-                                                            <i class="mdi mdi-shield-check"></i>
-                                                        </span>
-                                                    </div>
-                                                    <small class="text-muted">Secure</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="text-center">
-                                                    <div class="avatar-sm mx-auto mb-2">
-                                                        <span class="avatar-title rounded-circle bg-soft-success text-success">
-                                                            <i class="mdi mdi-account-check"></i>
-                                                        </span>
-                                                    </div>
-                                                    <small class="text-muted">Verified</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="text-center">
-                                                    <div class="avatar-sm mx-auto mb-2">
-                                                        <span class="avatar-title rounded-circle bg-soft-info text-info">
-                                                            <i class="mdi mdi-lock"></i>
-                                                        </span>
-                                                    </div>
-                                                    <small class="text-muted">Protected</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div class="mt-4 mt-md-5 text-center">
-                                <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> Boy Projects. Made with <i class="mdi mdi-heart text-danger"></i></p>
+                                <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> Boy Projects.</p>
                             </div>
                         </div>
                     </div>

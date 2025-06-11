@@ -392,6 +392,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.admin') }}" data-key="user-list">Admin Management</a></li>
+                        <li><a href="{{ route('admin.customers.index') }}" data-key="customer-list">Customer Management</a></li>
                         <li><a href="{{ route('admin.history') }}" data-key="user-history">Session History</a></li>
                     </ul>
                 </li>

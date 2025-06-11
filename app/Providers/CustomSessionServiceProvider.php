@@ -6,15 +6,19 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Session\SessionManager;
+use Illuminate\Session\SessionServiceProvider as BaseSessionServiceProvider;
 
-class CustomSessionServiceProvider extends ServiceProvider
+class CustomSessionServiceProvider extends BaseSessionServiceProvider
 {
     /**
      * Register services.
      */
     public function register(): void
     {
-        // Override the session manager
+        // Call parent registration first to ensure all session services are registered
+        parent::register();
+        
+        // Override the session manager with our custom one
         $this->app->singleton('session', function ($app) {
             return new CustomSessionManager($app);
         });
@@ -25,7 +29,7 @@ class CustomSessionServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // SessionServiceProvider doesn't have a boot method
     }
 }
 
