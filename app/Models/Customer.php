@@ -238,6 +238,27 @@ class Customer extends Model
     }
 
     /**
+     * Find a customer by phone number (handles both encrypted and plain phone numbers)
+     */
+    public static function findByPhone($phone)
+    {
+        $customers = static::all();
+        foreach ($customers as $customer) {
+            try {
+                // Compare with decrypted phone
+                if ($customer->phone === $phone) {
+                    return $customer;
+                }
+            } catch (\Exception $e) {
+                // Continue to next customer if comparison fails
+                continue;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
      * Relations
      */
     public function contactMessages()

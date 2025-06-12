@@ -15,6 +15,8 @@
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#contact">Contact Us</a></li>
                 <li><a href="#services">Our Services</a></li>
+                <li><a href="{{ route('landing.terms') }}">Syarat & Ketentuan</a></li>
+                <li><a href="{{ route('landing.privacy') }}">Kebijakan Privasi</a></li>
               </ul>
             </div>
           </div>
@@ -43,7 +45,11 @@
             </ul>
           </div>
           <div class="col-md-6 col-xs-12">
-            <div class="copy-right text-right">© 2025 Boy Projects. All rights reserved</div>
+            <div class="copy-right text-right">
+              © 2025 Boy Projects. All rights reserved | 
+              <a href="{{ route('landing.terms') }}" style="color: inherit;">Syarat & Ketentuan</a> | 
+              <a href="{{ route('landing.privacy') }}" style="color: inherit;">Kebijakan Privasi</a>
+            </div>
           </div>
         </div>
       </div>

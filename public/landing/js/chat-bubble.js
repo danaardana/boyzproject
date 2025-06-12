@@ -14,7 +14,7 @@ class ChatBubble {
                 'hai': 'Hai! Ada yang bisa saya bantu?',
                 'help': 'Saya di sini untuk membantu! Apa yang Anda butuhkan?',
                 'bantuan': 'Saya di sini untuk membantu! Apa yang Anda butuhkan?',
-                'kontak': 'Anda bisa menghubungi kami di contact@boysproject.com atau telepon (021) 123-4567',
+                'kontak': 'Anda bisa menghubungi kami di contact@boysproject.com atau telepon 08211990442',
                 'jam': 'Jam operasional kami adalah Senin-Jumat 09:00-18:00 WIB',
                 'harga': 'Untuk informasi harga, silakan kunjungi halaman harga kami atau hubungi tim penjualan.',
                 'pricing': 'Untuk informasi harga, silakan kunjungi halaman harga kami atau hubungi tim penjualan.',
@@ -40,6 +40,8 @@ class ChatBubble {
         this.displayedMessages = []; // Track displayed message IDs
         this.pollingInterval = null; // For polling admin messages
         this.lastMessageCount = 0; // Track message count for updates
+        this.hasStartedDataCollection = false;
+        this.needsToStartAdminConversation = false;
         
         this.init();
     }
@@ -47,9 +49,6 @@ class ChatBubble {
     init() {
         this.createChatBubble();
         this.attachEventListeners();
-        if (!this.options.showChatOptions) {
-            this.addInitialMessage();
-        }
     }
 
     createChatBubble() {
@@ -130,7 +129,45 @@ class ChatBubble {
                     </div>
                 </div>
                 
-                <div class="chat-messages" id="chatMessages">
+                <!-- Customer Form -->
+                <div class="customer-form" id="customerForm">
+                    <div class="form-header">
+                        <div class="form-avatar">BP</div>
+                        <div class="form-title">
+                            <h3>Hi, Selamat Datang di Livechat Boys Project. Mohon isi nama dan nomor ponsel kamu dibawah ini ya</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="form-content">
+                        <div class="form-group">
+                            <input type="text" id="customerName" class="form-input" placeholder="Nama" required>
+                        </div>
+                        
+                        <div class="form-group phone-group">
+                            <div class="phone-input-wrapper">
+                                <span class="country-code">🇮🇩 +62</span>
+                                <input type="tel" id="customerPhone" class="form-input phone-input" placeholder="8277249066611" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" id="customerEmail" class="form-input" placeholder="Email (Opsional)">
+                        </div>
+                        
+                        <div class="form-footer">
+                            <div class="form-agreement">
+                                <input type="checkbox" id="agreementCheck" checked>
+                                <label for="agreementCheck">Saya telah membaca & setuju dengan <a href="/terms" target="_blank" class="agreement-link">syarat & ketentuan ini</a></label>
+                            </div>
+                            
+                            <button type="button" class="connect-btn" id="connectBtn">
+                                HUBUNGKAN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages" style="display: none;">
                     <div class="quick-actions" id="quickActions">
                         <button class="quick-action" data-message="Saya butuh bantuan">Saya butuh bantuan</button>
                         <button class="quick-action" data-message="Informasi kontak">Info kontak</button>
@@ -147,7 +184,7 @@ class ChatBubble {
                     </div>
                 </div>
                 
-                <div class="chat-input">
+                <div class="chat-input" id="chatInput" style="display: none;">
                     <div class="input-group">
                         <textarea 
                             class="chat-input-field" 
@@ -436,7 +473,21 @@ class ChatBubble {
                 
                 this.customerData.name = message.trim();
                 console.log('✅ [DEBUG] Name collected:', this.customerData.name);
-                this.showEmailInputPrompt();
+                this.showPhoneInputPrompt();
+                break;
+                
+            case 'phone':
+                const phoneNumber = this.cleanPhoneNumber(message.trim());
+                if (!this.isValidIndonesianPhone(phoneNumber)) {
+                    this.sendBotMessage('Nomor telepon tidak valid. Mohon masukkan nomor HP Indonesia yang benar (contoh: 081234567890 atau +6281234567890).');
+                    return;
+                }
+                
+                this.customerData.phone = phoneNumber;
+                console.log('✅ [DEBUG] Phone collected:', this.customerData.phone);
+                
+                // Check if customer exists with this phone number
+                this.checkExistingCustomer(phoneNumber);
                 break;
                 
             case 'email':
@@ -451,25 +502,8 @@ class ChatBubble {
                     console.log('✅ [DEBUG] Email collected:', this.customerData.email);
                 }
                 
-                this.showMessageInputPrompt();
-                break;
-                
-            case 'message':
-                if (message.trim().length < 5) {
-                    this.sendBotMessage('Mohon berikan pesan yang lebih detail (minimal 5 karakter).');
-                    return;
-                }
-                
-                this.customerData.message = message.trim();
-                console.log('✅ [DEBUG] Message collected:', this.customerData.message);
-                console.log('🎯 [DEBUG] All data collected, starting conversation...');
-                
-                // Reset data collection
-                this.dataCollectionStep = null;
-                this.isCollectingData = false;
-                
-                // Start the actual admin conversation
-                this.startAdminConversation();
+                // Customer data collection completed, now show mode selection
+                this.completeDataCollection();
                 break;
                 
             default:
@@ -477,6 +511,88 @@ class ChatBubble {
                 this.sendBotMessage('Terjadi kesalahan. Silakan mulai ulang percakapan.');
                 this.showModeSelection();
         }
+    }
+
+    cleanPhoneNumber(phone) {
+        // Remove all non-digit characters except +
+        let cleaned = phone.replace(/[^\d+]/g, '');
+        
+        // If starts with +62, keep it
+        if (cleaned.startsWith('+62')) {
+            return cleaned;
+        }
+        
+        // If starts with 62, add +
+        if (cleaned.startsWith('62')) {
+            return '+' + cleaned;
+        }
+        
+        // If starts with 0, replace with +62
+        if (cleaned.startsWith('0')) {
+            return '+62' + cleaned.substring(1);
+        }
+        
+        // If starts with 8, assume it's missing the 0
+        if (cleaned.startsWith('8')) {
+            return '+62' + cleaned;
+        }
+        
+        return cleaned;
+    }
+
+    isValidIndonesianPhone(phone) {
+        // Indonesian phone number validation
+        // Should start with +62 followed by 8-15 digits
+        const phoneRegex = /^\+62[8-9]\d{7,12}$/;
+        return phoneRegex.test(phone);
+    }
+
+    checkExistingCustomer(phoneNumber) {
+        console.log('🔍 [DEBUG] Checking existing customer for phone:', phoneNumber);
+        
+        // Make API call to check if customer exists
+        fetch('/chat/check-customer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            },
+            body: JSON.stringify({
+                phone: phoneNumber
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.customer_exists) {
+                this.sendBotMessage(`Halo ${data.customer.name}! Kami sudah mengenali nomor Anda. 😊`);
+                
+                // If customer exists, update our data with existing info
+                this.customerData.name = data.customer.name;
+                this.customerData.email = data.customer.email;
+                this.customerData.existing_customer = true;
+                this.customerData.customer_id = data.customer.id;
+                
+                if (data.has_chat_history) {
+                    setTimeout(() => {
+                        this.sendBotMessage('Anda memiliki riwayat percakapan sebelumnya. Apakah ada yang bisa kami bantu hari ini?');
+                        this.showMessageInputPrompt();
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        this.sendBotMessage('Senang bertemu Anda lagi! Ada yang bisa kami bantu hari ini?');
+                        this.showMessageInputPrompt();
+                    }, 1000);
+                }
+            } else {
+                // New customer, continue with email collection
+                this.showEmailInputPrompt();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking customer:', error);
+            // Continue with normal flow if API fails
+            this.showEmailInputPrompt();
+        });
     }
 
     showNameInputPrompt() {
@@ -511,6 +627,36 @@ class ChatBubble {
         }, 500);
     }
 
+    showPhoneInputPrompt() {
+        console.log('📱 [DEBUG] showPhoneInputPrompt called');
+        
+        this.dataCollectionStep = 'phone';
+        
+        this.sendBotMessage(`Terima kasih, ${this.customerData.name}! 👋`);
+        
+        setTimeout(() => {
+            this.sendBotMessage('Boleh saya minta nomor HP Anda?');
+            setTimeout(() => {
+                this.sendBotMessage('📱 <em>Nomor HP diperlukan untuk menyimpan riwayat percakapan dan memudahkan komunikasi selanjutnya.</em>');
+                
+                // Update input placeholder
+                const inputField = document.getElementById('chatInputField');
+                if (inputField) {
+                    inputField.placeholder = 'Contoh: 081234567890';
+                    inputField.disabled = false;
+                    inputField.focus();
+                }
+                
+                const sendBtn = document.getElementById('sendBtn');
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                }
+                
+                console.log('✅ [DEBUG] Phone input prompt shown');
+            }, 1000);
+        }, 1000);
+    }
+
     showEmailInputPrompt() {
         console.log('📧 [DEBUG] showEmailInputPrompt called');
         
@@ -519,9 +665,9 @@ class ChatBubble {
         this.sendBotMessage(`Senang berkenalan dengan Anda, ${this.customerData.name}! 👋`);
         
         setTimeout(() => {
-            this.sendBotMessage('Boleh saya minta alamat email Anda?');
+            this.sendBotMessage('Boleh saya minta alamat email Anda? (Opsional)');
             setTimeout(() => {
-                this.sendBotMessage('📧 <em>Email bersifat opsional, namun membantu kami menyimpan riwayat percakapan Anda. Ketik "lewati" jika tidak ingin memberikan email.</em>');
+                this.sendBotMessage('📧 <em>Email bersifat opsional untuk komunikasi tambahan. Ketik "lewati" untuk melanjutkan tanpa email.</em>');
                 
                 // Update input placeholder and ensure it's enabled
                 const inputField = document.getElementById('chatInputField');
@@ -678,8 +824,11 @@ class ChatBubble {
             },
             body: JSON.stringify({
                 customer_name: this.customerData.name,
+                customer_phone: this.customerData.phone,
                 customer_email: this.customerData.email,
-                initial_message: this.customerData.message
+                initial_message: this.customerData.message,
+                existing_customer: this.customerData.existing_customer || false,
+                customer_id: this.customerData.customer_id || null
             })
         })
         .then(response => {
@@ -866,10 +1015,18 @@ class ChatBubble {
     }
 
     toggleChat() {
+        console.log('🔄 [DEBUG] toggleChat called, current state:', this.isOpen);
+        
         if (this.isOpen) {
             this.closeChat();
         } else {
             this.openChat();
+            
+            // Start customer data collection immediately when chat opens
+            if (!this.hasStartedDataCollection) {
+                this.startCustomerDataCollection();
+                this.hasStartedDataCollection = true;
+            }
         }
     }
 
@@ -931,6 +1088,11 @@ class ChatBubble {
             if (this.isCollectingData) {
                 console.log('📨 [DEBUG] Processing data collection response...');
                 this.handleDataCollectionResponse(message);
+            } else if (this.chatMode === 'admin' && this.needsToStartAdminConversation) {
+                console.log('📨 [DEBUG] Starting admin conversation with first message...');
+                this.customerData.message = message;
+                this.startAdminConversation();
+                this.needsToStartAdminConversation = false;
             } else if (this.chatMode === 'admin' && this.adminConversationId) {
                 console.log('📨 [DEBUG] Sending message to admin...');
                 this.sendMessageToAdmin(message);
@@ -1002,20 +1164,48 @@ class ChatBubble {
         });
     }
 
-    processMessage(message) {
+    async processMessage(message) {
         // Show typing indicator
         this.showTypingIndicator();
         
-        // Simulate processing time
-        setTimeout(() => {
+        try {
+            // Simulate processing time
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
+            
             this.hideTypingIndicator();
             
-            const response = this.generateResponse(message);
+            const response = await this.generateResponse(message);
             this.sendBotMessage(response);
-        }, 1000 + Math.random() * 1500); // Random delay between 1-2.5 seconds
+        } catch (error) {
+            console.error('Error processing message:', error);
+            this.hideTypingIndicator();
+            this.sendBotMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
+        }
     }
 
-    generateResponse(message) {
+    async generateResponse(message) {
+        try {
+            // First, try to get response from database
+            const response = await fetch('/chat/get-auto-response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.matched) {
+                    return data.response;
+                }
+            }
+        } catch (error) {
+            console.log('Failed to fetch database response, falling back to static responses:', error);
+        }
+
+        // Fallback to static responses
         const lowerMessage = message.toLowerCase();
         
         // Check for specific keywords
@@ -1219,11 +1409,379 @@ class ChatBubble {
             }
         }
     }
+
+    startCustomerDataCollection() {
+        console.log('📝 [DEBUG] Starting customer data collection with form');
+        
+        // Show the chat interface with form
+        this.showChatInterface();
+        
+        // Show customer form
+        this.showCustomerForm();
+    }
+
+    showChatInterface() {
+        document.getElementById('chatModeSelection').style.display = 'none';
+        document.getElementById('chatInterface').style.display = 'flex';
+        
+        // Update header for data collection
+        document.getElementById('chatTitle').textContent = 'Boys Project';
+        document.getElementById('chatStatus').textContent = 'Selamat datang!';
+        
+        // Hide back button during data collection
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+    }
+
+    showCustomerForm() {
+        console.log('📝 [DEBUG] Showing customer form');
+        
+        // Show form, hide chat messages
+        document.getElementById('customerForm').style.display = 'flex';
+        document.getElementById('chatMessages').style.display = 'none';
+        document.getElementById('chatInput').style.display = 'none';
+        
+        // Debug: Check if elements exist
+        setTimeout(() => {
+            const connectBtn = document.getElementById('connectBtn');
+            const customerForm = document.getElementById('customerForm');
+            const nameInput = document.getElementById('customerName');
+            const phoneInput = document.getElementById('customerPhone');
+            
+            console.log('🔍 [DEBUG] Form elements check:', {
+                connectBtn: !!connectBtn,
+                customerForm: !!customerForm,
+                nameInput: !!nameInput,
+                phoneInput: !!phoneInput,
+                formVisible: customerForm ? getComputedStyle(customerForm).display : 'N/A',
+                buttonVisible: connectBtn ? getComputedStyle(connectBtn).display : 'N/A'
+            });
+            
+            if (connectBtn) {
+                console.log('🔍 [DEBUG] Connect button details:', {
+                    text: connectBtn.textContent,
+                    disabled: connectBtn.disabled,
+                    offsetHeight: connectBtn.offsetHeight,
+                    offsetWidth: connectBtn.offsetWidth,
+                    className: connectBtn.className
+                });
+            }
+        }, 100);
+        
+        // Attach form event listeners
+        this.attachFormEventListeners();
+    }
+
+    attachFormEventListeners() {
+        const connectBtn = document.getElementById('connectBtn');
+        const nameInput = document.getElementById('customerName');
+        const phoneInput = document.getElementById('customerPhone');
+        const emailInput = document.getElementById('customerEmail');
+        const agreementCheck = document.getElementById('agreementCheck');
+
+        // Phone input formatting
+        if (phoneInput) {
+            phoneInput.addEventListener('input', (e) => {
+                // Remove non-digits
+                let value = e.target.value.replace(/\D/g, '');
+                
+                // Remove leading 0 if present (since we show +62 prefix)
+                if (value.startsWith('0')) {
+                    value = value.substring(1);
+                }
+                
+                e.target.value = value;
+                this.validateForm();
+            });
+
+            phoneInput.addEventListener('keypress', (e) => {
+                // Only allow digits
+                if (!/\d/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // Name input validation
+        if (nameInput) {
+            nameInput.addEventListener('input', () => {
+                this.validateForm();
+            });
+        }
+
+        // Email input validation (optional)
+        if (emailInput) {
+            emailInput.addEventListener('input', () => {
+                this.validateForm();
+            });
+        }
+
+        // Agreement checkbox
+        if (agreementCheck) {
+            agreementCheck.addEventListener('change', () => {
+                this.validateForm();
+            });
+        }
+
+        // Connect button
+        if (connectBtn) {
+            connectBtn.addEventListener('click', () => {
+                this.submitCustomerForm();
+            });
+        }
+
+        // Initial validation
+        this.validateForm();
+    }
+
+    validateForm() {
+        const nameInput = document.getElementById('customerName');
+        const phoneInput = document.getElementById('customerPhone');
+        const emailInput = document.getElementById('customerEmail');
+        const agreementCheck = document.getElementById('agreementCheck');
+        const connectBtn = document.getElementById('connectBtn');
+
+        const name = nameInput?.value.trim() || '';
+        const phone = phoneInput?.value.trim() || '';
+        const email = emailInput?.value.trim() || '';
+        const agreed = agreementCheck?.checked || false;
+
+        // Validate required fields
+        const nameValid = name.length >= 2;
+        const phoneValid = phone.length >= 9; // Indonesian mobile numbers are usually 10-12 digits
+        const emailValid = !email || this.isValidEmail(email); // Email is optional
+        
+        // Enable/disable connect button
+        const formValid = nameValid && phoneValid && emailValid && agreed;
+        
+        if (connectBtn) {
+            connectBtn.disabled = !formValid;
+            connectBtn.style.opacity = formValid ? '1' : '0.5';
+            connectBtn.style.cursor = formValid ? 'pointer' : 'not-allowed';
+        }
+
+        return formValid;
+    }
+
+    submitCustomerForm() {
+        console.log('📝 [DEBUG] Submitting customer form');
+
+        const nameInput = document.getElementById('customerName');
+        const phoneInput = document.getElementById('customerPhone');
+        const emailInput = document.getElementById('customerEmail');
+
+        const name = nameInput.value.trim();
+        let phone = phoneInput.value.trim();
+        const email = emailInput.value.trim();
+
+        // Format phone number
+        phone = '+62' + phone;
+
+        // Validate
+        if (!this.validateForm()) {
+            console.error('❌ [DEBUG] Form validation failed');
+            return;
+        }
+
+        // Store customer data
+        this.customerData = {
+            name: name,
+            phone: phone,
+            email: email || null
+        };
+
+        console.log('✅ [DEBUG] Customer data collected:', this.customerData);
+
+        // Show loading state
+        const connectBtn = document.getElementById('connectBtn');
+        if (connectBtn) {
+            connectBtn.textContent = 'MENGHUBUNGKAN...';
+            connectBtn.disabled = true;
+            connectBtn.classList.add('loading');
+        }
+
+        // Check existing customer
+        this.checkExistingCustomer(phone);
+    }
+
+    // Update checkExistingCustomer to handle form completion
+    checkExistingCustomer(phoneNumber) {
+        console.log('🔍 [DEBUG] Checking existing customer for phone:', phoneNumber);
+        
+        // Make API call to check if customer exists
+        fetch('/chat/check-customer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            },
+            body: JSON.stringify({
+                phone: phoneNumber
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.customer_exists) {
+                // Update customer data with existing info
+                this.customerData.name = data.customer.name;
+                this.customerData.email = data.customer.email;
+                this.customerData.existing_customer = true;
+                this.customerData.customer_id = data.customer.id;
+                
+                console.log('✅ [DEBUG] Existing customer found');
+            }
+            
+            // Complete the form submission
+            this.completeFormSubmission();
+        })
+        .catch(error => {
+            console.error('Error checking customer:', error);
+            // Continue with form submission even if API fails
+            this.completeFormSubmission();
+        });
+    }
+
+    completeFormSubmission() {
+        console.log('✅ [DEBUG] Completing form submission');
+        
+        // Hide form, show chat interface
+        document.getElementById('customerForm').style.display = 'none';
+        document.getElementById('chatMessages').style.display = 'flex';
+        document.getElementById('chatInput').style.display = 'block';
+        
+        // Update header
+        document.getElementById('chatTitle').textContent = 'Boys Project Support';
+        document.getElementById('chatStatus').textContent = 'Data tersimpan, pilih jenis bantuan';
+        
+        // Show back button
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.style.display = 'flex';
+        }
+        
+        // Show welcome message
+        this.sendBotMessage(`Halo ${this.customerData.name}! Data Anda telah tersimpan. ✅`);
+        
+        setTimeout(() => {
+            this.showModeSelectionAfterDataCollection();
+        }, 1000);
+    }
+
+    showModeSelectionAfterDataCollection() {
+        console.log('🎯 [DEBUG] Showing mode selection after data collection');
+        
+        // Clear messages area but keep customer data
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (messagesContainer) {
+            // Add mode selection buttons as messages
+            const modeSelectionHTML = `
+                <div class="message bot">
+                    <div class="message-avatar">BP</div>
+                    <div class="message-content">
+                        <div class="mode-selection-buttons">
+                            <button class="mode-selection-btn" data-mode="landing">
+                                <div class="mode-icon">🤖</div>
+                                <div class="mode-text">
+                                    <h4>Chat Otomatis</h4>
+                                    <p>Jawaban cepat untuk pertanyaan umum</p>
+                                </div>
+                            </button>
+                            <button class="mode-selection-btn" data-mode="admin">
+                                <div class="mode-icon">👨‍💼</div>
+                                <div class="mode-text">
+                                    <h4>Chat dengan Admin</h4>
+                                    <p>Bicara langsung dengan tim dukungan</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            messagesContainer.insertAdjacentHTML('beforeend', modeSelectionHTML);
+            this.scrollToBottom();
+            
+            // Attach event listeners to mode selection buttons
+            this.attachModeSelectionListeners();
+        }
+        
+        // Show back button now
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.style.display = 'flex';
+        }
+        
+        // Update status
+        document.getElementById('chatStatus').textContent = 'Pilih jenis bantuan yang dibutuhkan';
+        
+        // Disable input field during mode selection
+        const inputField = document.getElementById('chatInputField');
+        const sendBtn = document.getElementById('sendBtn');
+        if (inputField) {
+            inputField.disabled = true;
+            inputField.placeholder = 'Pilih mode chat terlebih dahulu...';
+        }
+        if (sendBtn) {
+            sendBtn.disabled = true;
+        }
+    }
+
+    attachModeSelectionListeners() {
+        const modeButtons = document.querySelectorAll('.mode-selection-btn');
+        modeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const mode = button.getAttribute('data-mode');
+                console.log('👆 [DEBUG] Mode selected after data collection:', mode);
+                this.selectChatModeWithData(mode);
+            });
+        });
+    }
+
+    selectChatModeWithData(mode) {
+        console.log('🎯 [DEBUG] Selecting chat mode with customer data:', mode);
+        
+        this.chatMode = mode;
+        
+        // Remove mode selection buttons
+        const modeSelection = document.querySelector('.mode-selection-buttons');
+        if (modeSelection) {
+            modeSelection.parentElement.parentElement.remove();
+        }
+        
+        if (mode === 'admin') {
+            // Start admin chat with collected data
+            this.sendBotMessage('Anda akan terhubung dengan tim dukungan kami. Silakan tunggu sebentar...');
+            
+            setTimeout(() => {
+                this.sendBotMessage('Silakan ceritakan bagaimana kami bisa membantu Anda hari ini?');
+                this.enableNormalChatInput();
+                this.updateQuickActionsForAdmin();
+                
+                // Set flag to indicate we need to start conversation on first message
+                this.needsToStartAdminConversation = true;
+            }, 1500);
+            
+        } else if (mode === 'landing') {
+            // Start auto chat mode
+            this.sendBotMessage('Mode chat otomatis aktif. Anda bisa bertanya tentang layanan kami.');
+            this.enableNormalChatInput();
+            this.addInitialMessage();
+        }
+        
+        // Update header
+        const modeText = mode === 'admin' ? 'Chat dengan Admin' : 'Chat Otomatis';
+        document.getElementById('chatTitle').textContent = modeText;
+        document.getElementById('chatStatus').textContent = mode === 'admin' ? 'Tim dukungan siap membantu' : 'Siap menjawab pertanyaan Anda';
+    }
 }
 
 // Initialize chat bubble when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔍 [DEBUG] DOM loaded, initializing chat bubble...');
+    
+
     
     // Check if chat bubble should be initialized
     if (!document.querySelector('.chat-bubble')) {

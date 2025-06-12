@@ -11,6 +11,16 @@ class LandingPageController extends Controller
     {
         $sections = Section::where('is_active', true)->orderBy('show_order')->get();
         return view('landing.index', compact('sections'));
-    }    
+    }
+    
+    public function privacy()
+    {
+        return view('landing.privacy');
+    }
+    
+    public function terms()
+    {
+        return view('landing.terms');
+    }
 
 }

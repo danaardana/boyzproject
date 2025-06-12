@@ -153,7 +153,8 @@ class DocumentationController extends Controller
             'product-system', 
             'email-system',
             'message-system',
-            'chat-system'
+            'chat-system',
+            'chatbot'
         ];
 
         if (!in_array($system, $validSystems)) {
@@ -231,6 +232,15 @@ class DocumentationController extends Controller
                 'lastUpdated' => 'December 2024',
                 'icon' => 'bx-chat',
                 'color' => 'danger'
+            ],
+            'chatbot' => [
+                'title' => 'Chatbot Management System',
+                'description' => 'Comprehensive auto-response platform with intelligent keyword-based responses',
+                'category' => 'Communication',
+                'version' => '1.4.0',
+                'lastUpdated' => 'January 2025',
+                'icon' => 'bx-bot',
+                'color' => 'secondary'
             ]
         ];
     }

@@ -264,10 +264,10 @@ autoResponses: {
 ## **🚀 Installation & Setup**
 
 ### **Prerequisites**
-- PHP 8.1+
+- PHP 8.2+
 - Composer 2.0+
 - MySQL 8.0+
-- Node.js 16+ & NPM
+- Node.js 18+ & NPM
 - Pusher account (for real-time features)
 
 ### **Quick Setup**
@@ -383,7 +383,9 @@ boyzproject/
 - **contact_messages**: Message system with categories and status tracking
 - **customers**: Customer information with encrypted data (name, email, phone, address)
 - **message_responses**: Admin responses to customer messages
-- **predefined_messages**: Chat auto-response configuration
+- **chatbot_auto_responses**: Advanced auto-response configuration for intelligent chat replies
+- **chat_conversations**: Real-time customer conversations with admin assignments
+- **chat_messages**: Message threading system with read/unread status
 - **sessions**: Admin login history and session tracking
 
 *Note: Product management system restored with enhanced options functionality.*
@@ -405,6 +407,8 @@ boyzproject/
 - **👥 Admin**: Admin user management
 - **📈 History**: Login session tracking
 - **💬 Chat**: Real-time message interface
+- **🤖 Chatbot**: Intelligent auto-response management system
+- **📚 Documentation**: Comprehensive system documentation including chatbot management
 
 ### **Email System**
 - **Send Welcome**: Create new admin → auto-sends welcome email
@@ -419,12 +423,19 @@ Edit `public/landing/js/chat-bubble.js`:
 'new_keyword': 'Your custom response here',
 ```
 
+### **Documentation Access**
+- **Admin Dashboard**: Support → Documentation → [System Name]
+- **Chatbot Management**: Support → Documentation → Chatbot Management
+- **All Documentation**: Support → Documentation → All Documentation
+- **Search Functionality**: Use search bar in documentation interface
+- **Export Options**: Download documentation as markdown files
+
 ---
 
 ## **🛠️ Technologies Used**
 
 ### **Backend**
-- **Laravel 10**: PHP framework with modern features
+- **Laravel 12**: PHP framework with modern features
 - **MySQL 8**: Database with proper indexing and relationships
 - **Pusher**: Real-time WebSocket communication
 - **Laravel Mail**: Professional email system with templates
@@ -468,7 +479,37 @@ Edit `public/landing/js/chat-bubble.js`:
 ## **📝 Updates History**
 
 <details>
-<summary>Latest Version 1.4.0 (June 2025) - Advanced Customer Management Edition</summary>
+<summary>Latest Version 1.5.0 (June 2025) - Enhanced Documentation & Chatbot Integration Edition</summary>
+
+### **📚 Documentation System Enhancements**
+- ✅ **Chatbot Documentation Integration**: Complete chatbot management documentation added to admin navbar
+- ✅ **Enhanced Documentation Controller**: Updated with chatbot system information and export capabilities
+- ✅ **Comprehensive Documentation**: Added detailed chatbot management system documentation (501 lines)
+- ✅ **Integrated Navigation**: Seamless access to all system documentation from admin dashboard
+- ✅ **Documentation Search**: Advanced search functionality across all documentation files
+
+### **🤖 Chatbot System Improvements**
+- ✅ **Admin Interface Integration**: Complete integration of chatbot management in admin navigation
+- ✅ **Documentation Access**: Easy access to chatbot documentation via Support → Documentation → Chatbot Management
+- ✅ **System Information**: Comprehensive system metadata with version tracking and descriptions
+- ✅ **Export Functionality**: Markdown export capabilities for chatbot documentation
+
+### **🔧 Technical Updates**
+- ✅ **Laravel 12 Compatibility**: Updated framework to latest version
+- ✅ **PHP 8.2+ Support**: Enhanced PHP version requirements
+- ✅ **Node.js 18+ Support**: Updated Node.js requirements for modern development
+- ✅ **Documentation Standards**: Consistent documentation format across all system modules
+- ✅ **Route Organization**: Clean routing structure for documentation system
+
+### **💻 User Experience Enhancements**
+- ✅ **Unified Documentation**: All system documentation accessible from single interface
+- ✅ **Intuitive Navigation**: Clear navigation paths to different documentation sections
+- ✅ **Professional Layout**: Consistent styling and layout across documentation pages
+- ✅ **Search Integration**: Quick search functionality for finding specific documentation content
+</details>
+
+<details>
+<summary>Version 1.4.0 (June 2025) - Advanced Customer Management Edition</summary>
 
 ### **👥 Customer Management System Overhaul**
 - ✅ **Complete Data Encryption**: All customer data (name, email, phone, address) encrypted using Laravel Crypt
@@ -600,4 +641,4 @@ This project is proprietary software developed for Boy Projects. All rights rese
 ---
 
 *Last Updated: June 2025*
-*Version: 1.4.0 - Advanced Customer Management Edition*
+*Version: 1.5.0 - Enhanced Documentation & Chatbot Integration Edition*

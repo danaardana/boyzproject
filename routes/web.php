@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 // Public routes
 Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
+Route::get('/privacy', [LandingPageController::class, 'privacy'])->name('landing.privacy');
+Route::get('/terms', [LandingPageController::class, 'terms'])->name('landing.terms');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
 // Define a regular 'login' route that redirects to admin login (for fallback)
@@ -24,8 +27,10 @@ Route::get('/login', function() {
 // Public Chat Routes (for landing page chat to admin)
 Route::prefix('chat')->group(function () {
     Route::post('/start', [App\Http\Controllers\Admin\ChatController::class, 'startConversationFromLanding'])->name('public.chat.start');
+    Route::post('/check-customer', [App\Http\Controllers\Admin\ChatController::class, 'checkCustomerByPhone'])->name('public.chat.check-customer');
     Route::post('/{conversation}/reply', [App\Http\Controllers\Admin\ChatController::class, 'sendReplyFromLanding'])->name('public.chat.reply');
     Route::get('/{conversation}/messages', [App\Http\Controllers\Admin\ChatController::class, 'getConversationMessages'])->name('public.chat.messages');
+    Route::post('/get-auto-response', [App\Http\Controllers\Admin\ChatbotController::class, 'getAutoResponse'])->name('public.chat.get-auto-response');
 });
 
 // Force logout route (accessible even if middleware fails)
@@ -70,10 +75,22 @@ Route::get('/test-welcome-email/{adminId}', function($adminId) {
     }
 })->name('test.welcome.email');
 
-// Test route for debugging chat bubble
-Route::get('/test-chat', function () {
-    return view('test-chat');
-})->name('test.chat');
+
+
+// Debug route to check stats
+Route::get('/debug-stats', function() {
+    $stats = [
+        'total' => \App\Models\ChatbotAutoResponse::count(),
+        'active' => \App\Models\ChatbotAutoResponse::where('is_active', true)->count(),
+        'inactive' => \App\Models\ChatbotAutoResponse::where('is_active', false)->count(),
+        'high_priority' => \App\Models\ChatbotAutoResponse::where('priority', '>=', 100)->count(),
+    ];
+    
+    return response()->json([
+        'stats' => $stats,
+        'raw_data' => \App\Models\ChatbotAutoResponse::select('is_active', 'priority')->get()
+    ]);
+});
 
 // Admin Auth Routes
 Route::prefix('admin')->group(function () {
@@ -175,6 +192,21 @@ Route::prefix('admin')->group(function () {
         Route::post('/chat/conversation/{conversationId}/transfer', [App\Http\Controllers\Admin\ChatController::class, 'transferConversation'])->name('admin.chat.transfer');
         Route::post('/chat/conversation/{conversationId}/resolve', [App\Http\Controllers\Admin\ChatController::class, 'resolveConversation'])->name('admin.chat.resolve');
         Route::get('/chat/stats', [App\Http\Controllers\Admin\ChatController::class, 'getStats'])->name('admin.chat.stats');
+        
+        // Chatbot Management routes
+        Route::prefix('chatbot')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\ChatbotController::class, 'index'])->name('admin.chatbot');
+            Route::get('/stats', [App\Http\Controllers\Admin\ChatbotController::class, 'getStats'])->name('admin.chatbot.stats');
+            Route::get('/auto-responses', [App\Http\Controllers\Admin\ChatbotController::class, 'getAutoResponses'])->name('admin.chatbot.auto-responses');
+            Route::post('/auto-responses', [App\Http\Controllers\Admin\ChatbotController::class, 'store'])->name('admin.chatbot.auto-responses.store');
+            Route::get('/auto-responses/{id}', [App\Http\Controllers\Admin\ChatbotController::class, 'show'])->name('admin.chatbot.auto-responses.show');
+            Route::put('/auto-responses/{id}', [App\Http\Controllers\Admin\ChatbotController::class, 'update'])->name('admin.chatbot.auto-responses.update');
+            Route::delete('/auto-responses/{id}', [App\Http\Controllers\Admin\ChatbotController::class, 'destroy'])->name('admin.chatbot.auto-responses.destroy');
+            Route::post('/auto-responses/{id}/toggle', [App\Http\Controllers\Admin\ChatbotController::class, 'toggleStatus'])->name('admin.chatbot.auto-responses.toggle');
+            Route::post('/auto-responses/test', [App\Http\Controllers\Admin\ChatbotController::class, 'testResponse'])->name('admin.chatbot.auto-responses.test');
+            Route::post('/auto-responses/bulk-delete', [App\Http\Controllers\Admin\ChatbotController::class, 'bulkDelete'])->name('admin.chatbot.auto-responses.bulk-delete');
+            Route::get('/auto-responses/export/csv', [App\Http\Controllers\Admin\ChatbotController::class, 'export'])->name('admin.chatbot.auto-responses.export');
+        });
         
         Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
         Route::get('/history', [AdminController::class, 'historyPage'])->name('admin.history');

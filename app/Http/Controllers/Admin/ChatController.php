@@ -284,14 +284,71 @@ class ChatController extends Controller
     }
 
     /**
+     * Check if customer exists by phone number
+     */
+    public function checkCustomerByPhone(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Phone number is required',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $phone = $request->phone;
+            $customer = Customer::findByPhone($phone);
+            
+            if ($customer) {
+                // Check if customer has chat history
+                $hasChatHistory = $customer->chatConversations()->exists();
+                
+                return response()->json([
+                    'success' => true,
+                    'customer_exists' => true,
+                    'customer' => [
+                        'id' => $customer->id,
+                        'name' => $customer->name,
+                        'email' => $customer->email,
+                        'phone' => $customer->phone,
+                    ],
+                    'has_chat_history' => $hasChatHistory,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'customer_exists' => false,
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Error checking customer by phone: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to check customer',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Start conversation from landing page (public)
      */
     public function startConversationFromLanding(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'customer_name' => 'required|string|max:255',
+            'customer_phone' => 'required|string|max:20',
             'customer_email' => 'nullable|email|max:255',
             'initial_message' => 'required|string|max:1000',
+            'existing_customer' => 'boolean',
+            'customer_id' => 'nullable|integer|exists:customers,id',
         ]);
 
         if ($validator->fails()) {
@@ -303,8 +360,46 @@ class ChatController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
+            $customerId = null;
+            
+            // Handle customer creation/update
+            if ($request->existing_customer && $request->customer_id) {
+                // Use existing customer
+                $customerId = $request->customer_id;
+                $customer = Customer::findOrFail($customerId);
+                
+                // Update customer info if needed
+                $customer->update([
+                    'name' => $request->customer_name,
+                    'email' => $request->customer_email,
+                ]);
+            } else {
+                // Create or find customer by phone
+                $customer = Customer::findByPhone($request->customer_phone);
+                
+                if ($customer) {
+                    // Update existing customer
+                    $customer->update([
+                        'name' => $request->customer_name,
+                        'email' => $request->customer_email,
+                    ]);
+                    $customerId = $customer->id;
+                } else {
+                    // Create new customer
+                    $customer = Customer::create([
+                        'name' => $request->customer_name,
+                        'phone' => $request->customer_phone,
+                        'email' => $request->customer_email,
+                    ]);
+                    $customerId = $customer->id;
+                }
+            }
+
             // Create the conversation
             $conversation = ChatConversation::create([
+                'customer_id' => $customerId,
                 'customer_name' => $request->customer_name,
                 'customer_email' => $request->customer_email,
                 'initial_message' => $request->initial_message,
@@ -320,14 +415,18 @@ class ChatController extends Controller
                 'message_content' => $request->initial_message,
             ]);
 
+            DB::commit();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Conversation started successfully',
                 'conversation_id' => $conversation->id,
                 'conversation' => $conversation,
+                'customer_saved' => true,
             ]);
 
         } catch (\Exception $e) {
+            DB::rollBack();
             \Log::error('Error creating conversation from landing page: ' . $e->getMessage());
             
             return response()->json([

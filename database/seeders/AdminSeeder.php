@@ -8,17 +8,26 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        DB::table('admins')->insert([
-            'id' => 1,
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'email_verified_at' => null,
-            'password' => Hash::make('admin1234'),
-            'remember_token' => 'randomtoken123',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        DB::table('admins')->updateOrInsert(
+            ['email' => 'admin@test.com'],
+            [
+                'name' => 'Test Admin',
+                'email' => 'admin@test.com',
+                'password' => Hash::make('admin123'),
+                'is_active' => true,
+                'verified' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        echo "Admin user created successfully!\n";
+        echo "Email: admin@test.com\n";
+        echo "Password: admin123\n";
     }
 }

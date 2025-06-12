@@ -342,6 +342,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 <li><a href="{{ route('admin.documentation.show', 'email-system') }}" data-key="t-level-2-3">E-mail System</a></li>
                                 <li><a href="{{ route('admin.documentation.show', 'message-system') }}" data-key="t-level-2-4">Message System</a></li>
                                 <li><a href="{{ route('admin.documentation.show', 'chat-system') }}" data-key="t-level-2-5">Chat System</a></li>
+                                <li><a href="{{ route('admin.documentation.show', 'chatbot') }}" data-key="t-level-2-6">Chatbot Management</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -356,7 +357,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <ul class="sub-menu" aria-expanded="false">
                     <li><a href="{{ route('admin.messages.index') }}" data-key="documentation">{{ $language["Message"] }}</a></li>
                     <li><a href="{{ route('admin.chat') }}" data-key="documentation">Chat</a></li>
-                    <li><a href="#" data-key="documentation">Chatbot</a></li>
+                    <li><a href="{{ route('admin.chatbot') }}" data-key="documentation">Chatbot</a></li>
                     </ul>
                 </li>
 
