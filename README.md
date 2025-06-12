@@ -546,7 +546,7 @@ Edit `public/landing/js/chat-bubble.js`:
 </details>
 
 <details>
-<summary>Version 1.3.0 (June 7, 2025) - Advanced Chat System Edition</summary>
+<summary>Version 1.3.0 (June 2025) - Advanced Chat System Edition</summary>
 
 ### **💬 Major Chat System Enhancements**
 - ✅ **Bilingual Chat System**: Complete Indonesian interface for customers, English for admins
