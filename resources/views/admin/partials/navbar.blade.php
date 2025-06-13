@@ -357,7 +357,18 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <ul class="sub-menu" aria-expanded="false">
                     <li><a href="{{ route('admin.messages.index') }}" data-key="documentation">{{ $language["Message"] }}</a></li>
                     <li><a href="{{ route('admin.chat') }}" data-key="documentation">Chat</a></li>
-                    <li><a href="{{ route('admin.chatbot') }}" data-key="documentation">Chatbot</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i class="bx bx-bot"></i>
+                        <span data-key="chatbot">Chatbot</span>
+                        
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.chatbot') }}" data-key="auto-responses">Auto Responses</a></li>
+                        <li><a href="{{ route('admin.chatbot.ml') }}" data-key="smart-responses">Smart Responses</a></li>
                     </ul>
                 </li>
 

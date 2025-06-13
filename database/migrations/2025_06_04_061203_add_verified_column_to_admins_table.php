@@ -12,13 +12,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('admins', function (Blueprint $table) {
-            // Add verified column with default false (0)
-            $table->boolean('verified')->default(0)->after('is_active');
-        });
-        
-        // Update all existing admins to be verified
-        DB::table('admins')->update(['verified' => 1]);
+        if (!Schema::hasColumn('admins', 'is_active')) {
+            Schema::table('admins', function (Blueprint $table) {
+                 $table->boolean('is_active')->default(true)->after('password');
+            });
+        }
+        if (!Schema::hasColumn('admins', 'verified')) {
+            Schema::table('admins', function (Blueprint $table) {
+                 $table->boolean('verified')->default(false)->after('is_active');
+            });
+            // Update all existing admin records so that verified is set to true (1)
+             DB::table('admins')->update(['verified' => 1]);
+        }
     }
 
     /**

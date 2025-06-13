@@ -103,7 +103,7 @@ class ContactController extends Controller
             $trashCount = ContactMessage::trashed()->count();
             $sentCount = MessageResponse::count();
             
-            return view('admin.messages-sent', compact('responses', 'stats', 'admins', 'unreadMessagesCount', 'inboxCount', 'importantCount', 'trashCount', 'sentCount', 'filter'));
+            return view('admin.messages.messages-sent', compact('responses', 'stats', 'admins', 'unreadMessagesCount', 'inboxCount', 'importantCount', 'trashCount', 'sentCount', 'filter'));
         }
         
         $query = ContactMessage::with(['customer', 'assignedAdmin']);
@@ -135,7 +135,7 @@ class ContactController extends Controller
         $trashCount = ContactMessage::trashed()->count();
         $sentCount = MessageResponse::count();
         
-        return view('admin.messages', compact('messages', 'stats', 'admins', 'unreadMessagesCount', 'inboxCount', 'importantCount', 'trashCount', 'sentCount', 'filter'));
+        return view('admin.messages.messages', compact('messages', 'stats', 'admins', 'unreadMessagesCount', 'inboxCount', 'importantCount', 'trashCount', 'sentCount', 'filter'));
     }
 
     /**
@@ -167,7 +167,7 @@ class ContactController extends Controller
         // Load the responses relationship
         $message->load(['responses.admin']);
         
-        return view('admin.messages-single', compact('message'));
+        return view('admin.messages.messages-single', compact('message'));
     }
 
     public function showSentMessage(MessageResponse $response)
@@ -175,7 +175,7 @@ class ContactController extends Controller
         // Load the relationships
         $response->load(['admin', 'contactMessage.customer']);
         
-        return view('admin.messages-sent-single', compact('response'));
+        return view('admin.messages.messages-sent-single', compact('response'));
     }
 
     public function markAsRead(ContactMessage $message)
@@ -440,5 +440,59 @@ class ContactController extends Controller
             ->get();
             
         return response()->json($suggestions);
+    }
+
+    /**
+     * Get auto response for public chat
+     */
+    public function getAutoResponse(Request $request)
+    {
+        $request->validate([
+            'message' => 'required|string|max:1000'
+        ]);
+
+        try {
+            // Use the existing ChatbotController logic
+            $chatbotController = new \App\Http\Controllers\Admin\ChatbotController();
+            return $chatbotController->getAutoResponse($request);
+        } catch (\Exception $e) {
+            \Log::error('Error in getAutoResponse', [
+                'error' => $e->getMessage(),
+                'message' => $request->message
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'matched' => false,
+                'message' => 'Error processing request'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get intelligent response using ML model for public chat
+     */
+    public function getIntelligentResponse(Request $request)
+    {
+        $request->validate([
+            'message' => 'required|string|max:1000'
+        ]);
+
+        try {
+            // Use the existing ChatbotController logic
+            $chatbotController = new \App\Http\Controllers\Admin\ChatbotController();
+            return $chatbotController->getIntelligentResponse($request);
+        } catch (\Exception $e) {
+            \Log::error('Error in getIntelligentResponse', [
+                'error' => $e->getMessage(),
+                'message' => $request->message
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'type' => 'error',
+                'message' => 'Error processing intelligent response'
+            ], 500);
+        }
     }
 }

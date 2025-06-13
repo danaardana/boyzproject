@@ -21,7 +21,7 @@ class ChatController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        return view('admin.chat', compact('conversations'));
+        return view('admin.messages.chat', compact('conversations'));
     }
 
     /**

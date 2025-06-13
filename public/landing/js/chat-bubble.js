@@ -9,6 +9,7 @@ class ChatBubble {
             userAvatar: 'Anda',
             apiEndpoint: null,
             showChatOptions: true, // New option to show chat type selection
+            useMLModel: true, // Enable ML model for intelligent responses
             autoResponses: {
                 'halo': 'Halo! Bagaimana saya bisa membantu Anda hari ini?',
                 'hai': 'Hai! Ada yang bisa saya bantu?',
@@ -42,6 +43,7 @@ class ChatBubble {
         this.lastMessageCount = 0; // Track message count for updates
         this.hasStartedDataCollection = false;
         this.needsToStartAdminConversation = false;
+        this.pendingAdminSuggestion = false;
         
         this.init();
     }
@@ -359,15 +361,24 @@ class ChatBubble {
     }
 
     enableNormalChatInput() {
-        // Reset input placeholder for normal chat
+        // Reset input placeholder and re-enable for normal chat
         const inputField = document.getElementById('chatInputField');
+        const sendBtn = document.getElementById('sendBtn');
+        
         if (inputField) {
+            inputField.disabled = false;  // Re-enable the input field
             inputField.placeholder = 'Ketik pesan Anda...';
             inputField.focus();
         }
         
+        if (sendBtn) {
+            sendBtn.disabled = false;  // Re-enable the send button
+        }
+        
         // Update status
         document.getElementById('chatStatus').textContent = 'Tim dukungan siap membantu';
+        
+        console.log('✅ [DEBUG] Normal chat input enabled');
     }
 
     showOngoingChatActions() {
@@ -1165,26 +1176,72 @@ class ChatBubble {
     }
 
     async processMessage(message) {
+        // Check if this is a response to admin chat suggestion
+        if (this.pendingAdminSuggestion) {
+            const lowerMessage = message.toLowerCase();
+            if (lowerMessage.includes('ya') || lowerMessage.includes('yes') || lowerMessage.includes('iya')) {
+                this.pendingAdminSuggestion = false;
+                this.showTypingIndicator();
+                
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    this.sendBotMessage('Baik! Saya akan menghubungkan Anda dengan tim admin kami. Silakan tunggu sebentar...');
+                    
+                    setTimeout(() => {
+                        // Switch to admin mode
+                        this.chatMode = 'admin';
+                        this.sendBotMessage('Anda sekarang terhubung dengan tim dukungan. Silakan jelaskan bagaimana kami bisa membantu Anda?');
+                        this.enableNormalChatInput();
+                        this.updateQuickActionsForAdmin();
+                        this.needsToStartAdminConversation = true;
+                        
+                        // Update header
+                        document.getElementById('chatTitle').textContent = 'Chat dengan Admin';
+                        document.getElementById('chatStatus').textContent = 'Tim dukungan siap membantu';
+                    }, 1500);
+                }, 1000);
+                
+                return;
+            } else if (lowerMessage.includes('tidak') || lowerMessage.includes('no') || lowerMessage.includes('gak')) {
+                this.pendingAdminSuggestion = false;
+                this.showTypingIndicator();
+                
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    this.sendBotMessage('Baik, Anda tetap menggunakan chat otomatis. Silakan ajukan pertanyaan lain atau gunakan menu bantuan cepat di atas.');
+                }, 1000);
+                
+                return;
+            }
+        }
+
         // Show typing indicator
         this.showTypingIndicator();
         
         try {
+            console.log('🔄 [DEBUG] Starting generateResponse...');
+            
             // Simulate processing time
             await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
             
             this.hideTypingIndicator();
             
             const response = await this.generateResponse(message);
+            console.log('✅ [DEBUG] Generated response:', response);
+            
             this.sendBotMessage(response);
         } catch (error) {
-            console.error('Error processing message:', error);
+            console.error('❌ [DEBUG] Error processing message:', error);
             this.hideTypingIndicator();
             this.sendBotMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
         }
     }
 
     async generateResponse(message) {
+        console.log('🔍 [DEBUG] generateResponse called with:', message);
+        
         try {
+            console.log('📡 [DEBUG] Trying auto-response...');
             // First, try to get response from database
             const response = await fetch('/chat/get-auto-response', {
                 method: 'POST',
@@ -1197,26 +1254,85 @@ class ChatBubble {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('📊 [DEBUG] Auto-response result:', data);
+                
                 if (data.success && data.matched) {
+                    console.log('✅ [DEBUG] Found auto-response match!');
                     return data.response;
                 }
             }
         } catch (error) {
-            console.log('Failed to fetch database response, falling back to static responses:', error);
+            console.log('❌ [DEBUG] Failed to fetch database response, trying ML model:', error);
         }
 
+        // If no database match, try ML model for intelligent response
+        try {
+            console.log('🤖 [DEBUG] Trying ML model...');
+            const mlResponse = await fetch('/chat/get-intelligent-response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            console.log('🔍 [DEBUG] ML response status:', mlResponse.status);
+            
+            if (mlResponse.ok) {
+                const mlData = await mlResponse.json();
+                console.log('📊 [DEBUG] ML response data:', mlData);
+                
+                if (mlData.success && mlData.type === 'ml_prediction') {
+                    // If ML model found a good response, use it
+                    if (mlData.confidence > 0.3) {
+                        console.log('✅ [DEBUG] ML model provided good response!');
+                        return Array.isArray(mlData.response) ? mlData.response.join(' ') : mlData.response;
+                    }
+                }
+            } else {
+                console.log('❌ [DEBUG] ML response not OK:', await mlResponse.text());
+            }
+        } catch (error) {
+            console.log('❌ [DEBUG] ML model failed:', error);
+        }
+
+        console.log('🔄 [DEBUG] Falling back to static responses...');
+        
         // Fallback to static responses
         const lowerMessage = message.toLowerCase();
         
         // Check for specific keywords
         for (const [keyword, response] of Object.entries(this.options.autoResponses)) {
             if (keyword !== 'default' && lowerMessage.includes(keyword)) {
+                console.log('✅ [DEBUG] Found keyword match:', keyword);
                 return response;
             }
         }
         
+        // If no match found, suggest admin chat with confirmation
+        if (this.shouldSuggestAdminChat(message)) {
+            console.log('🔄 [DEBUG] Suggesting admin chat...');
+            this.pendingAdminSuggestion = true;
+            return `Terima kasih atas pesan Anda: "${message}". Biarkan saya menghubungkan Anda dengan tim kami untuk bantuan yang lebih detail!\n\n**Apakah Anda ingin melanjutkan chat dengan admin?**\n\nBalas "Ya" untuk terhubung dengan admin atau "Tidak" untuk tetap menggunakan chat otomatis.`;
+        }
+        
+        console.log('🔄 [DEBUG] Using default response...');
         // Default response
         return this.options.autoResponses.default.replace('{{message}}', message);
+    }
+
+    shouldSuggestAdminChat(message) {
+        // Suggest admin chat for complex queries or when auto responses fail
+        const complexKeywords = [
+            'instalasi', 'pemasangan', 'custom', 'spesial', 'khusus', 
+            'kompleks', 'detail', 'konsultasi', 'diskusi', 'negosiasi',
+            'penawaran', 'proposal', 'project', 'proyek'
+        ];
+        
+        const lowerMessage = message.toLowerCase();
+        return complexKeywords.some(keyword => lowerMessage.includes(keyword)) || 
+               message.length > 50; // Long messages might need human attention
     }
 
     showTypingIndicator() {

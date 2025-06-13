@@ -92,6 +92,20 @@ Route::get('/debug-stats', function() {
     ]);
 });
 
+// Public API routes for chat functionality
+Route::post('/api/chatbot/auto-response', [App\Http\Controllers\Admin\ChatbotController::class, 'getAutoResponse'])
+    ->name('api.chatbot.auto-response');
+
+Route::post('/api/chatbot/intelligent-response', [App\Http\Controllers\Admin\ChatbotController::class, 'getIntelligentResponse'])
+    ->name('api.chatbot.intelligent-response');
+
+// Public chat routes for landing page
+Route::post('/chat/get-auto-response', [App\Http\Controllers\ContactController::class, 'getAutoResponse'])
+    ->name('chat.auto-response');
+
+Route::post('/chat/get-intelligent-response', [App\Http\Controllers\ContactController::class, 'getIntelligentResponse'])
+    ->name('chat.intelligent-response');
+
 // Admin Auth Routes
 Route::prefix('admin')->group(function () {
     // Guest routes
@@ -196,6 +210,7 @@ Route::prefix('admin')->group(function () {
         // Chatbot Management routes
         Route::prefix('chatbot')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\ChatbotController::class, 'index'])->name('admin.chatbot');
+            Route::get('/ml', [App\Http\Controllers\Admin\ChatbotController::class, 'mlManagement'])->name('admin.chatbot.ml');
             Route::get('/stats', [App\Http\Controllers\Admin\ChatbotController::class, 'getStats'])->name('admin.chatbot.stats');
             Route::get('/auto-responses', [App\Http\Controllers\Admin\ChatbotController::class, 'getAutoResponses'])->name('admin.chatbot.auto-responses');
             Route::post('/auto-responses', [App\Http\Controllers\Admin\ChatbotController::class, 'store'])->name('admin.chatbot.auto-responses.store');
@@ -206,6 +221,25 @@ Route::prefix('admin')->group(function () {
             Route::post('/auto-responses/test', [App\Http\Controllers\Admin\ChatbotController::class, 'testResponse'])->name('admin.chatbot.auto-responses.test');
             Route::post('/auto-responses/bulk-delete', [App\Http\Controllers\Admin\ChatbotController::class, 'bulkDelete'])->name('admin.chatbot.auto-responses.bulk-delete');
             Route::get('/auto-responses/export/csv', [App\Http\Controllers\Admin\ChatbotController::class, 'export'])->name('admin.chatbot.auto-responses.export');
+            
+            // ML Model Integration routes
+            Route::prefix('ml')->group(function () {
+                Route::get('/test-python', [App\Http\Controllers\Admin\ChatbotController::class, 'testPythonInstallation'])->name('admin.chatbot.ml.test-python');
+                Route::post('/predict', [App\Http\Controllers\Admin\ChatbotController::class, 'testMLPrediction'])->name('admin.chatbot.ml.predict');
+                Route::get('/motor-compatibility', [App\Http\Controllers\Admin\ChatbotController::class, 'getMotorCompatibility'])->name('admin.chatbot.ml.motor-compatibility');
+                Route::get('/product-compatibility', [App\Http\Controllers\Admin\ChatbotController::class, 'getProductCompatibility'])->name('admin.chatbot.ml.product-compatibility');
+                Route::get('/response-dict', [App\Http\Controllers\Admin\ChatbotController::class, 'getMLResponseDict'])->name('admin.chatbot.ml.response-dict');
+            });
+
+            // ML Response Management routes
+            Route::prefix('ml-responses')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\MLResponseController::class, 'index'])->name('admin.chatbot.ml-responses');
+                Route::post('/', [App\Http\Controllers\Admin\MLResponseController::class, 'store'])->name('admin.chatbot.ml-responses.store');
+                Route::put('/{id}', [App\Http\Controllers\Admin\MLResponseController::class, 'update'])->name('admin.chatbot.ml-responses.update');
+                Route::delete('/{id}', [App\Http\Controllers\Admin\MLResponseController::class, 'destroy'])->name('admin.chatbot.ml-responses.destroy');
+                Route::post('/{id}/toggle', [App\Http\Controllers\Admin\MLResponseController::class, 'toggleStatus'])->name('admin.chatbot.ml-responses.toggle');
+                Route::post('/import', [App\Http\Controllers\Admin\MLResponseController::class, 'importFromPredictV2'])->name('admin.chatbot.ml-responses.import');
+            });
         });
         
         Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
@@ -243,6 +277,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/verify-email', [EmailVerificationController::class, 'verify'])->name('verify.email.submit');
     });
 });
+
+
 
 // Database health check route (add this at the end)
 Route::get('/admin/health/database', function () {

@@ -25,11 +25,11 @@
     <link href="https://cdn.jsdelivr.net/npm/icofont@1.0.0/dist/icofont.min.css" rel="stylesheet">
     
     <meta http-equiv="Content-Security-Policy" content="
-    default-src * 'self' data: https://www.tiktok.com https://www.tiktokv.com; 
-    img-src * 'self' data: blob: https://www.tiktok.com https://www.tiktokv.com https://yourdomain.com;
-    style-src * 'self' 'unsafe-inline';
-    script-src * 'self' 'unsafe-inline' 'unsafe-eval' https://www.tiktok.com https://www.tiktokv.com;
-    frame-src * 'self' https://www.tiktok.com https://www.tiktokv.com;">
+    default-src * 'self' data: http: https: https://www.tiktok.com https://www.tiktokv.com; 
+    img-src * 'self' data: blob: http: https: https://www.tiktok.com https://www.tiktokv.com https://yourdomain.com;
+    style-src * 'self' 'unsafe-inline' http: https:;
+    script-src * 'self' 'unsafe-inline' 'unsafe-eval' http: https: https://www.tiktok.com https://www.tiktokv.com;
+    frame-src * 'self' http: https: https://www.tiktok.com https://www.tiktokv.com;">
 
     <script defer src="https://www.tiktok.com/embed.js"></script>
 

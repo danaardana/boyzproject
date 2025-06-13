@@ -17,8 +17,8 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@test.com'],
             [
                 'name' => 'Test Admin',
-                'email' => 'admin@test.com',
-                'password' => Hash::make('admin123'),
+                'email' => 'test@newdomain.com',
+                'password' => Hash::make('password'),
                 'is_active' => true,
                 'verified' => true,
                 'created_at' => now(),
@@ -27,7 +27,7 @@ class AdminSeeder extends Seeder
         );
 
         echo "Admin user created successfully!\n";
-        echo "Email: admin@test.com\n";
-        echo "Password: admin123\n";
+        echo "Email: test@newdomain.com\n";
+        echo "Password: password\n";
     }
 }

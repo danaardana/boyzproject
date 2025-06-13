@@ -85,6 +85,7 @@ $language["Secure_Access"] = "Secure Access";
 $language["Session_locked_security"] = "Your session has been locked for security. Please enter your password to continue.";
 $language["Session_locked_at"] = "Session locked at";
 $language["Unlocking"] = "Unlocking...";
+$language["No_messages"] = "No messages";
 
 $language['Search'] = "Search...";
 $language['Notifications'] = "Notifications";
