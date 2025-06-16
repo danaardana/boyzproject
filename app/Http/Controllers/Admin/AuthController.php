@@ -350,8 +350,9 @@ class AuthController extends Controller
     {
         // Get testimonials for the background
         $sections = Section::where('name', 'testimonials')->get();
-        $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
-        $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
+        $sectionId = $sections->isNotEmpty() ? $sections->first()->id : null;
+        $SectionContents = SectionContent::where('section_id', $sectionId)->get();
+        $totalSectionContents = SectionContent::where('section_id', $sectionId)->count();
         
         return view('admin.auth.change-password', compact('SectionContents', 'totalSectionContents'));
     }
@@ -368,15 +369,8 @@ class AuthController extends Controller
                 ->numbers()
                 ->symbols()
             ],
-        $admin = Auth::guard('admin')->user();
-        $admin->password = Hash::make($request->password);
-        $admin->save();
-
-        event(new AdminPasswordChanged($admin)); // <<< PICU EVENT DI SINI
-
-        return back()->with('success', 'Password has been changed successfully.');
         ]);
-
+        
         $admin = Auth::guard('admin')->user();
 
         if (!Hash::check($request->current_password, $admin->password)) {
@@ -386,7 +380,8 @@ class AuthController extends Controller
         $admin->password = Hash::make($request->password);
         $admin->save();
 
-        return redirect()->route('admin.dashboard')
-            ->with('status', 'Password changed successfully.');
+        event(new AdminPasswordChanged($admin));
+
+        return back()->with('success', 'Password has been changed successfully.');
     }
 } 
