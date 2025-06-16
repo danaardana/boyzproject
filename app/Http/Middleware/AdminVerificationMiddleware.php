@@ -21,6 +21,8 @@ class AdminVerificationMiddleware
             'admin.login',
             'admin.login.submit',
             'admin.logout',
+            'admin.lockscreen',
+            'admin.unlock',
             'admin.password.request',
             'admin.password.email',
             'admin.password.reset',

@@ -261,6 +261,87 @@ require_once ("./admin/lang/" . $lang . ".php");
                             </div><!-- /.modal-dialog -->
                         </div>
                         <!-- /.modal -->
+
+                        <!-- Modal for editing admin -->
+                        <div class="modal fade modal-edit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form id="edit-admin-form">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" id="edit-admin-id" name="admin_id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Edit Admin</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="edit-name" class="form-label">Full Name</label>
+                                                        <input type="text" class="form-control" id="edit-name" name="name" required>
+                                                        <div class="invalid-feedback edit-name-error"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="edit-email" class="form-label">Email Address</label>
+                                                        <input type="email" class="form-control" id="edit-email" name="email" required>
+                                                        <div class="invalid-feedback edit-email-error"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="edit-password" class="form-label">New Password (Optional)</label>
+                                                        <input type="password" class="form-control" id="edit-password" name="password" placeholder="Leave blank to keep current password">
+                                                        <div class="invalid-feedback edit-password-error"></div>
+                                                        <small class="text-muted">Minimum 8 characters required if changing password</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="edit-password-confirmation" class="form-label">Confirm New Password</label>
+                                                        <input type="password" class="form-control" id="edit-password-confirmation" name="password_confirmation" placeholder="Confirm new password">
+                                                        <div class="invalid-feedback edit-password-confirmation-error"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="edit-is-active" class="form-label">Status</label>
+                                                        <select class="form-control" id="edit-is-active" name="is_active" required>
+                                                            <option value="1">Active</option>
+                                                            <option value="0">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="edit-verified" class="form-label">Verification Status</label>
+                                                        <select class="form-control" id="edit-verified" name="verified" required>
+                                                            <option value="1">Verified</option>
+                                                            <option value="0">Pending Verification</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bx bx-save me-1"></i>Update Admin
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.modal -->
+
                         <div class="table-responsive">
                             <table class="table table-bordered dt-responsive nowrap w-100" id="admins-datatable">
                                 <thead class="table-light">
@@ -343,7 +424,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                                         <i class="bx bx-dots-horizontal-rounded"></i>
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i>Edit</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="editAdmin({{ $admin->id }})"><i class="bx bx-edit me-2"></i>Edit</a></li>
                                                         <li><a class="dropdown-item" href="#" onclick="sendSecurityCode({{ $admin->id }})"><i class="bx bx-key me-2"></i>Reset Password</a></li>
                                                         <li><a class="dropdown-item" href="#" onclick="sendVerificationEmail({{ $admin->id }})"><i class="bx bx-mail-send me-2"></i>Send Verification</a></li>
                                                         <li><a class="dropdown-item" href="#" onclick="sendReactivationEmail({{ $admin->id }})"><i class="bx bx-refresh me-2"></i>Send Reactivation</a></li>
@@ -667,7 +748,175 @@ $(document).ready(function() {
             });
         }
     });
+
+    // Edit Admin Form Submission
+    $('#edit-admin-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').empty();
+        
+        // Basic client-side validation
+        var name = $('#edit-name').val().trim();
+        var email = $('#edit-email').val().trim();
+        var password = $('#edit-password').val();
+        var passwordConfirmation = $('#edit-password-confirmation').val();
+        var adminId = $('#edit-admin-id').val();
+        
+        var hasErrors = false;
+        
+        if (!name) {
+            $('#edit-name').addClass('is-invalid');
+            $('.edit-name-error').html('Name is required');
+            hasErrors = true;
+        }
+        
+        if (!email || !email.includes('@')) {
+            $('#edit-email').addClass('is-invalid');
+            $('.edit-email-error').html('Valid email is required');
+            hasErrors = true;
+        }
+        
+        // Only validate password if it's provided
+        if (password && password.length < 8) {
+            $('#edit-password').addClass('is-invalid');
+            $('.edit-password-error').html('Password must be at least 8 characters');
+            hasErrors = true;
+        }
+        
+        if (password && password !== passwordConfirmation) {
+            $('#edit-password-confirmation').addClass('is-invalid');
+            $('.edit-password-confirmation-error').html('Passwords do not match');
+            hasErrors = true;
+        }
+        
+        if (hasErrors) {
+            showErrorMessage('Please fix the validation errors and try again.');
+            return;
+        }
+        
+        // Get form data
+        var formData = new FormData(this);
+        
+        // Ensure boolean values are properly converted
+        formData.set('is_active', $('#edit-is-active').val() === '1' ? 1 : 0);
+        formData.set('verified', $('#edit-verified').val() === '1' ? 1 : 0);
+        
+        // Disable submit button
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin me-1"></i>Updating...');
+        
+        // Send AJAX request
+        $.ajax({
+            url: `/admin/admins/${adminId}`,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function(response) {
+                console.log('Success response:', response);
+                
+                if (response.success) {
+                    // Close modal
+                    $('.modal-edit').modal('hide');
+                    
+                    // Reset form
+                    $('#edit-admin-form')[0].reset();
+                    
+                    // Show success message
+                    showSuccessMessage(response.message);
+                    
+                    // Reload page to show updated admin
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showErrorMessage(response.message || 'Unknown error occurred');
+                }
+            },
+            error: function(xhr) {
+                console.error('Error response:', xhr);
+                
+                let errorMessage = 'Error updating admin.';
+                
+                if (xhr.responseJSON) {
+                    if (xhr.responseJSON.errors) {
+                        // Handle validation errors
+                        Object.keys(xhr.responseJSON.errors).forEach(function(field) {
+                            var input = $('#edit-' + field.replace('_', '-'));
+                            var errorDiv = $('.edit-' + field.replace('_', '-') + '-error');
+                            
+                            input.addClass('is-invalid');
+                            errorDiv.html(xhr.responseJSON.errors[field][0]);
+                        });
+                        errorMessage = 'Please fix the validation errors.';
+                    } else if (xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                }
+                
+                showErrorMessage(errorMessage);
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false).html(originalText);
+            }
+        });
+    });
 });
+
+// Edit Admin Function
+function editAdmin(adminId) {
+    console.log('editAdmin called with ID:', adminId);
+    
+    // Fetch admin data to populate the form
+    $.ajax({
+        url: `/admin/admins/${adminId}/edit`,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        success: function(response) {
+            console.log('Edit response data:', response);
+            if (response.success) {
+                const admin = response.admin;
+                
+                // Populate the edit form
+                $('#edit-admin-id').val(admin.id);
+                $('#edit-name').val(admin.name || '');
+                $('#edit-email').val(admin.email || '');
+                $('#edit-is-active').val(admin.is_active ? '1' : '0');
+                $('#edit-verified').val(admin.verified ? '1' : '0');
+                
+                // Clear password fields
+                $('#edit-password').val('');
+                $('#edit-password-confirmation').val('');
+                
+                // Show modal
+                $('.modal-edit').modal('show');
+            } else {
+                showErrorMessage(response.message || 'Error loading admin data for editing');
+            }
+        },
+        error: function(xhr) {
+            console.error('Error:', xhr);
+            let errorMessage = 'Error loading admin data. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            showErrorMessage(errorMessage);
+        }
+    });
+}
 
 function deleteAdmin(adminId) {
     // Check if this would be the last admin

@@ -11,12 +11,14 @@ use App\Models\Session;
 use Illuminate\Support\Facades\DB;
 use Jenssegers\Agent\Agent;
 use App\Models\ContactMessage;
+use App\Traits\NotificationHelper;
 use Illuminate\Support\Facades\View;
 use App\Models\Admin;
 use App\Events\AdminPasswordChanged;
 
 class AdminController extends Controller
 {
+    use NotificationHelper;
     public function __construct()
     {
         $this->middleware('auth:admin');
@@ -463,6 +465,112 @@ class AdminController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to deactivate admin'
+            ], 500);
+        }
+    }
+
+    /**
+     * Show the form for editing an admin
+     */
+    public function editAdmin(Admin $admin)
+    {
+        try {
+            return response()->json([
+                'success' => true,
+                'admin' => [
+                    'id' => $admin->id,
+                    'name' => $admin->name,
+                    'email' => $admin->email,
+                    'is_active' => $admin->is_active,
+                    'verified' => $admin->verified,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load admin data'
+            ], 500);
+        }
+    }
+
+    /**
+     * Update an admin
+     */
+    public function updateAdmin(Request $request, Admin $admin)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:50',
+                'email' => 'required|string|email|max:100|unique:admins,email,' . $admin->id,
+                'password' => 'nullable|string|min:8|confirmed',
+                'is_active' => 'boolean',
+                'verified' => 'boolean',
+            ], [
+                'name.required' => 'Name is required',
+                'name.max' => 'Name cannot exceed 50 characters',
+                'email.required' => 'Email is required',
+                'email.email' => 'Please enter a valid email address',
+                'email.unique' => 'This email is already registered',
+                'email.max' => 'Email cannot exceed 100 characters',
+                'password.min' => 'Password must be at least 8 characters',
+                'password.confirmed' => 'Passwords do not match',
+            ]);
+
+            // Check if updating own status/verification would lock them out
+            if ($admin->id === auth('admin')->id()) {
+                if (!$request->boolean('is_active', true)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'You cannot deactivate your own account'
+                    ], 403);
+                }
+            }
+
+            // Update basic info
+            $admin->name = $request->name;
+            $admin->email = $request->email;
+            $admin->is_active = $request->boolean('is_active', true);
+            $admin->verified = $request->boolean('verified', true);
+
+            $passwordChanged = false;
+            
+            // Update password if provided
+            if ($request->filled('password')) {
+                $admin->password = Hash::make($request->password);
+                $passwordChanged = true;
+            }
+
+            $admin->save();
+
+            // Trigger password changed event if password was updated
+            if ($passwordChanged) {
+                event(new AdminPasswordChanged($admin));
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin updated successfully',
+                'admin' => [
+                    'id' => $admin->id,
+                    'name' => $admin->name,
+                    'email' => $admin->email,
+                    'is_active' => $admin->is_active,
+                    'verified' => $admin->verified,
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Error updating admin: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update admin: ' . $e->getMessage()
             ], 500);
         }
     }

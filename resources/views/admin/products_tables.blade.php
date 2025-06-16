@@ -312,7 +312,7 @@
                                                         <div class="d-flex align-items-center">
                                                             <div class="flex-shrink-0 me-3">
                                                                 @if($product->image)
-                                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="rounded" width="40" height="40" style="object-fit: cover;">
+                                                                    <img src="{{ asset('' . $product->image) }}" alt="{{ $product->name }}" class="rounded" width="40" height="40" style="object-fit: cover;">
                                                                 @else
                                                                     <div class="avatar-md bg-light rounded d-flex align-items-center justify-content-center">
                                                                         <i class="mdi mdi-image text-muted"></i>

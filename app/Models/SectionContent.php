@@ -9,7 +9,7 @@ class SectionContent extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['section_id', 'content_key', 'content_value','type','extra_data','show_order','created_at','update_at'];
+    protected $fillable = ['section_id', 'content_key', 'content_value', 'description', 'type','extra_data','show_order','created_at','updated_at'];
 
     public function section()
     {

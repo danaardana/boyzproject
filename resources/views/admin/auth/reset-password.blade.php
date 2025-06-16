@@ -32,7 +32,19 @@
                                     
                                     <div class="mb-3">
                                         <label class="form-label">Email Address</label>
-                                        <input class="form-control" type="email" name="email" value="{{ old('email', session('email', '')) }}" required placeholder="Email Address" readonly>
+                                        @php
+                                            $sessionEmail = session('email', '');
+                                            $oldEmail = old('email', $sessionEmail);
+                                            
+                                            // Display the email (it will be automatically decrypted by the Admin model if needed)
+                                            $displayEmail = $oldEmail;
+                                            
+                                            // If no session email, try to get from request or show placeholder
+                                            if (empty($displayEmail) && request()->has('email')) {
+                                                $displayEmail = request()->get('email');
+                                            }
+                                        @endphp
+                                        <input class="form-control" type="email" name="email" value="{{ $displayEmail }}" required placeholder="Email Address" readonly>
                                         @error('email')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layouts.lockscreen')
 
 @section("title", "| Lockscreen ")
 
@@ -37,6 +37,8 @@
                                     </h5>
                                     @if(isset($admin) && $admin->email)
                                         <p class="text-muted font-size-13">{{ $admin->email }}</p>
+                                    @elseif(auth('admin')->user() && auth('admin')->user()->email)
+                                        <p class="text-muted font-size-13">{{ auth('admin')->user()->email }}</p>
                                     @endif
                                 </div>
                                 <form class="mt-4" action="{{ route('admin.unlock') }}" method="POST">

@@ -74,9 +74,11 @@ use Illuminate\Support\Str;
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form action="#">
+                                                <form id="add-category-form" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="{{ $type }}">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                        <h5 class="modal-title" id="myLargeModalLabel">Add {{ ucfirst($type) }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                                                         <div class="modal-body">
@@ -130,10 +132,12 @@ use Illuminate\Support\Str;
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                                                                                    </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="bx bx-save me-1"></i>Save {{ ucfirst($type) }}
+                                                        </button>
                                                     </div>
                                                 </form>
                                             </div><!-- /.modal-content -->
@@ -148,7 +152,7 @@ use Illuminate\Support\Str;
                                                 <th>{{ $language["Title"] }}</th>
                                                 <th>{{ $language["Image"] }}</th>
                                                 <th>Hyperlink</th>
-                                                <th> </th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                             @foreach ($SectionContents as $subsection)
@@ -173,8 +177,16 @@ use Illuminate\Support\Str;
                                                         Link Not Set
                                                         @endif</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                        data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                        <div class="d-flex gap-1">
+                                                            <button type="button" class="btn btn-primary btn-sm edit-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Edit">
+                                                                <i class="bx bx-edit"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Delete">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                         
@@ -232,9 +244,11 @@ use Illuminate\Support\Str;
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form>
+                                                <form id="add-instagram-form">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="{{ $type }}">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                        <h5 class="modal-title" id="myLargeModalLabel">Add {{ ucfirst($type) }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">   
@@ -267,7 +281,7 @@ use Illuminate\Support\Str;
                                                 <th>{{ $language["Name"] }}</th>
                                                 <th>{{ $language["Content"] }}</th>
                                                 <th>Status</th>
-                                                <th>{{ $language["Edit"] }}</th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -281,8 +295,16 @@ use Illuminate\Support\Str;
                                                     <td>{{ $extraData->embed_url }}</td>
                                                     <td>{{ $extraData->embed_url }}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                        data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                        <div class="d-flex gap-1">
+                                                            <button type="button" class="btn btn-primary btn-sm edit-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Edit">
+                                                                <i class="bx bx-edit"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Delete">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                         
@@ -334,9 +356,11 @@ use Illuminate\Support\Str;
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form>
+                                                <form id="add-portofolio-form" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="{{ $type }}">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Add"] }}</h5>
+                                                        <h5 class="modal-title" id="myLargeModalLabel">Add {{ ucfirst($type) }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">   
@@ -413,8 +437,16 @@ use Illuminate\Support\Str;
                                                     </td>
                                                     <td>{{ $extraData->link }}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                        data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                        <div class="d-flex gap-1">
+                                                            <button type="button" class="btn btn-primary btn-sm edit-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Edit">
+                                                                <i class="bx bx-edit"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Delete">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                         
@@ -487,9 +519,11 @@ use Illuminate\Support\Str;
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form>
+                                                <form id="add-promotion-form" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="{{ $type }}">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                        <h5 class="modal-title" id="myLargeModalLabel">Add {{ ucfirst($type) }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">   
@@ -535,7 +569,7 @@ use Illuminate\Support\Str;
                                                 <th>{{ $language["Description"] }}</th>
                                                 <th>{{ $language["Image"] }}</th>
                                                 <th>Hyperlink</th>
-                                                <th> </th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                             @foreach ($SectionContents as $subsection)
@@ -561,8 +595,16 @@ use Illuminate\Support\Str;
                                                         Link Not Set
                                                         @endif</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                        data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                        <div class="d-flex gap-1">
+                                                            <button type="button" class="btn btn-primary btn-sm edit-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Edit">
+                                                                <i class="bx bx-edit"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Delete">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                         
@@ -624,9 +666,11 @@ use Illuminate\Support\Str;
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form>
+                                                <form id="add-testimonials-form">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="{{ $type }}">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                        <h5 class="modal-title" id="myLargeModalLabel">Add {{ ucfirst($type) }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">                                      
@@ -696,8 +740,16 @@ use Illuminate\Support\Str;
                                                     </td>
                                                     <td>{{ $extraData->variation }}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                        data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                        <div class="d-flex gap-1">
+                                                            <button type="button" class="btn btn-primary btn-sm edit-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Edit">
+                                                                <i class="bx bx-edit"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Delete">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>                                            
                                         
@@ -775,9 +827,11 @@ use Illuminate\Support\Str;
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form>
+                                                <form id="add-tiktok-form">
+                                                    @csrf
+                                                    <input type="hidden" name="type" value="{{ $type }}">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
+                                                        <h5 class="modal-title" id="myLargeModalLabel">Add {{ ucfirst($type) }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">   
@@ -814,7 +868,7 @@ use Illuminate\Support\Str;
                                                 <th>{{ $language["Name"] }}</th>
                                                 <th>{{ $language["Content"] }}</th>
                                                 <th>{{ $language["Video_ID"] }}</th>
-                                                <th> </th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -828,49 +882,20 @@ use Illuminate\Support\Str;
                                                     <td>{{ $extraData->embed_url }}</td>
                                                     <td>{{ $extraData->video_id }}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-light waves-effect bx bx-pencil" data-bs-toggle="modal"
-                                                        data-bs-target=".modal-{{ $subsection->id }}"></button>
+                                                        <div class="d-flex gap-1">
+                                                            <button type="button" class="btn btn-primary btn-sm edit-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Edit">
+                                                                <i class="bx bx-edit"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-item" 
+                                                                    data-id="{{ $subsection->id }}" title="Delete">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                         
-                                                <!-- Modal for updating item -->
-                                                <div class="modal fade modal-{{ $subsection->id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
-                                                        <div class="modal-content">
-                                                            <form action="{{ route('section_content.update', $subsection->id) }}" method="POST">
-                                                                @csrf
-                                                                
-                                                                @if(isset($subsection))
-                                                                    @method("PUT")
-                                                                @endif
-
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="myLargeModalLabel">{{ $language["Edit"] }}</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">   
-                                                                    <div class="mb-3">
-                                                                        <label for="example-number-input" class="form-label">{{ $language["Show_Order"] }}</label>
-                                                                        <input class="form-control" type="number" value="{{ $subsection->show_order }}" id="show_order">
-                                                                    </div>                                                         
-                                                                    <div class="mb-3">
-                                                                        <label for="example-text-input" class="form-label">{{ $language["Name"] }}</label>
-                                                                        <input class="form-control" type="text" value="{{ $subsection->content_key }}"  name="content_key" id="content_key">
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <label for="example-url-input" class="form-label">{{ $language["Content"] }}</label>
-                                                                        <input class="form-control" type="url" value="{{ $extraData->embed_url }}" name="embed_url" id="embed_url">
-                                                                    </div>  
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                                                </div>
-                                                            </form>
-                                                        </div><!-- /.modal-content -->
-                                                    </div><!-- /.modal-dialog -->
-                                                </div><!-- /.modal -->
+                                                <!-- Static modals removed - using dynamic AJAX modals -->
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -956,5 +981,361 @@ use Illuminate\Support\Str;
 <script src="{{ asset('admin/js/pages/form-advanced.init.js') }}"></script>
 
 <script src="{{ asset('admin/js/app.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    const currentType = "{{ $type }}";
+    let currentEditId = null;
+
+    // DataTable is already initialized by datatables.init.js
+
+    // Form submission handlers for adding new items
+    $('[id^="add-"]').on('submit', function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+        formData.append('type', currentType);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Show loading state
+        let submitBtn = $(this).find('button[type="submit"]');
+        let originalText = submitBtn.html();
+        submitBtn.html('<i class="bx bx-loader bx-spin"></i> Saving...').prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('admin.section-content.store') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    // Show success message
+                    showAlert('success', response.message);
+                    
+                    // Close modal and reset form
+                    $('.modal-add').modal('hide');
+                    $(e.target)[0].reset();
+                    
+                    // Reload page to show new data
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', response.message || 'An error occurred');
+                }
+            },
+            error: function(xhr) {
+                let errorMessage = 'An error occurred';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    errorMessage = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                }
+                showAlert('error', errorMessage);
+            },
+            complete: function() {
+                // Reset button state
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+
+    // Edit button handler
+    $('.edit-item').on('click', function() {
+        let itemId = $(this).data('id');
+        currentEditId = itemId;
+        
+        // Show edit modal based on type
+        showEditModal(itemId);
+    });
+
+    // Delete button handler
+    $('.delete-item').on('click', function() {
+        let itemId = $(this).data('id');
+        
+        if (confirm('Are you sure you want to delete this item?')) {
+            deleteItem(itemId);
+        }
+    });
+
+    // Function to show edit modal
+    function showEditModal(itemId) {
+        $.ajax({
+            url: "{{ route('admin.section-content.edit', ':id') }}".replace(':id', itemId),
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    let data = response.data;
+                    let extraData = data.extra_data || {};
+                    
+                    // Create and show edit modal
+                    let modalHtml = generateEditModal(data, extraData);
+                    
+                    // Remove existing edit modal if any
+                    $('#edit-modal').remove();
+                    
+                    // Add modal to body
+                    $('body').append(modalHtml);
+                    
+                    // Show modal
+                    $('#edit-modal').modal('show');
+                    
+                    // Initialize form submission
+                    initEditFormSubmission();
+                } else {
+                    showAlert('error', 'Failed to load item data');
+                }
+            },
+            error: function() {
+                showAlert('error', 'Failed to load item data');
+            }
+        });
+    }
+
+    // Function to generate edit modal HTML
+    function generateEditModal(data, extraData) {
+        let formFields = '';
+        
+        // Common fields
+        formFields += `
+            <div class="mb-3">
+                <label class="form-label">Show Order</label>
+                <input class="form-control" type="number" name="show_order" value="${data.show_order || 0}">
+            </div>
+        `;
+
+        // Type-specific fields
+        switch (currentType) {
+            case 'categories':
+                formFields += `
+                    <div class="mb-3">
+                        <label class="form-label">Title <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="Title" value="${data.content_key}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hyperlink</label>
+                        <input class="form-control" type="url" name="link" value="${extraData.link || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input class="form-control" type="file" name="image" accept="image/*">
+                        ${extraData.image ? `<small class="text-muted">Current: ${extraData.image}</small>` : ''}
+                    </div>
+                `;
+                break;
+
+            case 'instagram':
+                formFields += `
+                    <div class="mb-3">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="content_key" value="${data.content_key}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Instagram URL <span class="text-danger">*</span></label>
+                        <input class="form-control" type="url" name="embed_url" value="${extraData.embed_url || ''}" required>
+                    </div>
+                `;
+                break;
+
+            case 'portofolio':
+                formFields += `
+                    <div class="mb-3">
+                        <label class="form-label">Title <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="content_key" value="${data.content_key}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="content_value" required>${data.content_value}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Categories</label>
+                        <input class="form-control" type="text" name="categories" value="${extraData.categories || ''}" placeholder="Category1, Category2">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hyperlink</label>
+                        <input class="form-control" type="url" name="link" value="${extraData.link || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input class="form-control" type="file" name="image" accept="image/*">
+                        ${extraData.image ? `<small class="text-muted">Current: ${extraData.image}</small>` : ''}
+                    </div>
+                `;
+                break;
+
+            case 'tiktok':
+                formFields += `
+                    <div class="mb-3">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="content_key" value="${data.content_key}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">TikTok URL <span class="text-danger">*</span></label>
+                        <input class="form-control" type="url" name="embed_url" value="${extraData.embed_url || ''}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Video ID</label>
+                        <input class="form-control" type="text" name="video_id" value="${extraData.video_id || ''}">
+                    </div>
+                `;
+                break;
+
+            default:
+                formFields += `
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input class="form-control" type="text" name="content_key" value="${data.content_key}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <textarea class="form-control" name="content_value">${data.content_value}</textarea>
+                    </div>
+                `;
+                break;
+        }
+
+        return `
+            <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form id="edit-form" enctype="multipart/form-data">
+                            <input type="hidden" name="type" value="${currentType}">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit ${currentType.charAt(0).toUpperCase() + currentType.slice(1)}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ${formFields}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bx bx-save me-1"></i>Update Item
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Function to initialize edit form submission
+    function initEditFormSubmission() {
+        $('#edit-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            let formData = new FormData(this);
+            
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Show loading state
+            let submitBtn = $(this).find('button[type="submit"]');
+            let originalText = submitBtn.html();
+            submitBtn.html('<i class="bx bx-loader bx-spin"></i> Updating...').prop('disabled', true);
+
+            $.ajax({
+                url: "{{ route('admin.section-content.update', ':id') }}".replace(':id', currentEditId),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-HTTP-Method-Override': 'PUT'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showAlert('success', response.message);
+                        
+                        // Close modal
+                        $('#edit-modal').modal('hide');
+                        
+                        // Reload page to show updated data
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        showAlert('error', response.message || 'An error occurred');
+                    }
+                },
+                error: function(xhr) {
+                    let errorMessage = 'An error occurred';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                    }
+                    showAlert('error', errorMessage);
+                },
+                complete: function() {
+                    // Reset button state
+                    submitBtn.html(originalText).prop('disabled', false);
+                }
+            });
+        });
+    }
+
+    // Function to delete item
+    function deleteItem(itemId) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: "{{ route('admin.section-content.destroy', ':id') }}".replace(':id', itemId),
+            type: 'DELETE',
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    
+                    // Reload page to show updated data
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', response.message || 'Failed to delete item');
+                }
+            },
+            error: function() {
+                showAlert('error', 'Failed to delete item');
+            }
+        });
+    }
+
+    // Function to show alerts
+    function showAlert(type, message) {
+        let alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        let alertHtml = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        // Remove existing alerts
+        $('.alert').remove();
+        
+        // Add new alert at the top of the page content
+        $('.page-content .container-fluid').prepend(alertHtml);
+        
+        // Auto hide after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut();
+        }, 5000);
+    }
+});
+</script>
 
 @endpush
