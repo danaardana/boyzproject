@@ -15,6 +15,7 @@ use App\Mail\AdminSecurityCode;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as PasswordRules;
+use App\Events\AdminPasswordChanged;
 
 class AuthController extends Controller
 {
@@ -367,6 +368,13 @@ class AuthController extends Controller
                 ->numbers()
                 ->symbols()
             ],
+        $admin = Auth::guard('admin')->user();
+        $admin->password = Hash::make($request->password);
+        $admin->save();
+
+        event(new AdminPasswordChanged($admin)); // <<< PICU EVENT DI SINI
+
+        return back()->with('success', 'Password has been changed successfully.');
         ]);
 
         $admin = Auth::guard('admin')->user();

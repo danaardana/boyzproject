@@ -7,6 +7,13 @@ use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\ChatController;
+use App\Http\Controllers\Admin\ChatbotController;
+use App\Http\Controllers\Admin\MLResponseController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\DocumentationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -18,6 +25,8 @@ Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
 Route::get('/privacy', [LandingPageController::class, 'privacy'])->name('landing.privacy');
 Route::get('/terms', [LandingPageController::class, 'terms'])->name('landing.terms');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+Route::resource('users', AdminUserController::class)->names('admin.users');
 
 // Define a regular 'login' route that redirects to admin login (for fallback)
 Route::get('/login', function() {
@@ -137,6 +146,8 @@ Route::prefix('admin')->group(function () {
                 return response()->json(['authenticated' => false, 'redirect' => route('admin.login')], 401);
             }
             return response()->json(['authenticated' => true]);
+        
+        Route::resource('users', AdminUserController::class)->names('admin.users');
         })->name('admin.session.check');
         
         // Messages routes
@@ -239,6 +250,28 @@ Route::prefix('admin')->group(function () {
                 Route::delete('/{id}', [App\Http\Controllers\Admin\MLResponseController::class, 'destroy'])->name('admin.chatbot.ml-responses.destroy');
                 Route::post('/{id}/toggle', [App\Http\Controllers\Admin\MLResponseController::class, 'toggleStatus'])->name('admin.chatbot.ml-responses.toggle');
                 Route::post('/import', [App\Http\Controllers\Admin\MLResponseController::class, 'importFromPredictV2'])->name('admin.chatbot.ml-responses.import');
+            });
+
+            Route::resource('landing-pages', LandingPageController::class)->except(['index', 'show']);
+
+            Route::get('/landing-pages', [LandingPageController::class, 'indexAdmin'])->name('admin.landing-pages.index'); 
+            Route::resource('landing-pages', LandingPageController::class)->except(['index']); 
+
+            // Section CRUD
+            Route::resource('sections', SectionController::class)->names('admin.sections');
+
+            Route::prefix('admins')->group(function () {
+                Route::get('/', [AdminController::class, 'index'])->name('admin.admins.index'); // Daftar admin
+                Route::get('/create', [AdminController::class, 'create'])->name('admin.admins.create'); // Form tambah admin
+                Route::post('/', [AdminController::class, 'store'])->name('admin.admins.store'); // Simpan admin baru (Ganti storeAdmin)
+                Route::get('/{admin}', [AdminController::class, 'show'])->name('admin.admins.show'); // Detail admin
+                Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('admin.admins.edit'); // Form edit admin
+                Route::put('/{admin}', [AdminController::class, 'update'])->name('admin.admins.update'); // Update admin (Ganti sebagian)
+                Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('admin.admins.destroy'); // Hapus admin (Ganti deleteAdmin)
+
+                Route::post('/{admin}/verify', [AdminController::class, 'verifyAdmin'])->name('admin.admins.verify');
+                Route::post('/{admin}/activate', [AdminController::class, 'activateAdmin'])->name('admin.admins.activate');
+                Route::post('/{admin}/deactivate', [AdminController::class, 'deactivateAdmin'])->name('admin.admins.deactivate');
             });
         });
         

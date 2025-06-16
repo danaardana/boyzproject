@@ -13,6 +13,7 @@ use Jenssegers\Agent\Agent;
 use App\Models\ContactMessage;
 use Illuminate\Support\Facades\View;
 use App\Models\Admin;
+use App\Events\AdminPasswordChanged;
 
 class AdminController extends Controller
 {
@@ -287,6 +288,34 @@ class AdminController extends Controller
         $SectionContents = SectionContent::where('section_id', $sections->first()->id)->get();
         $totalSectionContents = SectionContent::where('section_id', $sections->first()->id)->count();
         return view('admin.email-confirmation', compact('SectionContents','totalSectionContents'));
+    }
+
+     public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role' => ['required', 'string', Rule::in(['admin', 'user'])],
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+
+        $passwordChanged = false;
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+            $passwordChanged = true; // Set flag
+        }
+
+        $user->save();
+
+        if ($passwordChanged) {
+            event(new AdminPasswordChanged($admin)); // <<< PICU EVENT DI SINI
+        }
+
+        return redirect()->route('admin.users.index')->with('success', 'Admin user updated successfully.');
     }
 
     /**
