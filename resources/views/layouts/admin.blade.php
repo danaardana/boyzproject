@@ -329,6 +329,305 @@ $(document).ready(function() {
 });
 </script>
 
+<!-- Notification System Scripts -->
+<script>
+// Notification System Functions
+$(document).ready(function() {
+    // CSRF Token setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
+    // Mark all notifications as read
+    $('#mark-all-read-btn').on('click', function(e) {
+        e.preventDefault();
+        markAllNotificationsAsRead();
+    });
+    
+    // Auto-refresh notifications every 30 seconds
+    setInterval(function() {
+        refreshNotifications();
+    }, 30000);
+});
+
+// Function to mark a single notification as read
+function markNotificationAsRead(element) {
+    const notificationId = $(element).data('id');
+    
+    if (!notificationId) return;
+    
+    $.ajax({
+        url: `/admin/notifications/${notificationId}/read`,
+        type: 'POST',
+        success: function(response) {
+            if (response.success) {
+                // Remove the "unread" class and "New" badge
+                $(element).removeClass('unread');
+                $(element).find('.badge-soft-primary').remove();
+                
+                // Update badge count
+                updateNotificationBadge(response.unread_count);
+                updateUnreadCount(response.unread_count);
+            }
+        },
+        error: function(xhr) {
+            console.error('Failed to mark notification as read:', xhr);
+        }
+    });
+}
+
+// Function to mark all notifications as read
+function markAllNotificationsAsRead() {
+    $.ajax({
+        url: '/admin/notifications/mark-all-read',
+        type: 'POST',
+        success: function(response) {
+            if (response.success) {
+                // Remove all "unread" classes and "New" badges
+                $('.notification-item').removeClass('unread');
+                $('.notification-item .badge-soft-primary').remove();
+                
+                // Update badge count
+                updateNotificationBadge(0);
+                updateUnreadCount(0);
+                
+                // Show success message
+                showNotificationToast('success', response.message);
+            }
+        },
+        error: function(xhr) {
+            console.error('Failed to mark all notifications as read:', xhr);
+            showNotificationToast('error', 'Failed to mark all notifications as read');
+        }
+    });
+}
+
+// Function to remove all notifications
+function removeAllNotifications() {
+    // Show confirmation dialog
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently remove all notifications.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove all!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                performRemoveAll();
+            }
+        });
+    } else {
+        if (confirm('Are you sure you want to remove all notifications? This action cannot be undone.')) {
+            performRemoveAll();
+        }
+    }
+}
+
+// Function to actually remove all notifications
+function performRemoveAll() {
+    $.ajax({
+        url: '/admin/notifications/remove-all',
+        type: 'DELETE',
+        success: function(response) {
+            if (response.success) {
+                // Clear the notifications container
+                $('#notifications-container').html(`
+                    <div class="text-center p-3" id="no-notifications">
+                        <p class="text-muted mb-0">No notifications</p>
+                    </div>
+                `);
+                
+                // Update badge count
+                updateNotificationBadge(0);
+                updateUnreadCount(0);
+                
+                // Show success message
+                showNotificationToast('success', response.message);
+            }
+        },
+        error: function(xhr) {
+            console.error('Failed to remove all notifications:', xhr);
+            showNotificationToast('error', 'Failed to remove all notifications');
+        }
+    });
+}
+
+// Function to refresh notifications
+function refreshNotifications() {
+    $.ajax({
+        url: '/admin/notifications',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                updateNotificationsList(response.notifications);
+                updateNotificationBadge(response.unread_count);
+                updateUnreadCount(response.unread_count);
+            }
+        },
+        error: function(xhr) {
+            console.error('Failed to refresh notifications:', xhr);
+        }
+    });
+}
+
+// Function to update notifications list
+function updateNotificationsList(notifications) {
+    const container = $('#notifications-container');
+    
+    if (notifications.length === 0) {
+        container.html(`
+            <div class="text-center p-3" id="no-notifications">
+                <p class="text-muted mb-0">No notifications</p>
+            </div>
+        `);
+        return;
+    }
+    
+    let html = '';
+    notifications.forEach(function(notification) {
+        const unreadClass = notification.is_read ? '' : 'unread';
+        const newBadge = notification.is_read ? '' : '<span class="badge badge-soft-primary">New</span>';
+        
+        html += `
+            <a href="javascript:void(0)" class="text-reset notification-item ${unreadClass}" 
+               data-id="${notification.id}" onclick="markNotificationAsRead(this)">
+                <div class="d-flex">
+                    <div class="flex-shrink-0 avatar-sm me-3">
+                        <span class="avatar-title bg-${notification.color}-subtle text-${notification.color} rounded-circle font-size-16">
+                            <i class="${notification.icon}"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">${notification.title}</h6>
+                            ${newBadge}
+                        </div>
+                        <div class="font-size-13 text-muted">
+                            <p class="mb-1">${notification.message.length > 60 ? notification.message.substring(0, 60) + '...' : notification.message}</p>
+                            <p class="mb-0">
+                                <i class="mdi mdi-clock-outline"></i>
+                                <span>${notification.time_ago}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        `;
+    });
+    
+    container.html(html);
+}
+
+// Function to update notification badge
+function updateNotificationBadge(count) {
+    const badge = $('#notifications-badge');
+    if (count > 0) {
+        badge.text(count).removeClass('d-none');
+    } else {
+        badge.addClass('d-none');
+    }
+}
+
+// Function to update unread count text
+function updateUnreadCount(count) {
+    $('#unread-count').text(count);
+}
+
+// Function to show notification toast
+function showNotificationToast(type, message) {
+    if (typeof Swal !== 'undefined') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        
+        Toast.fire({
+            icon: type,
+            title: message
+        });
+    } else if (typeof toastr !== 'undefined') {
+        toastr[type](message);
+    } else {
+        console.log(`${type.toUpperCase()}: ${message}`);
+    }
+}
+
+// Add custom CSS for unread notifications
+const notificationStyles = `
+<style>
+.notification-item.unread {
+    background-color: rgba(13, 110, 253, 0.05);
+    border-left: 3px solid #0d6efd;
+}
+
+.notification-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.badge-soft-primary {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    font-size: 0.7em;
+}
+
+.avatar-title.bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.avatar-title.bg-warning-subtle {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.avatar-title.bg-danger-subtle {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.avatar-title.bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.avatar-title.bg-primary-subtle {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.text-success {
+    color: #198754 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-info {
+    color: #0dcaf0 !important;
+}
+
+.text-primary {
+    color: #0d6efd !important;
+}
+</style>
+`;
+
+// Inject the styles
+$('head').append(notificationStyles);
+</script>
+
 @stack('scripts')
 
 </body>

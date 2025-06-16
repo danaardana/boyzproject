@@ -23,7 +23,8 @@ $sections = Section::where('is_active', true)
               <a href="{{ route('admin.dashboard') }}" class="icofont icofont-dashboard" title="Admin Dashboard"></a>
             </li>
             <li>
-              <a href="{{ route('admin.logout') }}" class="icofont icofont-logout" title="Logout"></a>
+              <a href="{{ route('admin.logout') }}" class="icofont icofont-logout" title="Logout"
+                 onclick="event.preventDefault(); document.getElementById('landing-logout-form').submit();"></a>
             </li>
           @else
             <li><a href="{{ route('admin.login') }}" class="icofont icofont-user" title="Admin Login"></a></li>
@@ -72,3 +73,9 @@ $sections = Section::where('is_active', true)
 
     </div>
 </nav>
+
+@if(Auth::guard('admin')->check())
+<form id="landing-logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
+@endif

@@ -8,7 +8,7 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\SectionController;
-use App\Http\Controllers\Admin\AdminUserController;
+// use App\Http\Controllers\Admin\AdminUserController; // Commented out - controller doesn't exist
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ChatbotController;
 use App\Http\Controllers\Admin\MLResponseController;
@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Mail;
 
 // Public routes
 Route::get('/', [LandingPageController::class, 'index'])->name('landing-page');
@@ -26,7 +27,7 @@ Route::get('/privacy', [LandingPageController::class, 'privacy'])->name('landing
 Route::get('/terms', [LandingPageController::class, 'terms'])->name('landing.terms');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-Route::resource('users', AdminUserController::class)->names('admin.users');
+        // Route::resource('users', AdminUserController::class)->names('admin.users'); // Controller doesn't exist
 
 // Define a regular 'login' route that redirects to admin login (for fallback)
 Route::get('/login', function() {
@@ -84,7 +85,67 @@ Route::get('/test-welcome-email/{adminId}', function($adminId) {
     }
 })->name('test.welcome.email');
 
+// Test email route - REMOVE AFTER TESTING
+Route::get('/test-email', function() {
+    try {
+        // Test basic mail configuration
+        $customer = App\Models\Customer::first();
+        if (!$customer) {
+            return response()->json(['error' => 'No customer found for testing']);
+        }
 
+        $admin = App\Models\Admin::first();
+        if (!$admin) {
+            return response()->json(['error' => 'No admin found for testing']);
+        }
+
+        // Create a test message
+        $testMessage = App\Models\ContactMessage::first();
+        if (!$testMessage) {
+            return response()->json(['error' => 'No contact message found for testing']);
+        }
+
+        // Get mail configuration info
+        $mailConfig = [
+            'mailer' => config('mail.default'),
+            'driver' => config('mail.mailers.' . config('mail.default') . '.transport'),
+            'host' => config('mail.mailers.smtp.host'),
+            'port' => config('mail.mailers.smtp.port'),
+            'from_address' => config('mail.from.address'),
+            'from_name' => config('mail.from.name'),
+        ];
+
+        // Try to send a test email
+        try {
+            Mail::to($customer->email)->send(
+                new \App\Mail\MessageReplyMail(
+                    $customer,
+                    'This is a test email to verify mail functionality.',
+                    $testMessage,
+                    'resolved',
+                    $admin->name
+                )
+            );
+            
+            $emailStatus = 'Email sent successfully!';
+        } catch (\Exception $mailError) {
+            $emailStatus = 'Email failed: ' . $mailError->getMessage();
+        }
+
+        return response()->json([
+            'mail_config' => $mailConfig,
+            'email_status' => $emailStatus,
+            'customer_email' => $customer->email,
+            'admin_name' => $admin->name
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+});
 
 // Debug route to check stats
 Route::get('/debug-stats', function() {
@@ -129,11 +190,21 @@ Route::prefix('admin')->group(function () {
         Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('admin.password.update');
     });
 
+    // Lockscreen routes - Only need auth:admin middleware, not verification middleware
+    Route::middleware(['auth:admin'])->group(function () {
+        Route::get('/lockscreen', [AuthController::class, 'lockscreen'])->name('admin.lockscreen');
+    });
+    
+    // Unlock route - Needs web middleware for CSRF and session handling, but no auth since admin is logged out
+    Route::middleware(['web'])->group(function () {
+        Route::post('/unlock', [AuthController::class, 'unlock'])->name('admin.unlock');
+    });
+
     // Protected routes - Use full class path to avoid middleware resolution issues
     Route::middleware(['auth:admin', \App\Http\Middleware\PreventBackHistory::class, \App\Http\Middleware\AdminVerificationMiddleware::class])->group(function () {
         // Dashboard and main features
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
         
         // Session check route (for AJAX calls)
         Route::get('/auth-check', function() {
@@ -147,7 +218,6 @@ Route::prefix('admin')->group(function () {
             }
             return response()->json(['authenticated' => true]);
         
-        Route::resource('users', AdminUserController::class)->names('admin.users');
         })->name('admin.session.check');
         
         // Messages routes
@@ -172,9 +242,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/bulk', [EmailController::class, 'sendBulkEmails'])->name('admin.emails.bulk');
         });
         
-        // Lockscreen routes
-        Route::get('/lockscreen', [AuthController::class, 'lockscreen'])->name('admin.lockscreen');
-        Route::post('/unlock', [AuthController::class, 'unlock'])->name('admin.unlock');
+
         
         // Password change routes
         Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('admin.password.change');
@@ -194,8 +262,23 @@ Route::prefix('admin')->group(function () {
         Route::get('/promotion', [TableController::class, 'show'])->defaults('type', 'promotion')->name('admin.promotion');
         Route::get('/categories', [TableController::class, 'show'])->defaults('type', 'categories')->name('admin.categories');
         
-        // Content update routes
-        Route::put('/section-content/{id}', [AdminController::class, 'update'])->name('section_content.update');
+        // CRUD routes for section content
+        Route::prefix('section-content')->group(function () {
+            Route::post('/', [TableController::class, 'store'])->name('admin.section-content.store');
+            Route::get('/{id}/edit', [TableController::class, 'edit'])->name('admin.section-content.edit');
+            Route::put('/{id}', [TableController::class, 'update'])->name('admin.section-content.update');
+            Route::delete('/{id}', [TableController::class, 'destroy'])->name('admin.section-content.destroy');
+        });
+        
+        // Notification routes
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [\App\Http\Controllers\NotificationController::class, 'getRecentNotifications'])->name('admin.notifications.recent');
+            Route::post('/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-read');
+            Route::post('/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-read');
+            Route::delete('/remove-all', [\App\Http\Controllers\NotificationController::class, 'removeAll'])->name('admin.notifications.remove-all');
+            Route::delete('/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
+            Route::get('/stats', [\App\Http\Controllers\NotificationController::class, 'getStats'])->name('admin.notifications.stats');
+        });
         
         // Other admin features
         Route::get('/faq', [AdminController::class, 'faqPage'])->name('admin.faq');
@@ -260,19 +343,22 @@ Route::prefix('admin')->group(function () {
             // Section CRUD
             Route::resource('sections', SectionController::class)->names('admin.sections');
 
-            Route::prefix('admins')->group(function () {
-                Route::get('/', [AdminController::class, 'index'])->name('admin.admins.index'); // Daftar admin
-                Route::get('/create', [AdminController::class, 'create'])->name('admin.admins.create'); // Form tambah admin
-                Route::post('/', [AdminController::class, 'store'])->name('admin.admins.store'); // Simpan admin baru (Ganti storeAdmin)
-                Route::get('/{admin}', [AdminController::class, 'show'])->name('admin.admins.show'); // Detail admin
-                Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('admin.admins.edit'); // Form edit admin
-                Route::put('/{admin}', [AdminController::class, 'update'])->name('admin.admins.update'); // Update admin (Ganti sebagian)
-                Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('admin.admins.destroy'); // Hapus admin (Ganti deleteAdmin)
 
-                Route::post('/{admin}/verify', [AdminController::class, 'verifyAdmin'])->name('admin.admins.verify');
-                Route::post('/{admin}/activate', [AdminController::class, 'activateAdmin'])->name('admin.admins.activate');
-                Route::post('/{admin}/deactivate', [AdminController::class, 'deactivateAdmin'])->name('admin.admins.deactivate');
-            });
+        });
+        
+        // Admin Management Routes
+        Route::prefix('admins')->group(function () {
+            Route::get('/', [AdminController::class, 'index'])->name('admin.admins.index'); // Daftar admin
+            Route::get('/create', [AdminController::class, 'create'])->name('admin.admins.create'); // Form tambah admin
+            Route::post('/', [AdminController::class, 'storeAdmin'])->name('admin.admins.store'); // Simpan admin baru
+            Route::get('/{admin}', [AdminController::class, 'show'])->name('admin.admins.show'); // Detail admin
+            Route::get('/{admin}/edit', [AdminController::class, 'editAdmin'])->name('admin.admins.edit'); // Form edit admin
+            Route::put('/{admin}', [AdminController::class, 'updateAdmin'])->name('admin.admins.update'); // Update admin (Ganti sebagian)
+            Route::delete('/{admin}', [AdminController::class, 'deleteAdmin'])->name('admin.admins.destroy'); // Hapus admin
+
+            Route::post('/{admin}/verify', [AdminController::class, 'verifyAdmin'])->name('admin.admins.verify');
+            Route::post('/{admin}/activate', [AdminController::class, 'activateAdmin'])->name('admin.admins.activate');
+            Route::post('/{admin}/deactivate', [AdminController::class, 'deactivateAdmin'])->name('admin.admins.deactivate');
         });
         
         Route::get('/admin', [AdminController::class, 'adminPage'])->name('admin.admin');
@@ -282,14 +368,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/admin-login-history/{adminId?}', [AdminController::class, 'adminLoginHistory'])->name('admin.login-history');
         Route::post('/clean-old-sessions', [AdminController::class, 'cleanOldSessions'])->name('admin.clean-sessions');
         
-        // Admin Management Routes
-        Route::prefix('admins')->group(function () {
-            Route::post('/', [AdminController::class, 'storeAdmin'])->name('admin.admins.store');
-            Route::post('/{admin}/verify', [AdminController::class, 'verifyAdmin'])->name('admin.admins.verify');
-            Route::post('/{admin}/activate', [AdminController::class, 'activateAdmin'])->name('admin.admins.activate');
-            Route::post('/{admin}/deactivate', [AdminController::class, 'deactivateAdmin'])->name('admin.admins.deactivate');
-            Route::delete('/{admin}', [AdminController::class, 'deleteAdmin'])->name('admin.admins.destroy');
-        });
+        // Additional Admin Management Routes (duplicates removed - using the main admin routes above)
         Route::post('/check-email', [AdminController::class, 'checkEmailAvailability'])->name('admin.check-email');
         
         // Customer Management Routes

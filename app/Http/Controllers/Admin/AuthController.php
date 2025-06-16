@@ -16,9 +16,11 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as PasswordRules;
 use App\Events\AdminPasswordChanged;
+use App\Traits\NotificationHelper;
 
 class AuthController extends Controller
 {
+    use NotificationHelper;
     public function __construct()
     {
         $this->middleware('guest:admin')->except(['logout', 'lockscreen', 'unlock', 'showChangePasswordForm', 'changePassword']);
@@ -123,6 +125,18 @@ class AuthController extends Controller
                 \Log::error('Failed to log admin session: ' . $e->getMessage());
             }
             
+            // Clear any lockscreen session data to prevent redirect loops
+            session()->forget('lockscreen_admin_id');
+            
+            // Check if the intended URL is lockscreen (to prevent redirect loops)
+            $intendedUrl = session('url.intended');
+            if ($intendedUrl && str_contains($intendedUrl, '/lockscreen')) {
+                session()->forget('url.intended');
+            }
+            
+            // Create login notification
+            $this->notifyLogin();
+            
             // Flash success message
             session()->flash('status', 'Welcome back, ' . $admin->name . '!');
             
@@ -142,6 +156,9 @@ class AuthController extends Controller
         // Store admin email for logging purposes
         $adminEmail = Auth::guard('admin')->user()->email ?? 'Unknown';
         
+        // Create logout notification before logging out
+        $this->notifyLogout();
+        
         // Clean up session record
         try {
             Session::logAdminLogout();
@@ -151,6 +168,10 @@ class AuthController extends Controller
         
         // Logout the admin
         Auth::guard('admin')->logout();
+
+        // Clear lockscreen session data and intended URL to prevent redirect loops
+        $request->session()->forget('lockscreen_admin_id');
+        $request->session()->forget('url.intended');
 
         // Invalidate the session completely
         $request->session()->invalidate();
@@ -177,6 +198,8 @@ class AuthController extends Controller
         }
 
         $admin = Auth::guard('admin')->user();
+        
+        // Store admin ID in session BEFORE logging out
         session(['lockscreen_admin_id' => $admin->id]);
 
         Auth::guard('admin')->logout();
@@ -204,12 +227,19 @@ class AuthController extends Controller
         ]);
 
         $adminId = session('lockscreen_admin_id');
+        
         if (!$adminId) {
-            return redirect()->route('admin.login');
+            return redirect()->route('admin.login')->with('error', 'Session expired. Please login again.');
         }
 
         $admin = Admin::find($adminId);
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
+        
+        if (!$admin) {
+            session()->forget('lockscreen_admin_id');
+            return redirect()->route('admin.login')->with('error', 'Invalid session. Please login again.');
+        }
+
+        if (!Hash::check($request->password, $admin->password)) {
             return back()->withErrors([
                 'password' => 'Invalid password.',
             ]);
@@ -240,7 +270,7 @@ class AuthController extends Controller
             \Log::error('Failed to log admin unlock session: ' . $e->getMessage());
         }
 
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.dashboard')->with('status', 'Welcome back, ' . $admin->name . '!');
     }
 
     /**
@@ -270,10 +300,16 @@ class AuthController extends Controller
     public function sendResetCode(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:admins,email',
+            'email' => 'required|email',
         ]);
 
-        $admin = Admin::where('email', $request->email)->first();
+        // Use findByEmail method to handle encrypted emails
+        $admin = Admin::findByEmail($request->email);
+        
+        if (!$admin) {
+            return back()->withErrors(['email' => 'We could not find a user with that email address.']);
+        }
+
         $securityCode = $admin->generateSecurityCode();
 
         // Send security code via email using our email system
@@ -320,7 +356,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:admins,email',
+            'email' => 'required|email',
             'security_code' => 'required|string',
             'password' => ['required', 'confirmed', PasswordRules::min(8)
                 ->mixedCase()
@@ -329,7 +365,8 @@ class AuthController extends Controller
             ],
         ]);
 
-        $admin = Admin::where('email', $request->email)->first();
+        // Use findByEmail method to handle encrypted emails
+        $admin = Admin::findByEmail($request->email);
 
         if (!$admin || !$admin->verifySecurityCode($request->security_code)) {
             return back()->withErrors(['security_code' => 'Invalid or expired security code.']);
@@ -368,13 +405,6 @@ class AuthController extends Controller
                 ->numbers()
                 ->symbols()
             ],
-        $admin = Auth::guard('admin')->user();
-        $admin->password = Hash::make($request->password);
-        $admin->save();
-
-        event(new AdminPasswordChanged($admin)); // <<< PICU EVENT DI SINI
-
-        return back()->with('success', 'Password has been changed successfully.');
         ]);
 
         $admin = Auth::guard('admin')->user();
