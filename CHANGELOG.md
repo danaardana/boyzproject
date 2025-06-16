@@ -1,5 +1,43 @@
 # 📋 Boy Projects - Release Notes & Changelog
 
+## **📧 [v2.1.0] - January 2025 - Professional Email System Enhancement**
+
+### **🎯 Contact Message Reply System**
+- ✅ **Professional Subject Format**: Changed from "Re: installation - Response from Laravel" to "Balasan Pesan: installation - Boy Projects"
+- ✅ **Sender Branding Fix**: Updated from "vixen19.fox" to "Boy Projects" for professional identity
+- ✅ **Indonesian Localization**: Complete email template translation with proper Indonesian formatting
+- ✅ **Address Class Implementation**: Proper Laravel Address objects for envelope formatting instead of arrays
+- ✅ **Reply Template Enhancement**: Responsive HTML design with Boy Projects branding
+
+### **⚡ Email Technical Improvements**
+- ✅ **Envelope Constructor Fix**: Resolved Illuminate\Mail\Mailables\Envelope parameter format issues
+- ✅ **MessageReplyMail Enhancement**: Proper from/replyTo configuration using Address class
+- ✅ **AdminMessageMail Update**: Consistent Address object usage across all mailable classes
+- ✅ **Import Optimization**: Added proper Address class imports to prevent namespace conflicts
+- ✅ **Configuration Updates**: Updated default mail settings in config/mail.php for Boy Projects branding
+
+### **🌐 Indonesian Email Localization**
+- ✅ **Template Content**: Complete translation of email content to professional Indonesian
+- ✅ **UI Elements**: Indonesian button text "Hubungi Kami Lagi", field labels "Pesan Asli", "Dibalas oleh"
+- ✅ **Date Formatting**: Localized date format (d M Y H:i) for Indonesian users
+- ✅ **Subject Format**: Professional Indonesian subject line format "Balasan Pesan: [subject] - Boy Projects"
+- ✅ **Footer Content**: Indonesian copyright and company description text
+
+### **🔧 Technical Infrastructure**
+- ✅ **Mail Configuration**: Default sender name and address updated for Boy Projects
+- ✅ **Template Structure**: Enhanced email template with proper Indonesian content sections
+- ✅ **Admin Panel Integration**: Updated modal subject preview to match email format
+- ✅ **Sent Messages Display**: Updated UI to show "Balasan" instead of "Reply" in admin interface
+- ✅ **Error Handling**: Improved error handling for envelope constructor and Address object creation
+
+### **📚 Documentation Updates**
+- ✅ **Email System Documentation**: Comprehensive update with new Contact Message Reply System section
+- ✅ **README Enhancement**: Updated email configuration examples and technical details
+- ✅ **CHANGELOG Addition**: Complete documentation of email system improvements
+- ✅ **Configuration Guide**: Detailed guide for .env email setup with Boy Projects branding
+
+---
+
 ## **🚀 [v2.0.0] - June 2025 - Advanced ML Integration & AI-Powered Chatbot Edition**
 
 ### **🧠 Machine Learning Integration**

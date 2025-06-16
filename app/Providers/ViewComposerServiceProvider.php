@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\ContactMessage;
+use App\Models\Notification;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
@@ -29,9 +30,15 @@ class ViewComposerServiceProvider extends ServiceProvider
                 ->take(5)
                 ->get();
 
+            // Add notification data
+            $unreadNotifications = Notification::unread()->count();
+            $recentNotifications = Notification::recent(10)->get();
+
             $view->with([
                 'unreadMessages' => $unreadMessages,
-                'recentMessages' => $recentMessages
+                'recentMessages' => $recentMessages,
+                'unreadNotifications' => $unreadNotifications,
+                'recentNotifications' => $recentNotifications
             ]);
         });
     }

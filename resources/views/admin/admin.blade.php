@@ -347,7 +347,6 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 <thead class="table-light">
                                     <tr>
                                         <th><input type="checkbox" id="select-all"></th>
-                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Status</th>
                                         <th>Verified</th>
@@ -360,7 +359,6 @@ require_once ("./admin/lang/" . $lang . ".php");
                                     @foreach($admins as $admin)
                                     <tr>
                                         <td><input type="checkbox" data-admin-id="{{ $admin->id }}"></td>
-                                        <td>{{ $admin->id }}</td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div>

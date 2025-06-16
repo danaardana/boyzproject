@@ -3,7 +3,7 @@
 <head>
 
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
-<title>{{ config('app.name', 'Boy Projects') }}</title>
+    <title>Boy Projects</title>
 
 <style type="text/css">
     body{width: 100%; background-color: #383434; margin:0; padding:0; -webkit-font-smoothing: antialiased;mso-margin-top-alt:0px; mso-margin-bottom-alt:0px; mso-padding-alt: 0px 0px 0px 0px;}
@@ -80,7 +80,7 @@
                         <tr>
                           <td align="center" valign="middle">
                             <a href="{{ url('/') }}">
-                              <img src="{{ asset('admin/images/logo.png') }}" width="105" height="40" alt="{{ config('app.name') }}" />
+                              <img src="{{ asset('admin/images/logo.png') }}" width="105" height="40" alt="Boy Projects" />
                             </a>
                           </td>
                         </tr>
@@ -129,7 +129,7 @@
                         <!-- Title -->
                         <tr>
                           <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:20px; color:#4c4c4c; font-weight:bold; text-transform:uppercase;">
-                            Response to Your Message
+                            Balasan Pesan dari Boy Projects
                           </td>
                         </tr>
 
@@ -169,10 +169,10 @@
                         <!-- Additional Info -->
                         <tr>
                           <td align="center" valign="top" style="font-family:'Open Sans', sans-serif, Verdana; font-size:13px; color:#666; font-weight:normal; line-height:20px; padding: 0 30px;">
-                            <strong>Original Message:</strong> {{ $originalMessage->content_key ?? 'Your inquiry' }}<br>
+                            <strong>Pesan Asli:</strong> {{ $originalMessage->content_key ?? 'Pertanyaan Anda' }}<br>
                             <strong>Status:</strong> {{ ucfirst(str_replace('_', ' ', $messageStatus ?? 'resolved')) }}<br>
-                            <strong>Responded by:</strong> {{ $adminName ?? 'Support Team' }}<br>
-                            <strong>Date:</strong> {{ now()->format('M d, Y H:i') }}
+                            <strong>Dibalas oleh:</strong> {{ $adminName ?? 'Tim Support' }} - Boy Projects<br>
+                            <strong>Tanggal:</strong> {{ now()->format('d M Y H:i') }}
                           </td>
                         </tr>
 
@@ -183,10 +183,10 @@
                         <!-- Contact Button -->
                         <tr>
                           <td align="center" valign="top">
-                            <table width="180" border="0" align="center" cellpadding="0" cellspacing="0">
+                            <table width="200" border="0" align="center" cellpadding="0" cellspacing="0">
                               <tr>
                                 <td height="50" align="center" valign="middle" bgcolor="#ef4447" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-weight:bold; -moz-border-radius: 30px; border-radius: 30px;">
-                                  <a href="{{ url('/') }}#contact" style="text-decoration:none; color:#FFF;">Contact Us Again</a>
+                                  <a href="{{ url('/') }}#contact" style="text-decoration:none; color:#FFF;">Hubungi Kami Lagi</a>
                                 </td>
                               </tr>
                             </table>
@@ -237,10 +237,10 @@
 
                   <tr>
                     <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; color:#FFF; font-weight:normal; line-height:24px;">
-                      <p>Thank you for choosing {{ config('app.name', 'Boy Projects') }}!</p>
-                      <p>Your trusted partner for motorcycle spare parts and accessories.</p>
+                      <p>Terima kasih telah mempercayai Boy Projects!</p>
+                      <p>Partner terpercaya untuk suku cadang dan aksesoris motor Anda.</p>
                       <br>
-                      <p>Copyright &copy; {{ date('Y') }} {{ config('app.name', 'Boy Projects') }}. All rights reserved.</p>
+                      <p>Copyright &copy; {{ date('Y') }} Boy Projects.</p>
                     </td>
                   </tr>
 

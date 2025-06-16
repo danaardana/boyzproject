@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\AdminNotification;
+use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 
 class NotificationController extends Controller
@@ -15,8 +15,8 @@ class NotificationController extends Controller
     public function getRecentNotifications(Request $request): JsonResponse
     {
         try {
-            $notifications = AdminNotification::recent(10)->get();
-            $unreadCount = AdminNotification::getUnreadCount();
+            $notifications = Notification::recent(10)->get();
+            $unreadCount = Notification::unread()->count();
 
             return response()->json([
                 'success' => true,
@@ -28,18 +28,26 @@ class NotificationController extends Controller
                         'icon' => $notification->icon,
                         'color' => $notification->color,
                         'type' => $notification->type,
+                        'user_type' => $notification->user_type,
+                        'user_name' => $notification->user_name ?? 'System',
                         'is_read' => $notification->is_read,
                         'time_ago' => $notification->time_ago,
                         'formatted_date' => $notification->formatted_date,
                         'created_at' => $notification->created_at->toISOString(),
                     ];
                 }),
-                'unread_count' => $unreadCount
+                'unread_count' => $unreadCount,
+                'breakdown' => [
+                    'admin' => Notification::unread()->byUserType('admin')->count(),
+                    'customer' => Notification::unread()->byUserType('customer')->count(),
+                    'system' => Notification::unread()->byUserType('system')->count(),
+                ]
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to fetch notifications'
+                'message' => 'Failed to fetch notifications',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -50,20 +58,21 @@ class NotificationController extends Controller
     public function markAsRead(Request $request, $id): JsonResponse
     {
         try {
-            $notification = AdminNotification::findOrFail($id);
+            $notification = Notification::findOrFail($id);
             $notification->markAsRead();
 
-            $unreadCount = AdminNotification::getUnreadCount();
+            $unreadCount = Notification::unread()->count();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Notification marked as read',
-                'unread_count' => $unreadCount
+                'unreadCount' => $unreadCount
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to mark notification as read'
+                'message' => 'Failed to mark notification as read',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -74,7 +83,7 @@ class NotificationController extends Controller
     public function markAllAsRead(Request $request): JsonResponse
     {
         try {
-            $affectedRows = AdminNotification::markAllAsRead();
+            $affectedRows = Notification::markAllAsRead();
 
             return response()->json([
                 'success' => true,
@@ -84,7 +93,8 @@ class NotificationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to mark all notifications as read'
+                'message' => 'Failed to mark all notifications as read',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -95,8 +105,8 @@ class NotificationController extends Controller
     public function removeAll(Request $request): JsonResponse
     {
         try {
-            $deletedCount = AdminNotification::count();
-            AdminNotification::truncate();
+            $deletedCount = Notification::count();
+            Notification::truncate();
 
             return response()->json([
                 'success' => true,
@@ -106,7 +116,8 @@ class NotificationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to remove all notifications'
+                'message' => 'Failed to remove all notifications',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -117,10 +128,10 @@ class NotificationController extends Controller
     public function destroy(Request $request, $id): JsonResponse
     {
         try {
-            $notification = AdminNotification::findOrFail($id);
+            $notification = Notification::findOrFail($id);
             $notification->delete();
 
-            $unreadCount = AdminNotification::getUnreadCount();
+            $unreadCount = Notification::unread()->count();
 
             return response()->json([
                 'success' => true,
@@ -130,7 +141,8 @@ class NotificationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to remove notification'
+                'message' => 'Failed to remove notification',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -142,14 +154,18 @@ class NotificationController extends Controller
     {
         try {
             $stats = [
-                'total' => AdminNotification::count(),
-                'unread' => AdminNotification::unread()->count(),
-                'read' => AdminNotification::read()->count(),
-                'today' => AdminNotification::whereDate('created_at', today())->count(),
-                'this_week' => AdminNotification::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
-                'by_type' => AdminNotification::selectRaw('type, COUNT(*) as count')
+                'total' => Notification::count(),
+                'unread' => Notification::unread()->count(),
+                'read' => Notification::read()->count(),
+                'today' => Notification::whereDate('created_at', today())->count(),
+                'this_week' => Notification::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+                'by_type' => Notification::selectRaw('type, COUNT(*) as count')
                     ->groupBy('type')
                     ->pluck('count', 'type')
+                    ->toArray(),
+                'by_user_type' => Notification::selectRaw('user_type, COUNT(*) as count')
+                    ->groupBy('user_type')
+                    ->pluck('count', 'user_type')
                     ->toArray()
             ];
 
@@ -160,7 +176,8 @@ class NotificationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to fetch notification statistics'
+                'message' => 'Failed to fetch notification statistics',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

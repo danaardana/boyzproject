@@ -98,8 +98,8 @@
                                 </div>
                                 <div class="col-mail col-mail-2">
                                     <a href="{{ route('admin.messages.sent.show', $response) }}" class="subject">
-                                        <span class="badge bg-success me-2">Reply</span>
-                                        Re: {{ $response->contactMessage->content_key ?? 'Message' }} – 
+                                        <span class="badge bg-success me-2">Balasan</span>
+                                        Balasan Pesan: {{ $response->contactMessage->content_key ?? 'Pesan' }} – 
                                         <span class="teaser">{{ Str::limit($response->message, 60) }}</span>
                                     </a>
                                     <div class="date">{{ $response->created_at ? $response->created_at->format('M d') : 'N/A' }}</div>

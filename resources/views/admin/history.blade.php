@@ -181,47 +181,47 @@ use Illuminate\Support\Str;
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-2">
-                                                        @if(strtolower($session['platform']) === 'windows')
+                                                        @if(strtolower($session['platform'] ?? '') === 'windows')
                                                             <i class="bx bx-desktop text-primary font-size-16"></i>
-                                                        @elseif(strtolower($session['platform']) === 'android')
+                                                        @elseif(strtolower($session['platform'] ?? '') === 'android')
                                                             <i class="bxl-android text-success font-size-16"></i>
-                                                        @elseif(strtolower($session['platform']) === 'ios' || strtolower($session['platform']) === 'mac')
+                                                        @elseif(strtolower($session['platform'] ?? '') === 'ios' || strtolower($session['platform'] ?? '') === 'mac')
                                                             <i class="bxl-apple text-info font-size-16"></i>
-                                                        @elseif(strtolower($session['platform']) === 'linux')
+                                                        @elseif(strtolower($session['platform'] ?? '') === 'linux')
                                                             <i class="bxl-tux text-warning font-size-16"></i>
                                                         @else
                                                             <i class="bx bx-question-mark text-muted font-size-16"></i>
                                                         @endif
                                                     </div>
                                                     <div>
-                                                        <h6 class="mb-0">{{ $session->admin_name ?? $session['admin_name'] ?? 'Unknown' }}</h6>
-                                                        @if(($session->admin_id ?? $session['admin_id']) === auth('admin')->id())
-                                                            <span class="badge bg-info-subtle text-info">Current User</span>
-                                                        @endif
+                                                                                                <h6 class="mb-0">{{ $session['admin_name'] ?? 'Unknown' }}</h6>
+                                        @if(($session['admin_id'] ?? 0) === auth('admin')->id())
+                                            <span class="badge bg-info-subtle text-info">Current User</span>
+                                        @endif
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <span class="badge bg-primary-subtle text-primary">
-                                                    {{ $session->platform ?? $session['platform'] ?? 'Unknown' }}
+                                                    {{ $session['platform'] ?? 'Unknown' }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <span class="badge bg-secondary-subtle text-secondary">
-                                                    {{ $session->browser ?? $session['browser'] ?? 'Unknown' }}
+                                                    {{ $session['browser'] ?? 'Unknown' }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <small class="text-muted" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;" 
-                                                       title="{{ $session->user_agent ?? $session['user_agent'] ?? 'N/A' }}">
-                                                    {{ Str::limit($session->user_agent ?? $session['user_agent'] ?? 'N/A', 50) }}
+                                                       title="{{ $session['user_agent'] ?? 'N/A' }}">
+                                                    {{ Str::limit($session['user_agent'] ?? 'N/A', 50) }}
                                                 </small>
                                             </td>
                                             <td>
-                                                <small class="text-muted">{{ $session->login_time ?? $session['login_time'] ?? 'N/A' }}</small>
+                                                <small class="text-muted">{{ $session['login_time'] ?? 'N/A' }}</small>
                                             </td>
                                             <td>
-                                                <small class="text-muted">{{ $session->last_activity ?? $session['last_activity'] ?? 'N/A' }}</small>
+                                                <small class="text-muted">{{ $session['last_activity'] ?? 'N/A' }}</small>
                                             </td>
                                         </tr>
                                         @endforeach

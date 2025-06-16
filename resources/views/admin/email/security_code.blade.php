@@ -3,7 +3,7 @@
 <head>
 
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
-<title>{{ config('app.name', 'Boy Projects') }} - Security Code</title>
+    <title>Boy Projects - Security Code</title>
 
 <style type="text/css">
 
@@ -86,7 +86,7 @@
               <tr>
                 <td align="center" valign="middle">
                     <h2 style="color: #FFFFFF; font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 10px;">
-                        {{ config('app.name', 'Boy Projects') }}
+                        Boy Projects
                     </h2>
                 </td>
               </tr>

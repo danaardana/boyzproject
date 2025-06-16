@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use App\Models\ContactMessage;
 use App\Models\Customer;
@@ -45,9 +46,17 @@ class MessageReplyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Re: ' . ($this->originalMessage->content_key ?? 'Your Message') . ' - Response from ' . config('app.name', 'Boy Projects'),
-            from: config('mail.from.address', 'support@boyprojects.com'),
-            replyTo: [config('mail.from.address', 'support@boyprojects.com')]
+            subject: 'Balasan Pesan: ' . ($this->originalMessage->content_key ?? 'Pesan Anda') . ' - ' . config('app.name', 'Boy Projects'),
+            from: new Address(
+                config('mail.from.address', 'support@boyprojects.com'),
+                config('mail.from.name', 'Boy Projects')
+            ),
+            replyTo: [
+                new Address(
+                    config('mail.from.address', 'support@boyprojects.com'),
+                    config('mail.from.name', 'Boy Projects')
+                )
+            ]
         );
     }
 

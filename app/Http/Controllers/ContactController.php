@@ -495,4 +495,32 @@ class ContactController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * API endpoint for real-time message notifications
+     */
+    public function getMessageNotifications()
+    {
+        $unreadMessages = ContactMessage::where('is_read', false)->count();
+        $recentMessages = ContactMessage::with('customer')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return response()->json([
+            'unread_count' => $unreadMessages,
+            'recent_messages' => $recentMessages->map(function($message) {
+                return [
+                    'id' => $message->id,
+                    'customer_name' => $message->customer->name ?? 'Unknown',
+                    'customer_email' => $message->customer->email ?? '',
+                    'subject' => $message->category,
+                    'content' => \Str::limit($message->content, 60),
+                    'created_at' => $message->created_at->format('Y-m-d H:i:s'),
+                    'time_ago' => $message->created_at->diffForHumans(),
+                    'is_read' => $message->is_read
+                ];
+            })
+        ]);
+    }
 }

@@ -153,7 +153,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                                 <h6 class="m-0">{{ $language["Notifications"] }}</h6>
                             </div>
                             <div class="col-auto">
-                                <a href="#!" class="small text-reset text-decoration-underline" id="mark-all-read-btn">
+                                <a href="#!" class="small text-reset text-decoration-underline" id="mark-all-notifications-read-btn">
                                     <span id="unread-text">{{ $language["Unread"] }} (<span id="unread-count">{{ $unreadNotifications ?? 0 }}</span>)</span>
                                 </a>
                             </div>
@@ -162,7 +162,8 @@ require_once ("./admin/lang/" . $lang . ".php");
                     <div data-simplebar style="max-height: 230px;" id="notifications-container">
                         @forelse($recentNotifications ?? [] as $notification)
                             <a href="javascript:void(0)" class="text-reset notification-item {{ $notification->is_read ? '' : 'unread' }}" 
-                               data-id="{{ $notification->id }}" onclick="markNotificationAsRead(this)">
+                               data-id="{{ $notification->id }}" 
+                               onclick="markNotificationAsRead(this)">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 avatar-sm me-3">
                                         <span class="avatar-title bg-{{ $notification->color }}-subtle text-{{ $notification->color }} rounded-circle font-size-16">
@@ -172,15 +173,23 @@ require_once ("./admin/lang/" . $lang . ".php");
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between">
                                             <h6 class="mb-1">{{ $notification->title }}</h6>
-                                            @if(!$notification->is_read)
-                                                <span class="badge badge-soft-primary">New</span>
-                                            @endif
+                                            <div class="d-flex align-items-center gap-1">
+                                                @if(!$notification->is_read)
+                                                    <span class="badge badge-soft-primary">New</span>
+                                                @endif
+                                                <span class="badge badge-soft-{{ $notification->user_type === 'admin' ? 'info' : ($notification->user_type === 'system' ? 'dark' : 'secondary') }}">
+                                                    {{ ucfirst($notification->user_type ?? 'System') }}
+                                                </span>
+                                            </div>
                                         </div>
                                         <div class="font-size-13 text-muted">
                                             <p class="mb-1">{{ Str::limit($notification->message, 60) }}</p>
                                             <p class="mb-0">
                                                 <i class="mdi mdi-clock-outline"></i>
                                                 <span>{{ $notification->time_ago }}</span>
+                                                @if($notification->user_name && $notification->user_name !== 'System')
+                                                    <span class="ms-2">by {{ $notification->user_name }}</span>
+                                                @endif
                                             </p>
                                         </div>
                                     </div>
@@ -283,6 +292,312 @@ require_once ("./admin/lang/" . $lang . ".php");
         </div>
     </div>
 </header>
+
+<script>
+// Notification Management Functions
+function markNotificationAsRead(element) {
+    const notificationId = element.getAttribute('data-id');
+    const badge = document.getElementById('notifications-badge');
+    const unreadCount = document.getElementById('unread-count');
+    
+    console.log('Marking notification as read:', notificationId); // Debug log
+    
+    // Make AJAX request to mark as read
+    fetch(`/admin/notifications/${notificationId}/read`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => {
+        console.log('Mark as read response status:', response.status); // Debug log
+        return response.json();
+    })
+    .then(data => {
+        console.log('Mark as read response data:', data); // Debug log
+        if (data.success) {
+            // Remove unread styling
+            element.classList.remove('unread');
+            const newBadge = element.querySelector('.badge-soft-primary');
+            if (newBadge) {
+                newBadge.remove();
+            }
+            
+            // Update badge count
+            if (data.unreadCount !== undefined) {
+                unreadCount.textContent = data.unreadCount;
+                
+                if (data.unreadCount === 0) {
+                    badge.classList.add('d-none');
+                } else {
+                    badge.textContent = data.unreadCount;
+                    badge.classList.remove('d-none');
+                }
+            }
+            
+            console.log('Successfully marked notification as read');
+        } else {
+            console.error('Server response indicated failure:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error marking notification as read:', error);
+        alert('Error marking notification as read. Please try again.');
+    });
+}
+
+function markAllNotificationsAsRead() {
+    console.log('markAllNotificationsAsRead function called'); // Debug log
+    
+    const badge = document.getElementById('notifications-badge');
+    const unreadCount = document.getElementById('unread-count');
+    
+    console.log('Badge element:', badge); // Debug log
+    console.log('Unread count element:', unreadCount); // Debug log
+    
+    fetch('/admin/notifications/mark-all-read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status); // Debug log
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data); // Debug log
+        if (data.success) {
+            // Remove unread styling from all notifications in the unified notifications dropdown
+            document.querySelectorAll('#notifications-container .notification-item.unread').forEach(item => {
+                item.classList.remove('unread');
+                const newBadge = item.querySelector('.badge-soft-primary');
+                if (newBadge) {
+                    newBadge.remove();
+                }
+            });
+            
+            // Update badge
+            if (badge) {
+                badge.classList.add('d-none');
+            }
+            if (unreadCount) {
+                unreadCount.textContent = '0';
+            }
+            
+            console.log('Successfully marked all notifications as read');
+        } else {
+            console.error('Server response indicated failure:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error marking all notifications as read:', error);
+        alert('Error marking notifications as read. Please try again.');
+    });
+}
+
+function removeAllNotifications() {
+    if (!confirm('Are you sure you want to remove all notifications? This action cannot be undone.')) {
+        return;
+    }
+    
+    console.log('removeAllNotifications function called'); // Debug log
+    
+    const notificationsContainer = document.getElementById('notifications-container');
+    const badge = document.getElementById('notifications-badge');
+    const unreadCount = document.getElementById('unread-count');
+    const noNotifications = document.getElementById('no-notifications');
+    
+    fetch('/admin/notifications/remove-all', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => {
+        console.log('Remove all response status:', response.status); // Debug log
+        return response.json();
+    })
+    .then(data => {
+        console.log('Remove all response data:', data); // Debug log
+        if (data.success) {
+            // Clear notifications container
+            if (notificationsContainer) {
+                notificationsContainer.innerHTML = '<div class="text-center p-3" id="no-notifications"><p class="text-muted mb-0">No notifications</p></div>';
+            }
+            
+            // Update badge
+            if (badge) {
+                badge.classList.add('d-none');
+            }
+            if (unreadCount) {
+                unreadCount.textContent = '0';
+            }
+            
+            console.log('Successfully removed all notifications');
+        } else {
+            console.error('Server response indicated failure:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error removing all notifications:', error);
+        alert('Error removing notifications. Please try again.');
+    });
+}
+
+// Add click event to mark all read button
+document.addEventListener('DOMContentLoaded', function() {
+    const markAllBtn = document.getElementById('mark-all-notifications-read-btn');
+    console.log('Mark all notifications button found:', markAllBtn); // Debug log
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Mark all notifications clicked'); // Debug log
+            markAllNotificationsAsRead();
+        });
+    }
+    
+    // Initialize real-time message checking
+    initializeMessageChecking();
+});
+
+// Real-time message checking
+let messagePollingInterval;
+
+function initializeMessageChecking() {
+    // Initial check
+    checkForNewMessages();
+    
+    // Start polling every 10 seconds
+    messagePollingInterval = setInterval(checkForNewMessages, 10000);
+    
+    // Stop polling when page is hidden (browser tab not active)
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            clearInterval(messagePollingInterval);
+        } else {
+            // Resume polling when tab becomes active again
+            messagePollingInterval = setInterval(checkForNewMessages, 10000);
+            // Immediate check when returning to the tab
+            checkForNewMessages();
+        }
+    });
+}
+
+async function checkForNewMessages() {
+    try {
+        const response = await fetch('{{ route("admin.api.messages.notifications") }}', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            }
+        });
+        
+        console.log('Messages API response status:', response.status); // Debug log
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Messages API data:', data); // Debug log
+            
+            // Update message badge
+            updateMessageBadge(data.unread_count);
+            
+            // Update recent messages dropdown
+            updateMessagesDropdown(data.recent_messages, data.unread_count);
+        } else {
+            console.error('Messages API failed with status:', response.status);
+            const errorText = await response.text();
+            console.error('Messages API error response:', errorText);
+            
+            if (response.status === 404) {
+                console.error('Route /admin/api/messages/notifications not found. Check if route is properly defined.');
+            } else if (response.status === 401) {
+                console.error('Authentication required. User may need to log in again.');
+            } else if (response.status === 403) {
+                console.error('Access forbidden. Check user permissions.');
+            }
+        }
+    } catch (error) {
+        console.error('Error checking for new messages:', error);
+    }
+}
+
+function updateMessageBadge(unreadCount) {
+    const badgeElement = document.querySelector('#page-header-messages-dropdown .badge');
+    
+    if (badgeElement) {
+        if (unreadCount > 0) {
+            badgeElement.textContent = unreadCount;
+            badgeElement.style.display = 'inline-block';
+            badgeElement.classList.remove('d-none');
+        } else {
+            badgeElement.style.display = 'none';
+            badgeElement.classList.add('d-none');
+        }
+    }
+}
+
+function updateMessagesDropdown(messages, unreadCount) {
+    // Update unread count in dropdown header
+    const unreadCountSpan = document.querySelector('#page-header-messages-dropdown + .dropdown-menu .col-auto a span');
+    if (unreadCountSpan) {
+        unreadCountSpan.textContent = unreadCount;
+    }
+    
+    // Update messages container
+    const messagesContainer = document.querySelector('#page-header-messages-dropdown + .dropdown-menu [data-simplebar]');
+    
+    if (messagesContainer) {
+        if (messages.length === 0) {
+            messagesContainer.innerHTML = `
+                <div class="text-center p-3">
+                    <p class="text-muted mb-0">No messages</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        
+        messages.forEach(message => {
+            const unreadClass = !message.is_read ? 'unread' : '';
+            const unreadBadge = !message.is_read ? '<span class="badge badge-soft-primary">New</span>' : '';
+            
+            html += `
+                <a href="/admin/messages/${message.id}" class="text-reset notification-item ${unreadClass}">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 avatar-sm me-3">
+                            <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                <i class="bx bx-user"></i>
+                            </span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-1">${message.customer_name}</h6>
+                                ${unreadBadge}
+                            </div>
+                            <div class="font-size-13 text-muted">
+                                <p class="mb-1"><strong>${message.subject}</strong></p>
+                                <p class="mb-1">${message.content}</p>
+                                <p class="mb-0">
+                                    <i class="mdi mdi-clock-outline"></i>
+                                    <span>${message.time_ago}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        });
+        
+        messagesContainer.innerHTML = html;
+    }
+}
+</script>
 
 <!-- ========== Left Sidebar Start ========== -->
 <!-- ========== Left Sidebar Start ========== -->

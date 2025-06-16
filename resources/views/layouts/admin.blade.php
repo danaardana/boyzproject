@@ -361,19 +361,24 @@ function markNotificationAsRead(element) {
     $.ajax({
         url: `/admin/notifications/${notificationId}/read`,
         type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         success: function(response) {
+            console.log('Notification marked as read:', response);
             if (response.success) {
                 // Remove the "unread" class and "New" badge
                 $(element).removeClass('unread');
                 $(element).find('.badge-soft-primary').remove();
                 
                 // Update badge count
-                updateNotificationBadge(response.unread_count);
-                updateUnreadCount(response.unread_count);
+                updateNotificationBadge(response.unreadCount || response.unread_count);
+                updateUnreadCount(response.unreadCount || response.unread_count);
             }
         },
         error: function(xhr) {
             console.error('Failed to mark notification as read:', xhr);
+            console.error('Response:', xhr.responseJSON);
         }
     });
 }
@@ -383,11 +388,15 @@ function markAllNotificationsAsRead() {
     $.ajax({
         url: '/admin/notifications/mark-all-read',
         type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         success: function(response) {
+            console.log('All notifications marked as read:', response);
             if (response.success) {
                 // Remove all "unread" classes and "New" badges
-                $('.notification-item').removeClass('unread');
-                $('.notification-item .badge-soft-primary').remove();
+                $('#notifications-container .notification-item').removeClass('unread');
+                $('#notifications-container .notification-item .badge-soft-primary').remove();
                 
                 // Update badge count
                 updateNotificationBadge(0);
@@ -399,6 +408,7 @@ function markAllNotificationsAsRead() {
         },
         error: function(xhr) {
             console.error('Failed to mark all notifications as read:', xhr);
+            console.error('Response:', xhr.responseJSON);
             showNotificationToast('error', 'Failed to mark all notifications as read');
         }
     });
@@ -433,7 +443,11 @@ function performRemoveAll() {
     $.ajax({
         url: '/admin/notifications/remove-all',
         type: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         success: function(response) {
+            console.log('All notifications removed:', response);
             if (response.success) {
                 // Clear the notifications container
                 $('#notifications-container').html(`
@@ -452,6 +466,7 @@ function performRemoveAll() {
         },
         error: function(xhr) {
             console.error('Failed to remove all notifications:', xhr);
+            console.error('Response:', xhr.responseJSON);
             showNotificationToast('error', 'Failed to remove all notifications');
         }
     });
@@ -460,9 +475,14 @@ function performRemoveAll() {
 // Function to refresh notifications
 function refreshNotifications() {
     $.ajax({
-        url: '/admin/notifications',
+        url: '{{ route("admin.notifications.recent") }}',
         type: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         success: function(response) {
+            console.log('Notifications refreshed successfully:', response);
             if (response.success) {
                 updateNotificationsList(response.notifications);
                 updateNotificationBadge(response.unread_count);
@@ -471,6 +491,13 @@ function refreshNotifications() {
         },
         error: function(xhr) {
             console.error('Failed to refresh notifications:', xhr);
+            console.error('Response status:', xhr.status);
+            console.error('Response:', xhr.responseJSON);
+            
+            // If 404, it means the route is not found
+            if (xhr.status === 404) {
+                console.error('Route not found. Please check that the admin.notifications.recent route exists.');
+            }
         }
     });
 }

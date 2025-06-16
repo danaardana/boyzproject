@@ -34,6 +34,10 @@ class Session extends Model
      */
     public static function logAdminLogin($admin, $request)
     {
+        // Ensure admin data is properly decrypted before storing in session
+        $decryptedEmail = $admin->email; // This will use the model's decryption accessor
+        $decryptedName = $admin->name;   // This will use the model's decryption accessor
+        
         $sessionData = [
             'id' => session()->getId(),
             'user_id' => $admin->id,
@@ -41,8 +45,8 @@ class Session extends Model
             'user_agent' => $request->userAgent(),
             'payload' => base64_encode(serialize([
                 'admin_id' => $admin->id,
-                'admin_email' => $admin->email,
-                'admin_name' => $admin->name,
+                'admin_email' => $decryptedEmail,
+                'admin_name' => $decryptedName,
                 'login_time' => now()->toDateTimeString(),
                 'guard' => 'admin',
                 '_token' => session()->token(),
@@ -63,7 +67,6 @@ class Session extends Model
     public static function getAdminLoginHistory($adminId = null, $limit = 50)
     {
         $query = DB::table('sessions as s')
-            ->leftJoin('admins as a', 's.user_id', '=', 'a.id')
             ->whereNotNull('s.user_id')
             ->whereNotNull('s.ip_address')
             ->select([
@@ -72,9 +75,7 @@ class Session extends Model
                 's.ip_address',
                 's.user_agent',
                 's.last_activity',
-                's.payload',
-                'a.name as admin_name',
-                'a.email as admin_email'
+                's.payload'
             ])
             ->orderBy('s.last_activity', 'desc');
 
@@ -82,7 +83,15 @@ class Session extends Model
             $query->where('s.user_id', $adminId);
         }
 
-        return $query->limit($limit)->get()->map(function ($session) {
+        $sessions = $query->limit($limit)->get();
+        
+        // Get all unique admin IDs from sessions
+        $adminIds = $sessions->pluck('admin_id')->unique()->filter();
+        
+        // Fetch admin data properly using Admin model (which handles decryption)
+        $admins = \App\Models\Admin::whereIn('id', $adminIds)->get()->keyBy('id');
+
+        return $sessions->map(function ($session) use ($admins) {
             // Try to get login time from payload
             $loginTime = null;
             if ($session->payload) {
@@ -95,11 +104,16 @@ class Session extends Model
                 }
             }
             
+            // Get admin data (properly decrypted through model)
+            $admin = $admins->get($session->admin_id);
+            $adminName = $admin ? $admin->name : 'Unknown Admin';
+            $adminEmail = $admin ? $admin->email : 'Unknown';
+            
             return [
                 'session_id' => $session->session_id,
                 'admin_id' => $session->admin_id,
-                'admin_email' => $session->admin_email ?? 'Unknown',
-                'admin_name' => $session->admin_name ?? 'Unknown Admin',
+                'admin_email' => $adminEmail,
+                'admin_name' => $adminName,
                 'ip_address' => $session->ip_address,
                 'user_agent' => $session->user_agent,
                 'login_time' => $loginTime ?: date('Y-m-d H:i:s', $session->last_activity),

@@ -3,7 +3,7 @@
 <head>
 
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
-<title>{{ config('app.name', 'Boy Projects') }} - Welcome Admin</title>
+    <title>Boy Projects - Welcome Admin</title>
 
 <style type="text/css">
 
@@ -110,7 +110,7 @@
               <tr>
                 <td align="center" valign="middle">
                     <h2 style="color: #875ab9; font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 10px;">
-                        {{ config('app.name', 'Boy Projects') }}
+                        Boy Projects
                     </h2>
                 </td>
               </tr>
@@ -316,7 +316,7 @@
             <td height="35" align="center" valign="top" style="font-size:35px; line-height:35px;">&nbsp;</td>
           </tr>
           <tr>
-            <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#FFF; font-weight:bold; line-height:28px;" mc:edit="bm14-04"><multiline>Copyright &copy; {{ date('Y') }} {{ config('app.name', 'Boy Projects') }} </multiline></td>
+            <td align="center" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#FFF; font-weight:bold; line-height:28px;" mc:edit="bm14-04"><multiline>Copyright &copy; {{ date('Y') }} Boy Projects </multiline></td>
           </tr>
           </table></td>
       </tr>

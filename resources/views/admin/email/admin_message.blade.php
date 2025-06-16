@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message from {{ config('app.name') }}</title>
+    <title>Message from Boy Projects</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -135,7 +135,7 @@
             <div class="logo">
                 📧
             </div>
-            <h1>{{ config('app.name') }}</h1>
+            <h1>Boy Projects</h1>
             <p>Professional Customer Support</p>
         </div>
 
@@ -166,14 +166,14 @@
                 <p><strong>Best regards,</strong></p>
                 <p>{{ $adminName }}</p>
                 <p>Customer Support Team</p>
-                <p>{{ config('app.name') }}</p>
+                <p>Boy Projects</p>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p><strong>{{ config('app.name') }}</strong></p>
-            <p>Your trusted partner for digital solutions</p>
+            <p><strong>Boy Projects</strong></p>
+            <p>Partner terpercaya untuk suku cadang dan aksesoris motor Anda</p>
             
             <div class="contact-info">
                 <p>📧 Email: {{ config('mail.from.address') }}</p>
@@ -182,7 +182,7 @@
             </div>
             
             <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
-                This email was sent to {{ $customer->email }} because you are a valued customer of {{ config('app.name') }}.
+                Email ini dikirim ke {{ $customer->email }} karena Anda adalah pelanggan berharga Boy Projects.
                 <br>Customer ID: #{{ $customer->id }}
             </p>
         </div>

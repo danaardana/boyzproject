@@ -234,6 +234,9 @@ Route::prefix('admin')->group(function () {
         Route::delete('/messages/{message}/permanent', [ContactController::class, 'permanentDelete'])->name('admin.messages.permanent-delete');
         Route::post('/messages/read-all', [ContactController::class, 'markAllAsRead'])->name('admin.messages.mark-all-read');
         
+        // Real-time message notifications API
+        Route::get('/api/messages/notifications', [ContactController::class, 'getMessageNotifications'])->name('admin.api.messages.notifications');
+        
         // Email routes
         Route::prefix('emails')->group(function () {
             Route::post('/reactivation', [EmailController::class, 'sendReactivationNotification'])->name('admin.emails.reactivation');
@@ -388,11 +391,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/email-confirmation', [AdminController::class, 'emailConfirmation'])->name('admin.email-confirmation');
         Route::post('/verify-email', [EmailVerificationController::class, 'verify'])->name('verify.email.submit');
     });
-});
-
-
-
-// Database health check route (add this at the end)
+  });
+  
+  // Database health check route (add this at the end)
 Route::get('/admin/health/database', function () {
     try {
         DB::connection()->getPdo();

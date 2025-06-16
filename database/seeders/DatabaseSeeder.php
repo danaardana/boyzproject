@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             SectionSeeder::class,
             SectionContentSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }

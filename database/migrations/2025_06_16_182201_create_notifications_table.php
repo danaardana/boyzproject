@@ -13,7 +13,28 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->string('type'); // 'create', 'update', 'delete', 'login', 'logout', etc.
+            $table->string('title');
+            $table->text('message');
+            $table->string('icon')->nullable(); // Icon class for notification
+            $table->string('color')->default('primary'); // Bootstrap color class
+            $table->string('action_type'); // 'user', 'admin', 'section', 'content', 'product', etc.
+            $table->unsignedBigInteger('action_id')->nullable(); // ID of the affected record
+            $table->string('action_model')->nullable(); // Model class that was affected
+            $table->unsignedBigInteger('user_id')->nullable(); // User who performed the action
+            $table->string('user_type')->default('system'); // 'admin', 'customer', 'system'
+            $table->string('user_name')->nullable(); // Name of user who performed action
+            $table->string('user_email')->nullable(); // Email of user who performed action
+            $table->json('metadata')->nullable(); // Additional data about the action
+            $table->boolean('is_read')->default(false);
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
+
+            // Add indexes for better performance
+            $table->index(['type', 'is_read']);
+            $table->index(['user_type', 'user_id']);
+            $table->index(['action_type', 'action_id']);
+            $table->index('created_at');
         });
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
 class AdminMessageMail extends Mailable implements ShouldQueue
@@ -37,8 +38,16 @@ class AdminMessageMail extends Mailable implements ShouldQueue
     {
         return new Envelope(
             subject: $this->subject,
-            from: config('mail.from.address', 'admin@boyzproject.com'),
-            replyTo: config('mail.from.address', 'admin@boyzproject.com'),
+            from: new Address(
+                config('mail.from.address', 'support@boyprojects.com'),
+                config('mail.from.name', 'Boy Projects')
+            ),
+            replyTo: [
+                new Address(
+                    config('mail.from.address', 'support@boyprojects.com'),
+                    config('mail.from.name', 'Boy Projects')
+                )
+            ]
         );
     }
 

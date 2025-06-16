@@ -317,7 +317,7 @@ require_once ("./admin/lang/" . $lang . ".php");
                 <div class="mb-3">
                     <label for="subject" class="form-label">Subject</label>
                     <input type="text" class="form-control" id="subject" 
-                           value="Re: {{ $message->content_key ?? 'Your Message' }}" readonly>
+                           value="Balasan Pesan: {{ $message->content_key ?? 'Pesan Anda' }} - Boy Projects" readonly>
                 </div>
                 
                 <div class="mb-3">
