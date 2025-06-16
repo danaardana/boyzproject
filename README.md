@@ -322,11 +322,29 @@ processMessage() {
   - Custom scrollbar styling with smooth scrolling
   - 350px sidebar width with proper viewport calculations
 
-### **🔔 Real-Time Notifications**
-- **Navbar Notifications**: Live message counts with dropdown preview
-- **Pusher Integration**: WebSocket-based real-time updates
-- **Unread Counters**: Dynamic badge updates without page refresh
-- **Message Previews**: Quick message content preview in notifications
+### **🔔 Dynamic Notification System**
+- **Real-Time Activity Tracking**: Comprehensive CRUD operation monitoring across all admin activities
+- **Smart Notification Types**: Automatic icon assignment and color coding for different operation types
+- **Interactive Notification Management**: Click-to-read individual notifications, bulk mark as read functionality
+- **User Context Tracking**: Complete audit trail with admin user information for all database changes
+- **Auto-refresh System**: 30-second automatic refresh intervals for real-time notification updates
+- **Professional UI Integration**: Modern notification dropdown with corresponding BoxIcons and color-coded badges
+
+### **🎯 Notification Features**
+- **CRUD Operation Tracking**: Automatic notifications for all Create, Read, Update, Delete operations
+- **Admin Activity Monitoring**: Login/logout tracking, password changes, account management activities
+- **Smart Icon System**: Corresponding icons (create: bx-plus, update: bx-edit, delete: bx-trash, login: bx-log-in)
+- **Color-Coded Categories**: Success (green), warning (orange), danger (red), info (blue), primary (purple)
+- **Metadata Storage**: JSON metadata for additional context about each notification event
+- **Read Status Management**: Individual and bulk read status with timestamps and user tracking
+
+### **🔧 Notification Technical Implementation**
+- **AdminNotification Model**: Comprehensive notification model with scopes and helper methods
+- **NotificationController API**: RESTful API endpoints for notification CRUD operations
+- **NotificationHelper Trait**: Automatic notification creation for all admin operations
+- **Database Integration**: admin_notifications table with comprehensive fields and relationships
+- **AJAX Functionality**: Real-time UI updates without page refresh using jQuery and CSRF protection
+- **Service Provider Integration**: Global notification data available to all admin views
 
 ---
 
@@ -398,7 +416,8 @@ boyzproject/
 ├── 📁app/
 │   ├── 📁Http/Controllers/
 │   │   ├── 📄 Admin Controller.php            
-│   │   ├── 📄 Contact Controller.php         
+│   │   ├── 📄 Contact Controller.php
+│   │   ├── 📄 NotificationController.php
 │   │   └── 📁 Models/
 │   │       ├── 📄 📄 Auth Controller.php      
 │   │       └── 📄 📄 Email Controller.php     
@@ -408,8 +427,11 @@ boyzproject/
 │   │   ├── 📄 Admin Verification.php          
 │   │   ├── 📄 Admin Reactivation Notification.php 
 │   │   └── 📄 Message ReplyMail.php           
+│   ├── 📁 Traits/
+│   │   └── 📄 NotificationHelper.php
 │   └── 📁 Models/
 │       ├── 📄 Admin.php                        
+│       ├── 📄 AdminNotification.php
 │       ├── 📄 Contact Message.php
 │       ├── 📄 Product.php                      
 │       ├── 📄 ProductOption.php               
@@ -446,6 +468,7 @@ boyzproject/
 
 ### **Database Schema**
 - **admins**: Enhanced with remember_token, verification, security codes
+- **admin_notifications**: Dynamic notification system with CRUD tracking, metadata, and read status
 - **products**: Complete product catalog with images, categories, stock, ratings
 - **product_options**: Product option configurations (Size, Color, Material, etc.)
 - **product_option_values**: Individual option values with pricing and availability
@@ -553,7 +576,38 @@ Edit `public/landing/js/chat-bubble.js`:
 ## **📝 Updates History**
 
 <details>
-<summary>Latest Version 2.0.0 (June 2025) - Advanced ML Integration & AI-Powered Chatbot Edition</summary>
+<summary>Latest Version 2.1.0 (June 2025) - Dynamic Notification System & Enhanced Admin Experience Edition</summary>
+
+### **🔔 Dynamic Notification System Implementation**
+- ✅ **Real-Time Activity Tracking**: Comprehensive CRUD operation monitoring with automatic notification creation
+- ✅ **AdminNotification Model**: Complete notification model with scopes, helper methods, and metadata storage
+- ✅ **NotificationController API**: Full RESTful API with endpoints for read, delete, and bulk operations
+- ✅ **NotificationHelper Trait**: Automatic notification creation for all admin operations across controllers
+- ✅ **Interactive UI Integration**: Modern notification dropdown with click-to-read and bulk operations
+- ✅ **Auto-refresh System**: 30-second intervals for real-time notification updates without page refresh
+
+### **🎯 Enhanced Admin Experience**
+- ✅ **Smart Icon System**: Corresponding BoxIcons for different operation types (create, update, delete, login)
+- ✅ **Color-Coded Categories**: Automatic color assignment based on operation type (success, warning, danger, info)
+- ✅ **User Context Tracking**: Complete audit trail with admin information for all database changes
+- ✅ **Professional UI Updates**: Replace "View More" with "Remove All", unread count click functionality
+- ✅ **AJAX-Powered Operations**: Real-time UI updates with comprehensive error handling and CSRF protection
+
+### **📧 Email Configuration Updates**
+- ✅ **Customer Message Replies**: Updated email subject format from "Re: warranty" to "RE:ply msg something"
+- ✅ **Sender Configuration**: Changed from "Vixen16.fox" to "BoyProjects" for professional branding
+- ✅ **MessageReplyMail Enhancement**: Improved email templates with proper sender information
+
+### **🔧 Technical Infrastructure**
+- ✅ **Database Migrations**: admin_notifications table with comprehensive fields and proper indexing
+- ✅ **Service Provider Integration**: Global notification data available to all admin views via AdminViewServiceProvider
+- ✅ **Notification Seeding**: AdminNotificationSeeder with sample notifications for testing and demonstration
+- ✅ **Route Integration**: Comprehensive notification routes under /admin/notifications/ prefix
+- ✅ **Error Handling**: Robust error handling with user-friendly messages and fallback mechanisms
+</details>
+
+<details>
+<summary>Version 2.0.0 (June 2025) - Advanced ML Integration & AI-Powered Chatbot Edition</summary>
 
 ### **🧠 Machine Learning Integration**
 - ✅ **Scikit-learn Integration**: Advanced ML models for customer intent recognition with 24 intent categories
